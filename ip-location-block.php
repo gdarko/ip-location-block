@@ -1,0 +1,139 @@
+<?php
+/**
+ * IP Location Block
+ *
+ * A WordPress plugin that blocks undesired access based on geolocation of IP address.
+ *
+ * @package   IP_Location_Block
+ * @author    Darko Gjorgjijoski <dg@darkog.com>
+ * @license   GPL-3.0
+ * @link      https://iplocationblock.com/
+ * @copyright 2021 darkog
+ * @copyright 2013-2019 tokkonopapa
+ *
+ * Plugin Name:       IP Location Block
+ * Plugin URI:        https://wordpress.org/plugins/ip-location-block/
+ * Description:       Easily setup location block based on the visitor country by using ip and asn details. Protects your site from spam, login attempts, zero-day exploits, malicious access & more.
+ * Version:           1.0.0
+ * Author:            darkog
+ * Author URI:        https://iplocationblock.com/
+ * Text Domain:       ip-location-block
+ * License:           GPL-3.0
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
+ * Domain Path:       /languages
+ */
+
+defined( 'WPINC' ) or die; // If this file is called directly, abort.
+
+if ( ! class_exists( 'IP_Location_Block', false ) ):
+
+	/*----------------------------------------------------------------------------*
+	 * Global definition
+	 *----------------------------------------------------------------------------*/
+	define( 'IP_LOCATION_BLOCK_VERSION', '1.0.0' );
+	define( 'IP_LOCATION_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since  0.2.8
+	define( 'IP_LOCATION_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
+
+	/*----------------------------------------------------------------------------*
+	 * Public-Facing Functionality
+	 *----------------------------------------------------------------------------*/
+
+	/**
+	 * Load class
+	 *
+	 */
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-util.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-load.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-logs.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-apis.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/db-providers/ip2location/class-ip2location.php';
+	require IP_LOCATION_BLOCK_PATH . 'classes/db-providers/maxmind/class-maxmind-geolite2.php';
+
+
+	function ip_location_block_activate( $network_wide = false ) {
+		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-actv.php';
+		IP_Location_Block_Activate::activate( $network_wide );
+	}
+
+	function ip_location_block_deactivate( $network_wide = false ) {
+		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-actv.php';
+		IP_Location_Block_Activate::deactivate( $network_wide );
+	}
+
+	register_activation_hook( __FILE__, 'ip_location_block_activate' );
+	register_deactivation_hook( __FILE__, 'ip_location_block_deactivate' );
+
+	/**
+	 * check version and update before instantiation
+	 *
+	 * @see https://make.wordpress.org/core/2010/10/27/plugin-activation-hooks/
+	 * @see https://wordpress.stackexchange.com/questions/144870/wordpress-update-plugin-hook-action-since-3-9
+	 */
+	function ip_location_block_update() {
+		$settings = IP_Location_Block::get_option();
+		if ( version_compare( $settings['version'], IP_Location_Block::VERSION ) < 0 ) {
+			ip_location_block_activate( is_plugin_active_for_network( IP_LOCATION_BLOCK_BASE ) );
+		}
+	}
+
+	add_action( 'plugins_loaded', 'ip_location_block_update' );
+
+	/**
+	 * Instantiate class
+	 *
+	 */
+	add_action( 'plugins_loaded', array( 'IP_Location_Block', 'get_instance' ) );
+
+	/*----------------------------------------------------------------------------*
+	 * Dashboard and Administrative Functionality
+	 *----------------------------------------------------------------------------*/
+
+	/**
+	 * Load class in case of wp-admin/*.php
+	 *
+	 */
+	if ( is_admin() ) {
+		require IP_LOCATION_BLOCK_PATH . 'admin/class-ip-location-block-admin.php';
+		add_action( 'plugins_loaded', array( 'IP_Location_Block_Admin', 'get_instance' ) );
+	}
+
+	/*----------------------------------------------------------------------------*
+	 * Emergency Functionality
+	 *----------------------------------------------------------------------------*/
+
+	/**
+	 * Invalidate blocking behavior in case yourself is locked out.
+	 *
+	 * How to use: Activate the following code and upload this file via FTP.
+	 */
+	/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- *
+	function ip_location_block_emergency( $validate, $settings ) {
+		$validate['result'] = 'passed';
+		return $validate;
+	}
+	add_filter( 'ip-location-block-login',  'ip_location_block_emergency', 1, 2 );
+	add_filter( 'ip-location-block-admin',  'ip_location_block_emergency', 1, 2 );
+	add_filter( 'ip-location-block-public', 'ip_location_block_emergency', 1, 2 );
+	// */
+
+endif; // ! class_exists( 'IP_Location_Block', FALSE )
+
+
+add_action( 'init', function () {
+
+	if ( isset( $_GET['test'] ) ) {
+
+		var_dump(IP_Location_Block_Util::get_storage_dir('a/b/c'));
+
+
+		//var_dump( IP_Location_Block_API::get_instance( 'ipinfo.io', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
+		//var_dump( IP_Location_Block_API::get_instance( 'ipapi', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
+		//var_dump( IP_Location_Block_API::get_instance( 'ipdata.co', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
+		//var_dump( IP_Location_Block_API::get_instance( 'ipstack', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
+		//var_dump( IP_Location_Block_API::get_instance( 'IPInfoDB', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
+		die;
+	}
+
+} );
