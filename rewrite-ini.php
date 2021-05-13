@@ -70,6 +70,12 @@ class IP_Location_Block_Rewrite {
 IP_Location_Block_Rewrite::search_user_ini();
 
 // this will trigger `init` action hook
-require_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
+$path =  substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
+if ( ! file_exists( $path ) ) {
+	error_log( 'WordPress does not use the standard directory structure. Therefore WP-ZEP will not work.');
+} else {
+	require_once $path;
+}
+
 
 endif; /* ! class_exists( 'IP_Location_Block_Rewrite', FALSE ) */

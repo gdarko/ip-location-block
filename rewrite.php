@@ -119,7 +119,13 @@ class IP_Location_Block_Rewrite {
 }
 
 // this will trigger `init` action hook
-require_once '../../../wp-load.php';
+if ( ! file_exists( '../../../wp-load.php' ) ) {
+	error_log( 'WordPress does not use the standard directory structure. Therefore WP-ZEP will not work.');
+	return;
+} else {
+	require_once '../../../wp-load.php';
+}
+
 
 /**
  * Fallback execution
