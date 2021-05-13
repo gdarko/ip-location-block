@@ -68,7 +68,7 @@ Note: This plugin is based on the now abandoned "IP Geo Block" plugin by tokkono
   This plugin is lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](https://iplocationblock.com/codex/page-speed-performance/ "Page speed performance | IP Location Block") about page speed performance.
 
 * **Extendability:**  
-  You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](https://iplocationblock.com/codex/ "Codex | IP Location Block"). See various use cases in [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-location-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub") bundled within this package.
+  You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](https://iplocationblock.com/codex/ "Codex | IP Location Block"). See various use cases in [samples.php](https://iplocationblock.com/codex/example-use-cases-for-the-developer-hooks/) bundled within this package.
   You can also get the extension [IP Geo Allow](https://github.com/ddur/WordPress-IP-Geo-Allow "GitHub - ddur/WordPress-IP-Geo-Allow: WordPress Plugin Exension for WordPress-IP-Geo-Block Plugin") by [Dragan](https://github.com/ddur "ddur (Dragan) - GitHub"). It makes admin screens strictly private with more flexible way than specifying IP addresses.
 
 * **Self blocking prevention and easy rescue:**  
