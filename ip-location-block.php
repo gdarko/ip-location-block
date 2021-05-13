@@ -120,20 +120,3 @@ if ( ! class_exists( 'IP_Location_Block', false ) ):
 
 endif; // ! class_exists( 'IP_Location_Block', FALSE )
 
-
-add_action( 'init', function () {
-
-	if ( isset( $_GET['test'] ) ) {
-
-		var_dump(IP_Location_Block_Util::get_storage_dir('a/b/c'));
-
-
-		//var_dump( IP_Location_Block_API::get_instance( 'ipinfo.io', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
-		//var_dump( IP_Location_Block_API::get_instance( 'ipapi', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
-		//var_dump( IP_Location_Block_API::get_instance( 'ipdata.co', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
-		//var_dump( IP_Location_Block_API::get_instance( 'ipstack', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
-		//var_dump( IP_Location_Block_API::get_instance( 'IPInfoDB', IP_Location_BLock::get_option() )->get_location( '88.128.23.18' ) );
-		die;
-	}
-
-} );
