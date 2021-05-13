@@ -1694,8 +1694,8 @@ class IP_Location_Block_Admin {
 
 		// `$which` and `$cmd` should be restricted by whitelist in each function
 		$settings = IP_Location_Block::get_option();
-		$which    = isset( $_POST['which'] ) ? $_POST['which'] : null;
-		$cmd      = isset( $_POST['cmd'] ) ? $_POST['cmd'] : null;
+		$which    = isset( $_POST['which'] ) ? sanitize_text_field( $_POST['which'] ) : null;
+		$cmd      = isset( $_POST['cmd'] ) ? sanitize_text_field( $_POST['cmd'] ) : null;
 
 		switch ( $cmd ) {
 			case 'download':

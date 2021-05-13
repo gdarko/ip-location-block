@@ -745,7 +745,11 @@ class IP_Location_Block_Logs {
 		if ( IP_Location_Block::get_live_log() ) {
 			// skip self command
 			global $pagenow;
-			if ( 'admin-ajax.php' === $pagenow && isset( $_POST['action'] ) && 'ip_location_block' === $_POST['action'] && isset( $_POST['cmd'] ) && 0 === strpos( $_POST['cmd'], 'live-' ) ) {
+
+			$action = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : '';
+			$cmd    = isset( $_POST['cmd'] ) ? sanitize_text_field( $_POST['cmd'] ) : '';
+
+			if ( 'admin-ajax.php' === $pagenow && 'ip_location_block' === $action && 0 === strpos( $cmd, 'live-' ) ) {
 				return;
 			}
 

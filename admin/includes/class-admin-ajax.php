@@ -30,7 +30,8 @@ class IP_Location_Block_Admin_Ajax {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-lkup.php';
 
 		// check format
-		if ( filter_var( $ip = trim( $_POST['ip'] ), FILTER_VALIDATE_IP ) ) {
+		$ip = isset( $_POST['ip'] ) ? sanitize_text_Field( trim( $_POST['ip'] ) ) : '';
+		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
 			$options = IP_Location_Block::get_option();
 			$tmp     = IP_Location_Block::get_request_headers( $options );

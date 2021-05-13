@@ -836,7 +836,7 @@ class IP_Location_Block {
 		if ( 'wp-signup.php' === $this->pagenow && $settings['login_action']['register'] ) {
 			$action = 'register';
 		} else {
-			$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
+			$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : 'login' );
 			$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
 		}
 
@@ -885,8 +885,9 @@ class IP_Location_Block {
 	public function validate_admin() {
 		// if there's no action parameter but something is specified
 		$settings = self::get_option();
-		$page     = isset( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		$action   = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : ( isset( $_REQUEST['task'] ) ? $_REQUEST['task'] : null );
+		$page     = isset( $_REQUEST['page'] ) ? sanitize_text_field( $_REQUEST['page'] ) : null;
+		$action   = isset( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : null;
+		$action   = is_null( $action ) && isset( $_REQUEST['task'] ) ? sanitize_text_field( $_REQUEST['task'] ) : null;
 
 		switch ( $this->pagenow ) {
 			case 'admin-ajax.php':
