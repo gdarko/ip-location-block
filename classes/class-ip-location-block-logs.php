@@ -492,8 +492,11 @@ class IP_Location_Block_Logs {
 
 			// uploading files
 			if ( ! empty( $_FILES ) ) {
-				$posts['FILES'] = str_replace( PHP_EOL, ' ', print_r( $_FILES, true ) );
-				! in_array( 'FILES', $keys, true ) and $keys[] = 'FILES';
+				$files_info     = sanitize_text_field( print_r( $_FILES, true ) );
+				$posts['FILES'] = str_replace( PHP_EOL, ' ', $files_info );
+				if ( ! in_array( 'FILES', $keys, true ) ) {
+					array_push( $keys, 'FILES' );
+				}
 			}
 
 			// mask the password
@@ -501,14 +504,23 @@ class IP_Location_Block_Logs {
 				$posts['pwd'] = '***';
 			}
 
-			// primaly: $_POST keys
+			// primarily: $_POST keys
 			foreach ( $keys as $key ) {
-				array_key_exists( $key, $posts ) and $data[] = $key . '=' . $posts[ $key ];
+				if ( array_key_exists( $key, $posts ) ) {
+					if ( ! is_scalar( $posts[ $key ] ) ) {
+						continue;
+					}
+					$value = sanitize_text_field( $posts[ $key ] );
+					array_push( $data, $key . '=' . $value );
+				}
 			}
 
 			// secondary: rest of the keys in $_POST
 			foreach ( array_keys( $_POST ) as $key ) {
-				! in_array( $key, $keys, true ) and $data[] = $key;
+				if ( ! in_array( $key, $keys, true ) ) {
+					$key = sanitize_key( $key );
+					array_push( $data, $key );
+				}
 			}
 
 			return self::truncate_utf8( implode( ',', $data ), '/\s+/', ' ' );

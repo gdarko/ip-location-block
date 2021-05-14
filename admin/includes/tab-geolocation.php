@@ -74,7 +74,7 @@ class IP_Location_Block_Admin_Tab {
 			$list = preg_replace(
 				array( '/\.\*+$/', '/:\w*\*+$/', '/(::.*)::$/' ),
 				array( '.0', '::', '$1' ),
-				trim( $_GET['s'] )
+				trim( sanitize_text_field( trim( $_GET['s'] ) ) )
 			); // de-anonymize if `***` exists
 			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';
 		} else {

@@ -106,7 +106,7 @@ class IP_Location_Block_Admin_Tab {
 					'type'   => 'text',
 					'option' => $option_name,
 					'field'  => 'search_filter',
-					'value'  => isset( $_GET['s'] ) ? esc_html( $_GET['s'] ) : '', // preset filter
+					'value'  => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '', // preset filter
 					'after'  => '<a class="button button-secondary" id="ip-location-block-reset-filter" title="' . __( 'Reset', 'ip-location-block' ) . '" href="#!">' . __( 'Reset', 'ip-location-block' ) . '</a>',
 				)
 			);

@@ -503,12 +503,15 @@ class IP_Location_Block_Admin_Ajax {
 	 * @param $parent
 	 */
 	public static function validate_settings( $parent ) {
+
+
+
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = json_decode(
 			str_replace(
 				array( '\\"', '\\\\', "\'" ),
 				array( '"', '\\', "'" ),
-				isset( $_POST['data'] ) ? $_POST['data'] : ''
+				isset( $_POST['data'] ) ? sanitize_text_field($_POST['data']) : ''
 			), true
 		);
 
