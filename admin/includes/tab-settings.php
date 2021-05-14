@@ -1,6 +1,5 @@
 <?php
 require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';
-require_once IP_LOCATION_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 /**
  * IP Location Block
@@ -705,10 +704,6 @@ class IP_Location_Block_Admin_Tab {
 			__( 'You need to click &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-location-block' ),
 		);
 
-		// Set rewrite condition
-		$config             = IP_Location_Block_Admin_Rewrite::get_config_file();
-		$options['rewrite'] = IP_Location_Block_Admin_Rewrite::check_rewrite_all();
-
 		// Get all the plugins
 		$exception = '';
 		$installed = get_plugins(); // @since 1.5.0
@@ -731,14 +726,6 @@ class IP_Location_Block_Admin_Tab {
 
 		// Plugins area
 		$val = esc_html( $path['plugins'] );
-		$tmp = '<input type="checkbox" id="ip_location_block_settings_rewrite_plugins'
-		       . '" name="ip_location_block_settings[rewrite][plugins]" '
-		       . ' value="1"' . checked( $options['rewrite']['plugins'], true, false )
-		       . disabled( $options['rewrite']['plugins'], - 1, false ) . ' />'
-		       . '<label for="ip_location_block_settings_rewrite_plugins"><dfn title="'
-		       . ( $config ? sprintf( $desc[2], esc_html( $path['home'] . $path['plugins'] ) . $config ) : $desc[3] )
-		       . '">' . __( 'Force to load WP core', 'ip-location-block' )
-		       . '</dfn></label><br />';
 
 		add_settings_field(
 			$option_name . '_validation_plugins',
@@ -756,8 +743,7 @@ class IP_Location_Block_Admin_Tab {
 				'desc'      => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'after'     => $tmp .
-				               '<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . "\n" .
+				'after'     => '<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . "\n" .
 				               '	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-location-block' ) . "</dfn>\n" .
 				               '	<a class="ip-location-block-hide ip-location-block-icon ip-location-block-icon-cycle">' . $common[2] . '</a><a class="ip-location-block-icon ip-location-block-icon-find ip-location-block-hide" data-target="plugins">' . $common[3] . "</a>\n" .
 				               '	<li class="ip-location-block-hide">' . "\n" .
@@ -791,14 +777,6 @@ class IP_Location_Block_Admin_Tab {
 
 		// Themes area
 		$val = esc_html( $path['themes'] );
-		$tmp = '<input type="checkbox" id="ip_location_block_settings_rewrite_themes'
-		       . '" name="ip_location_block_settings[rewrite][themes]" '
-		       . ' value="1"' . checked( $options['rewrite']['themes'], true, false )
-		       . disabled( $options['rewrite']['themes'], - 1, false ) . ' />'
-		       . '<label for="ip_location_block_settings_rewrite_themes"><dfn title="'
-		       . ( $config ? sprintf( $desc[2], esc_html( $path['home'] . $path['themes'] ) . $config ) : $desc[3] )
-		       . '">' . __( 'Force to load WP core', 'ip-location-block' )
-		       . '</dfn></label><br />';
 
 		add_settings_field(
 			$option_name . '_validation_themes',
@@ -816,8 +794,7 @@ class IP_Location_Block_Admin_Tab {
 				'desc'      => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'after'     => $tmp .
-				               '<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . "\n" .
+				'after'     => '<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . "\n" .
 				               '	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-location-block' ) . "</dfn>\n" .
 				               '	<a class="ip-location-block-hide ip-location-block-icon ip-location-block-icon-cycle">' . $common[2] . '</a><a class="ip-location-block-icon ip-location-block-icon-find ip-location-block-hide" data-target="themes">' . $common[3] . "</a>\n" .
 				               '	<li class="ip-location-block-hide">' . "\n" .

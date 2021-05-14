@@ -15,7 +15,6 @@ require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-util.php'
 require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';
 require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-logs.php';
 require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
-require_once IP_LOCATION_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 class IP_Location_Block_Activate {
 
@@ -23,13 +22,11 @@ class IP_Location_Block_Activate {
 	private static function activate_main_blog( $settings ) {
 		IP_Location_Block_Cron::start_update_db( $settings );
 		IP_Location_Block_Opts::setup_validation_timing( $settings );
-		IP_Location_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 	}
 
 	private static function deactivate_main_blog() {
 		IP_Location_Block_Cron::stop_update_db();
 		IP_Location_Block_Opts::setup_validation_timing();
-		IP_Location_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 
 	// Activate and deactivate each blog

@@ -88,14 +88,6 @@ class IP_Location_Block_Opts {
 			'white_list' => null,    // White list of IP addresses
 			'black_list' => null,    // Black list of IP addresses
 		),
-		'rewrite'         => array(   // Apply rewrite rule
-			'plugins'   => false,   // for wp-content/plugins
-			'themes'    => false,   // for wp-content/themes
-			// since version 3.0.0
-			'includes'  => false,   // for wp-includes/
-			'uploads'   => false,   // for UPLOADS/uploads
-			'languages' => false,   // for wp-content/language
-		),
 		'Maxmind'         => array(   // Maxmind
 			// since version 2.2.2
 			'ipv4_path' => null,    // Path to IPv4 DB file
@@ -274,6 +266,9 @@ class IP_Location_Block_Opts {
 		// Upgrade from IP Location Block
 		$old_settings = self::convert_from_legacy();
 		if ( is_null( $old_settings ) ) {
+			if ( isset( $old_settings['rewrite'] ) ) {
+				unset( $old_settings['rewrite'] );
+			}
 			IP_Location_Block::update_option( $old_settings );
 			delete_option( 'ip_location_block_settings' );
 		}

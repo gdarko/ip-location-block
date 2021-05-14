@@ -1263,11 +1263,6 @@ class IP_Location_Block_Admin {
 		}
 
 		// initialize checkboxes not in the form
-		foreach ( array( 'plugins', 'themes', 'includes', 'uploads', 'languages' ) as $key ) {
-			$output['rewrite'][ $key ] = false;
-		}
-
-		// initialize checkboxes not in the form
 		$output['mimetype']['white_list'] = array();
 
 		// keep disabled checkboxes not in the form
@@ -1501,10 +1496,6 @@ class IP_Location_Block_Admin {
 
 		// validate setting options
 		$options = $this->sanitize_options( $input );
-
-		// activate rewrite rules
-		require_once IP_LOCATION_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
-		$options['rewrite'] = IP_Location_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 
 		// additional configuration
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';

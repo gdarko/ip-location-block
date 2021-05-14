@@ -633,11 +633,6 @@ class IP_Location_Block_Admin_Ajax {
 			'[validation][public]',      // 3.0.0
 			'[validation][restapi]',     // 3.0.3
 			'[validation][mimetype]',    // 3.0.3
-			'[rewrite][plugins]',
-			'[rewrite][themes]',
-			'[rewrite][includes]',       // 3.0.0
-			'[rewrite][uploads]',        // 3.0.0
-			'[rewrite][languages]',      // 3.0.0
 			'[exception][plugins][*]',   // 2.2.5
 			'[exception][themes][*]',    // 2.2.5
 			'[exception][admin][$]',     // 3.0.0
@@ -768,10 +763,6 @@ class IP_Location_Block_Admin_Ajax {
 					'mimetype' => 1,       // 0:disable, 1:white_list, 2:black_list
 				),
 				'signature'   => "../,/wp-config.php,/passwd\ncurl,wget,eval,base64\nselect:.5,where:.5,union:.5\nload_file:.5,create:.6,password:.4",
-				'rewrite'     => array(   // Apply rewrite rule
-					'plugins' => true,    // for wp-content/plugins
-					'themes'  => true,    // for wp-content/themes
-				),
 			),
 			false // should not overwrite the existing parameters
 		);
