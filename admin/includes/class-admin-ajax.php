@@ -68,7 +68,7 @@ class IP_Location_Block_Admin_Ajax {
 	/**
 	 * Get country code from providers
 	 *
-	 * @param string $which 'ip_client' or 'ip_server' (not in use)
+	 * @param array $which 'ip_client' or 'ip_server' (not in use)
 	 *
 	 * @return array
 	 */

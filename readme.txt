@@ -4,7 +4,7 @@ Donate link:
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 5.7
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -217,19 +217,23 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Screenshots ==
 
-1. **IP Geo Plugin** - Multisite list on network
-2. **IP Geo Plugin** - Settings tab
-3. **IP Geo Plugin** - Validation rules and behavior
-4. **IP Geo Plugin** - Back-end target settings
-5. **IP Geo Plugin** - Front-end target settings
-6. **IP Geo Plugin** - Geolocation API settings
-7. **IP Geo Plugin** - IP address cache settings
-8. **IP Geo Plugin** - Statistics tab
-9. **IP Geo Plugin** - Logs tab
-10. **IP Geo Plugin** - Search tab
-11. **IP Geo Plugin** - Attribution tab
+1. **IP Location Plugin** - Multisite list on network
+2. **IP Location Plugin** - Settings tab
+3. **IP Location Plugin** - Validation rules and behavior
+4. **IP Location Plugin** - Back-end target settings
+5. **IP Location Plugin** - Front-end target settings
+6. **IP Location Plugin** - Geolocation API settings
+7. **IP Location Plugin** - IP address cache settings
+8. **IP Location Plugin** - Statistics tab
+9. **IP Location Plugin** - Logs tab
+10. **IP Location Plugin** - Search tab
+11. **IP Location Plugin** - Attribution tab
 
 == Changelog ==
+
+= 1.0.1 =
+**Improvement:** Drop ipdata.co API
+**Bug fix**: Fixed the search tool
 
 = 1.0.0 =
 **Improvement:** Added PHP8 compatibility

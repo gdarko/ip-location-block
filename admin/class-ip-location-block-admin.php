@@ -1683,9 +1683,16 @@ class IP_Location_Block_Admin {
 		// Check request origin, nonce, capability.
 		$this->check_admin_post( true );
 
+		$services = array();
+		if ( ! empty( $_POST['which'] ) && is_array( $_POST['which'] ) ) {
+			foreach ( $_POST['which'] as $key => $value ) {
+				$services[ $key ] = sanitize_text_field( $value );
+			}
+		}
+
 		// `$which` and `$cmd` should be restricted by whitelist in each function
 		$settings = IP_Location_Block::get_option();
-		$which    = isset( $_POST['which'] ) ? sanitize_text_field( $_POST['which'] ) : null;
+		$which    = isset( $_POST['which'] ) ? $services : array();
 		$cmd      = isset( $_POST['cmd'] ) ? sanitize_text_field( $_POST['cmd'] ) : null;
 
 		switch ( $cmd ) {

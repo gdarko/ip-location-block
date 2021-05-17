@@ -687,12 +687,6 @@ class IP_Location_Block_Provider {
 			'link' => '<a rel="noreferrer" href="https://ipapi.com/" title="ipapi - IP Address Lookup and Geolocation API">https://ipapi.com/</a>&nbsp;(IPv4, IPv6 / free up to 10,000 lookups monthly for registered user)',
 		),
 
-		'Ipdata.co' => array(
-			'key'  => '',
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1,500 lookups daily for registered user)',
-		),
-
 		'ipstack' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free for registered user',
