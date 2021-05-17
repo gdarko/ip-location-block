@@ -1903,10 +1903,7 @@
                         apis = $(ID('#', 'apis')),
                         list = $(ID('@', 'service')).val(), obj,
                         ip = $.trim($(ID('@', 'ip_address')).val());
-
-
-                    console.log(list);
-
+                    
                     if (ip && list) {
                         // Anonymize IP address
                         if ($(ID('@', 'anonymize')).prop('checked')) {
