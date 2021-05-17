@@ -20,9 +20,9 @@ While WordPress.org [provides](https://wordpress.org/about/security/ "Security |
 
 This plugin focuses on insights into such developers' human factors instead of detecting the specific attack vectors after they were disclosed. This brings a smart and powerful methods named as "**WP Zero-day Exploit Prevention**" and "**WP Metadata Exploit Protection**".
 
-Combined with those methods and IP address geolocation, you'll be surprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.\
+Combined with those methods and IP address geolocation, you'll be surprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.
 
-Note: This plugin is based on the now abandoned "IP Geo Block" plugin by tokkonopapa. I fixed various issues and improved the overall codebase.
+**Note:** This plugin is based on the now abandoned "IP Geo Block" plugin by tokkonopapa. I fixed various issues and improved the overall codebase.
 
 = Features =
 
@@ -86,7 +86,7 @@ Also thanks for providing the following great services and REST APIs for free.
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
-* [https://ipapi.com/](https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API) (IPv4, IPv6 / free, need API key)
+* [https://ipapi.com/](https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API") (IPv4, IPv6 / free, need API key)
 * [https://ipdata.co/](https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API") (IPv4, IPv6 / free, need API key)
 * [https://ipstack.com/](https://ipstack.com/ "ipstack - Free IP Geolocation API") (IPv4, IPv6 / free for registered user, need API key)
 * [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free for registered user, need API key)
