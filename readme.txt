@@ -1,7 +1,7 @@
 === IP Location Block ===
 Contributors: darkog
 Donate link:
-Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
+Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 5.7
 Stable tag: 1.0.0
@@ -12,13 +12,7 @@ Easily setup location block based on the visitor country by using ip and asn det
 
 == Description ==
 
-IP Location Block plugin that allows you to block access to your site based on the visitor location while also keeping your site safe from malicious attacks.
-
-The more you install themes and plugins, the more likely your sites will be vulnerable, even if you [securely harden your sites](https://codex.wordpress.org/Hardening_WordPress "Hardening WordPress &laquo; WordPress Codex").
-
-While WordPress.org [provides](https://wordpress.org/about/security/ "Security | WordPress.org") [excellent](https://developer.wordpress.org/themes/theme-security/ "Theme Security | Theme Developer Handbook | WordPress Developer Resources") [resources](https://developer.wordpress.org/plugins/security/ "Plugin Security | Plugin Developer Handbook | WordPress Developer Resources"), themes and plugins may often get vulnerable due to developers' [human factors](https://www.google.com/search?q=human+factors+in+security "human factors in security - Google Search") such as lack of security awareness, misuse and disuse of the best practices in those resources.
-
-This plugin focuses on insights into such developers' human factors instead of detecting the specific attack vectors after they were disclosed. This brings a smart and powerful methods named as "**WP Zero-day Exploit Prevention**" and "**WP Metadata Exploit Protection**".
+IP Location Block plugin that allows you to block access to your site based on the visitor location while also keeping your site safe from malicious attacks. The plugin brings a smart and powerful protection methods named as "**WP Zero-day Exploit Prevention**" and "**WP Metadata Exploit Protection**".
 
 Combined with those methods and IP address geolocation, you'll be surprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.
 
