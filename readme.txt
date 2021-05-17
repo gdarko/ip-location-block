@@ -217,17 +217,17 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Screenshots ==
 
-1. **IP Location Plugin** - Multisite list on network
-2. **IP Location Plugin** - Settings tab
-3. **IP Location Plugin** - Validation rules and behavior
-4. **IP Location Plugin** - Back-end target settings
-5. **IP Location Plugin** - Front-end target settings
-6. **IP Location Plugin** - Geolocation API settings
-7. **IP Location Plugin** - IP address cache settings
-8. **IP Location Plugin** - Statistics tab
-9. **IP Location Plugin** - Logs tab
-10. **IP Location Plugin** - Search tab
-11. **IP Location Plugin** - Attribution tab
+1. **IP Location Plugin** - Settings tab
+2. **IP Location Plugin** - Validation rules and behavior
+3. **IP Location Plugin** - Back-end target settings
+4. **IP Location Plugin** - Front-end target settings
+5. **IP Location Plugin** - Geolocation API settings
+6. **IP Location Plugin** - IP address cache settings
+7. **IP Location Plugin** - Statistics tab
+8. **IP Location Plugin** - Logs tab
+9. **IP Location Plugin** - Search tab
+10. **IP Location Plugin** - Attribution tab
+11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
 
