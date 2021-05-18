@@ -1795,6 +1795,7 @@ class IP_Location_Block_Admin {
 
 			case 'delete-link': // Delete existing link
 				IP_Location_Block_Util::delete_link( $this );
+				$res = __('Done.');
 				break;
 
 			case 'show-info': // Show system and debug information
