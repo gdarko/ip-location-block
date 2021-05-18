@@ -546,11 +546,10 @@ class IP_Location_Block_Opts {
 					$fs->mkdir( WPMU_PLUGIN_DIR );
 				}
 
-				if ( $fs->is_dir( WPMU_PLUGIN_DIR ) ) {
-					if ( ! $fs->copy( $src, $dst, true ) ) {
-						return new WP_Error( 404, sprintf( __( 'Unable to write in %s. Please check your file system permissions.', 'ip-location-block' ), '<code>' . $src . '</code>' ) );
-					}
+				if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) || ! $fs->copy( $src, $dst, true ) ) {
+					return new WP_Error( 404, sprintf( __( 'Unable to write in %s. Please check your file system permissions.', 'ip-location-block' ), '<code>' . $src . '</code>' ) );
 				}
+
 				break;
 		}
 
