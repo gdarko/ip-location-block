@@ -112,6 +112,10 @@ This plugin is designed based on the principle of "Privacy by design" so that yo
 
 However, these are the part of GDPR requirements and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](https://iplocationblock.com/changelog/0-3-0-11-release-note/) for details.
 
+= Is there a way to migrate from IP Geo Block"
+
+Yes, if "IP Geo Block" settings are detected, you will see migrate option in the Settings last in "Plugin Settings" section. This will copy the settings from "IP Geo Block" only.
+
 = Does this plugin support multisite? =
 
 Yes. You can synchronize the settings with all the sites on the network when you activate on network and enable "**Network wide settings**" in "**Plugin settings**" section.
