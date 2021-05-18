@@ -492,7 +492,7 @@ class IP_Location_Block_Opts {
 	 *
 	 * @return int
 	 */
-	public static function get_validation_timing( $prefix = '!' ) {
+	public static function get_validation_timing( $prefix = '' ) {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
 		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
 
@@ -506,7 +506,7 @@ class IP_Location_Block_Opts {
 	 *
 	 * @return bool|string
 	 */
-	private static function remove_mu_plugin( $prefix = '!' ) {
+	private static function remove_mu_plugin( $prefix = '' ) {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
 		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
 
@@ -523,30 +523,32 @@ class IP_Location_Block_Opts {
 	 * @param null $settings
 	 * @param string $prefix
 	 *
-	 * @return bool|string
+	 * @return bool|WP_Error
 	 */
-	public static function setup_validation_timing( $settings = null, $prefix = '!' ) {
+	public static function setup_validation_timing( $settings = null, $prefix = '' ) {
+
 		switch ( $settings ? (int) $settings['validation']['timing'] : 0 ) {
 			case 0: // init
 				if ( true !== ( $src = self::remove_mu_plugin() ) ) {
-					return $src;
+					return new WP_Error( 404, sprintf( __( 'Unable to remove %s. Please check your file system permissions.', 'ip-location-block' ), '<code>' . $src . '</code>' ) );
 				}
 				break;
 
 			case 1: // mu-plugins
-				$src = IP_LOCATION_BLOCK_PATH . 'wp-content/mu-plugins/ip-location-block-mu.php';
-				$dst = WPMU_PLUGIN_DIR . '/' . $prefix . 'ip-location-block-mu.php';
+				$src = IP_Location_Block_Util::slashit( IP_LOCATION_BLOCK_PATH ) . 'wp-content/mu-plugins/ip-location-block-mu.php';
+				$dst = IP_Location_Block_Util::slashit( WPMU_PLUGIN_DIR ) . $prefix . 'ip-location-block-mu.php';
 
-				require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
+				require_once IP_Location_Block_Util::slashit( IP_LOCATION_BLOCK_PATH ) . 'classes/class-ip-location-block-file.php';
+
 				$fs = IP_Location_Block_FS::init( __FUNCTION__ );
 
-				if ( ! $fs->is_file( $dst ) ) {
-					if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) && ! $fs->mkdir( WPMU_PLUGIN_DIR ) ) {
-						return $dst;
-					}
+				if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) ) {
+					$fs->mkdir( WPMU_PLUGIN_DIR );
+				}
 
+				if ( $fs->is_dir( WPMU_PLUGIN_DIR ) ) {
 					if ( ! $fs->copy( $src, $dst, true ) ) {
-						return $dst;
+						return new WP_Error( 404, sprintf( __( 'Unable to write in %s. Please check your file system permissions.', 'ip-location-block' ), '<code>' . $src . '</code>' ) );
 					}
 				}
 				break;

@@ -1499,11 +1499,10 @@ class IP_Location_Block_Admin {
 
 		// additional configuration
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';
-		if ( true !== ( $file = IP_Location_Block_Opts::setup_validation_timing( $options ) ) ) {
+		$file = IP_Location_Block_Opts::setup_validation_timing( $options );
+		if ( is_wp_error( $file ) ) {
 			$options['validation']['timing'] = 0;
-			self::add_admin_notice( 'error', sprintf(
-				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-location-block' ), '<code>' . $file . '</code>'
-			) );
+			self::add_admin_notice( 'error', $file->get_error_message() );
 		}
 
 		// Force to finish update matching rule
