@@ -1921,8 +1921,10 @@
                 $(ID('@', 'get_location')).on('click', function (/*event*/) {
                     var whois = $(ID('#', 'whois')),
                         apis = $(ID('#', 'apis')),
-                        list = $(ID('@', 'service')).val(), obj,
-                        ip = $.trim($(ID('@', 'ip_address')).val());
+                        list = $(ID('@', 'service')).val(), obj;
+
+                    var ip = $(ID('@', 'ip_address')).val();
+                    ip = ip ? ip.trim() : ip;
 
                     if (ip && list) {
                         // Anonymize IP address
