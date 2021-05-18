@@ -1497,6 +1497,26 @@
                     return false;
                 });
 
+                // Emergency login link
+                $(ID('#', 'migrate')).on('click', function (/*event*/) {
+                    var $this = $(this), type = ID('$', 'primary');
+
+                    ajax_post('migrate-loading', {
+                        cmd: 'migrate-from-legacy'
+                    }, function (data) {
+                        if (data.hasOwnProperty('message')) {
+                            alert(data.message);
+                            if (data.success) {
+                                window.location.href = window.location.href;
+                            }
+                        } else {
+                            alert('HTTP Error.');
+                        }
+                    });
+
+                    return false;
+                });
+
                 // Manipulate DB table for validation logs
                 $(ID('@', 'diag_tables')).on('click', function (/*event*/) {
                     confirm(ip_location_block.msg[0], function () {
@@ -1903,7 +1923,7 @@
                         apis = $(ID('#', 'apis')),
                         list = $(ID('@', 'service')).val(), obj,
                         ip = $.trim($(ID('@', 'ip_address')).val());
-                    
+
                     if (ip && list) {
                         // Anonymize IP address
                         if ($(ID('@', 'anonymize')).prop('checked')) {

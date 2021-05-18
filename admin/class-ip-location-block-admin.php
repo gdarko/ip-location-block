@@ -1871,6 +1871,24 @@ class IP_Location_Block_Admin {
 				IP_Location_Block_Logs::diag_tables() or IP_Location_Block_Logs::create_tables();
 				$res = array( 'page' => 'options-general.php?page=' . IP_Location_Block::PLUGIN_NAME );
 				break;
+			case 'migrate-from-legacy':
+
+				require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';
+				$settings = IP_Location_Block_Opts::get_legacy_settings();
+				if ( empty( $settings ) ) {
+					$res = array(
+						'success' => false,
+						'message' => __( 'No previous settings found.', 'ip-location-block' ),
+					);
+				} else {
+					$settings['version'] = IP_LOCATION_BLOCK_VERSION;
+					IP_Location_Block::update_option( $settings );
+					$res = array(
+						'success' => true,
+						'message' => __( 'Migration successful. This page will be reloaded now...', 'ip-location-block' ),
+					);
+				}
+				break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

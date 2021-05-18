@@ -263,20 +263,11 @@ class IP_Location_Block_Opts {
 	 */
 	public static function upgrade() {
 
-		// Upgrade from IP Location Block
-		$old_settings = self::convert_from_legacy();
-		if ( is_null( $old_settings ) ) {
-			if ( isset( $old_settings['rewrite'] ) ) {
-				unset( $old_settings['rewrite'] );
-			}
-			IP_Location_Block::update_option( $old_settings );
-			delete_option( 'ip_location_block_settings' );
-		}
-
-		// Other upgrades...
+		// Upgrades.
 		$settings               = IP_Location_Block::get_option();
 		$settings['version']    = IP_Location_Block::VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
+
 		IP_Location_Block::update_option( $settings );
 
 	}
@@ -284,7 +275,7 @@ class IP_Location_Block_Opts {
 	/**
 	 * Convert old options from IP Location Block to IP Location Block
 	 */
-	public static function convert_from_legacy() {
+	public static function get_legacy_settings() {
 
 		$settings = get_option( 'ip_geo_block_settings' );
 		if ( empty( $settings ) ) {
@@ -479,8 +470,11 @@ class IP_Location_Block_Opts {
 
 			self::setup_validation_timing( $settings );
 		}
-		$settings['version']    = IP_Location_Block::VERSION;
-		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
+
+		// IP Location Block.
+		if ( isset( $settings['rewrite'] ) ) {
+			unset( $settings['rewrite'] );
+		}
 
 		return $settings;
 	}

@@ -11,7 +11,6 @@ require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php'
  * @copyright 2021 darkog
  * @copyright 2013-2019 tokkonopapa
  */
-
 class IP_Location_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
@@ -1628,6 +1627,23 @@ class IP_Location_Block_Admin_Tab {
 				'after'  => '<div id="ip-location-block-wp-info"></div>',
 			)
 		);
+
+		// Migrate from IP Geo Block
+		$legacy = IP_Location_Block_Opts::get_legacy_settings();
+		if ( ! is_null( $legacy ) ) {
+			add_settings_field(
+				$option_name . '_migrate',
+				__( '<dfn title="We detected that you had the legacy version IP Geo Block of this plugin installed previously. Do you want to migrate your old settings?">Migrate from IP Geo Block</dfn>', 'ip-location-block' ),
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type'   => 'none',
+					'before' => '<a class="button-secondary ip-location-block-primary" id="ip-location-block-migrate" href="#!">' . __( 'Migrate now', 'ip-location-block' ) . '</a>&nbsp;',
+					'after'  => '<div id="ip-location-block-migrate-loading"></div>',
+				)
+			);
+		}
 
 	}
 
