@@ -1629,8 +1629,10 @@ class IP_Location_Block_Admin_Tab {
 		);
 
 		// Migrate from IP Geo Block
-		$legacy = IP_Location_Block_Opts::get_legacy_settings();
-		if ( ! is_null( $legacy ) ) {
+		$legacy   = IP_Location_Block_Opts::get_legacy_settings();
+		$current  = IP_Location_Block::get_option();
+		$migrated = ( isset( $current['migrated_from_legacy'] ) && $current['migrated_from_legacy'] );
+		if ( ! $migrated && ! is_null( $legacy ) ) {
 			add_settings_field(
 				$option_name . '_migrate',
 				__( '<dfn title="We detected that you had the legacy version IP Geo Block of this plugin installed previously. Do you want to migrate your old settings?">Migrate from IP Geo Block</dfn>', 'ip-location-block' ),

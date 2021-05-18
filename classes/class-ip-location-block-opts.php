@@ -208,6 +208,7 @@ class IP_Location_Block_Opts {
 			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
 			// @since 3.0.0 `manage_network_options`
 		),
+		'migrated_from_legacy' => false,
 	);
 
 	/**

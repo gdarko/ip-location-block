@@ -1795,7 +1795,7 @@ class IP_Location_Block_Admin {
 
 			case 'delete-link': // Delete existing link
 				IP_Location_Block_Util::delete_link( $this );
-				$res = __('Done.');
+				$res = __( 'Done.' );
 				break;
 
 			case 'show-info': // Show system and debug information
@@ -1882,7 +1882,8 @@ class IP_Location_Block_Admin {
 						'message' => __( 'No previous settings found.', 'ip-location-block' ),
 					);
 				} else {
-					$settings['version'] = IP_LOCATION_BLOCK_VERSION;
+					$settings['version']              = IP_LOCATION_BLOCK_VERSION;
+					$settings['migrated_from_legacy'] = true;
 					IP_Location_Block::update_option( $settings );
 					$res = array(
 						'success' => true,
