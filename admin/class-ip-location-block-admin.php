@@ -1380,6 +1380,9 @@ class IP_Location_Block_Admin {
 				$output['Maxmind']['asn4_path'] = null;
 				$output['Maxmind']['asn6_path'] = null;
 			}
+			if ( empty( $output['GeoLite2']['asn_path'] ) ) {
+				$output['GeoLite2']['asn_path'] = null;
+			}
 			if ( ! $output['GeoLite2']['use_asn'] && ! $fs->exists( $output['GeoLite2']['asn_path'] ) ) {
 				$output['GeoLite2']['asn_path'] = null;
 			}
