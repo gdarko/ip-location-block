@@ -393,7 +393,7 @@ class IP_Location_Block_Admin {
 		if ( $file === IP_LOCATION_BLOCK_BASE ) {
 			array_push(
 				$links,
-				'<a href="https://github.com/tokkonopapa/Wordpress-ip-location-block" title="tokkonopapa/WordPress-IP-Geo-Block" target=_blank>' . __( 'Contribute on GitHub', 'ip-location-block' ) . '</a>'
+				'<a href="https://github.com/gdarko/ip-location-block" title="IP Location Block on GitHub" target=_blank>' . __( 'Contribute on GitHub', 'ip-location-block' ) . '</a>'
 			);
 		}
 
