@@ -82,8 +82,8 @@ Also thanks for providing the following great services and REST APIs for free.
 * [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
 * [https://ipapi.com/](https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API") (IPv4, IPv6 / free, need API key)
 * [https://ipdata.co/](https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API") (IPv4, IPv6 / free, need API key)
-* [https://ipstack.com/](https://ipstack.com/ "ipstack - Free IP Geolocation API") (IPv4, IPv6 / free for registered user, need API key)
-* [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free for registered user, need API key)
+* [https://ipstack.com/](https://ipstack.com/ "ipstack - Free IP Geolocation API") (IPv4, IPv6 / free, need API key)
+* [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free, need API key)
 
 = Development =
 
