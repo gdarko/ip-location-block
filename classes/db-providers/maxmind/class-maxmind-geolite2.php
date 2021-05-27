@@ -199,6 +199,9 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$db['ip_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
 
 		if ( $fs->exists( $db['ip_path'] ) ) {
+			if ( empty( $db['ip_last'] ) ) {
+				$db['ip_last'] = filemtime( $db['ip_path'] );
+			}
 			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ip_last'] ) );
 		} else {
 			$date = $msg;
