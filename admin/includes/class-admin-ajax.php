@@ -505,13 +505,12 @@ class IP_Location_Block_Admin_Ajax {
 	public static function validate_settings( $parent ) {
 
 
-
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = json_decode(
 			str_replace(
 				array( '\\"', '\\\\', "\'" ),
 				array( '"', '\\', "'" ),
-				isset( $_POST['data'] ) ? sanitize_text_field($_POST['data']) : ''
+				isset( $_POST['data'] ) ? sanitize_text_field( $_POST['data'] ) : ''
 			), true
 		);
 
@@ -935,7 +934,8 @@ class IP_Location_Block_Admin_Ajax {
 		$usr = function_exists( 'posix_getpwuid' ) ? posix_getpwuid( posix_geteuid() ) : array( 'name' => getenv( 'USERNAME' ) );
 
 		// Server, PHP, WordPress
-		$res = array_map( 'esc_html', array(
+		$tmp_d = IP_Location_Block_Util::get_temp_dir();
+		$res   = array_map( 'esc_html', array(
 			'Server:'        => $_SERVER['SERVER_SOFTWARE'],
 			'MySQL:'         => $ver . ( defined( 'IP_LOCATION_BLOCK_DEBUG' ) && IP_LOCATION_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'           => PHP_VERSION,
@@ -945,7 +945,7 @@ class IP_Location_Block_Admin_Ajax {
 			'WordPress:'     => $GLOBALS['wp_version'],
 			'Multisite:'     => is_multisite() ? 'yes' : 'no',
 			'File system:'   => $fs->get_method(),
-			'Temp folder:'   => get_temp_dir(),
+			'Temp folder:'   => is_wp_error( $tmp_d ) ? $tmp_d->get_error_message() : $tmp_d,
 			'Process owner:' => $usr['name'],
 			'File owner:'    => get_current_user(), // Gets the name of the owner of the current PHP script
 			'Umask:'         => sprintf( '%o', umask() ^ 511 /* 0777 */ ),

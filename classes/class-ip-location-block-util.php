@@ -169,7 +169,13 @@ class IP_Location_Block_Util {
 							);
 						}
 					} else {
-						$src = get_temp_dir() . basename( $url ); // $src should be removed
+						$tmp = self::get_temp_dir();
+						if ( is_wp_error( $tmp ) ) {
+							throw new Exception(
+								sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
+							);
+						}
+						$src = $tmp . basename( $url ); // $src should be removed
 						$fs->put_contents( $src, $data );
 						if ( true !== ( $ret = self::gzfile( $src, $filename ) ) ) {
 							$err = $ret;
@@ -180,7 +186,15 @@ class IP_Location_Block_Util {
 					$name = wp_remote_retrieve_header( $src, 'content-disposition' );
 					$name = explode( 'filename=', $name );
 					$name = array_pop( $name ); // e.g. GeoLite2-Country_20180102.tar.gz
-					$src  = ( $tmp = get_temp_dir() ) . $name; // $src should be removed
+					$tmp  = self::get_temp_dir();
+
+					if ( is_wp_error( $tmp ) ) {
+						throw new Exception(
+							sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
+						);
+					}
+
+					$src = $tmp . $name; // $src should be removed
 
 					// CVE-2015-6833: A directory traversal when extracting ZIP files could be used to overwrite files
 					// outside of intended area via a `..` in a ZIP archive entry that is mishandled by extractTo().
@@ -195,14 +209,15 @@ class IP_Location_Block_Util {
 						}
 
 						// extract specific files from archives into temporary directory and copy it to the destination.
-						$data->extractTo( $tmp .= $dst, $files /* NULL */, true ); // $tmp should be removed
+						$tmp = trailingslashit( $tmp . $dst );
+						$data->extractTo( $tmp, $files /* NULL */, true ); // $tmp should be removed
 
 						// copy extracted files to Geolocation APIs directory
 						$dst = dirname( $filename );
 						foreach ( $files as $val ) {
 							// should the destination be exclusive with LOCK_EX ?
 							// $fs->put_contents( $dst.'/'.basename( $val ), $fs->get_contents( $tmp.'/'.$val ) );
-							$fs->copy( $tmp . '/' . $val, $dst . '/' . basename( $val ), true );
+							$fs->copy( $tmp . $val, $dst . '/' . basename( $val ), true );
 						}
 					}
 				}
@@ -224,7 +239,14 @@ class IP_Location_Block_Util {
 						$err = $ret;
 					}
 				} elseif ( 'zip' === $ext && class_exists( 'ZipArchive', false ) ) {
-					$tmp = get_temp_dir(); // @since  0.2.5
+
+					$tmp = self::get_temp_dir();
+					if ( is_wp_error( $tmp ) ) {
+						throw new Exception(
+							sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
+						);
+					}
+
 					$ret = $fs->unzip_file( $src, $tmp ); // @since  0.2.5
 
 					if ( is_wp_error( $ret ) ) {
@@ -267,6 +289,32 @@ class IP_Location_Block_Util {
 			'modified' => $modified,
 		) : $err;
 
+	}
+
+	/**
+	 * Return temporary directory
+	 * @return string|WP_Error|null
+	 */
+	public static function get_temp_dir() {
+		$dir = \get_temp_dir();
+		$dir = apply_filters( IP_Location_Block::PLUGIN_NAME . '-temp-dir', $dir );
+		if ( ! file_exists( $dir ) || ! is_writable( $dir ) ) {
+			$uploads = wp_upload_dir();
+			$basedir = $uploads['basedir'];
+			$new_tmp = trailingslashit( $basedir ) . 'tmp_d';
+			if ( ! file_exists( $new_tmp ) ) {
+				if ( is_writable( $basedir ) ) {
+					wp_mkdir_p( $new_tmp );
+				}
+			}
+			$dir = $new_tmp;
+			if ( ! empty( $dir ) && is_writable( $dir ) ) {
+				return trailingslashit( $dir );
+			} else {
+				return new WP_Error( 403, sprintf( 'Temporary directory %s not writable.', $dir ) );
+			}
+		}
+		return trailingslashit( $dir );
 	}
 
 	/**
@@ -1017,7 +1065,6 @@ class IP_Location_Block_Util {
 				$logged_in = $user ? $user->exists() : false; // @since 3.4.0
 			}
 		}
-
 
 
 		return $logged_in;

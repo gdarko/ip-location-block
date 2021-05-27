@@ -581,8 +581,14 @@ class IP_Location_Block_Logs {
 		self::$pdo = self::$stm = null;
 		register_shutdown_function( 'IP_Location_Block_Logs::close_sqlite_db' );
 
+		// The temporary dir name
+		$tmp_d = IP_Location_Block_Util::get_temp_dir();
+		if ( is_wp_error( $tmp_d ) ) {
+			return $tmp_d;
+		}
+
 		// Set data source name
-		$db_path = $dsn ? ':memory:' : ( get_temp_dir() . IP_Location_Block::PLUGIN_NAME . "-${id}.sqlite" );
+		$db_path = $dsn ? ':memory:' : ( $tmp_d . IP_Location_Block::PLUGIN_NAME . "-${id}.sqlite" );
 		$id      = apply_filters( IP_Location_Block::PLUGIN_NAME . '-live-log', $db_path );
 
 		try {
@@ -633,7 +639,12 @@ class IP_Location_Block_Logs {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
 		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
 
-		if ( false !== ( $files = $fs->dirlist( $dir = get_temp_dir() ) ) ) {
+		$dir = IP_Location_Block_Util::get_temp_dir();
+		if ( is_wp_error( $dir ) ) {
+			return true;
+		}
+
+		if ( false !== ( $files = $fs->dirlist( $dir ) ) ) {
 			foreach ( array_keys( $files ) as $file ) {
 				if ( false !== strpos( $file, IP_Location_Block::PLUGIN_NAME ) ) {
 					$fs->delete( $dir . $file );
