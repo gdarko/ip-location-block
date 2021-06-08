@@ -236,7 +236,9 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 == Changelog ==
 
 = 1.0.4 =
-**Improvement**: Fix bugs related to the asn blocking feature
+**Bug fix**: Fix bugs related to the asn blocking feature
+**Bug fix**: Trigger re-download of the asn database once the ASN feature is enabled via settings
+**Improvement**: Improved migration from legacy process, unset unused settings
 
 = 1.0.3 =
 **Improvement**: Add "Migrate from IP Geo Block" option if IP Geo Block settings are detected. This will copy the IP Geo Block settings.
