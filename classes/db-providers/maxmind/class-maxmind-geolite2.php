@@ -51,7 +51,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 	}
 
 	private function location_asnumber( $record ) {
-		return array( 'ASN' => 'AS' . $record->autonomousSystemNumber );
+		return array( 'asn' => IP_Location_Block_Util::parse_asn( $record->autonomousSystemNumber ) );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -64,7 +64,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		// setup database file and function
 		$settings = IP_Location_Block::get_option();
 
-		if ( empty( $args['ASN'] ) ) {
+		if ( empty( $args['asn'] ) ) {
 			$file = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path',
 				( ! empty( $settings['GeoLite2']['ip_path'] ) ?
 					$settings['GeoLite2']['ip_path'] :
@@ -87,7 +87,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 				$reader = new GeoIp2\Database\Reader( $file );
 				$res    = $this->location_asnumber( $reader->asn( $ip ) );
 			} catch ( Exception $e ) {
-				$res = array( 'ASN' => null );
+				$res = array( 'asn' => null );
 			}
 		}
 
@@ -124,13 +124,13 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 	/**
 	 * Download database
 	 *
-	 * @param $db
 	 * @param $args
 	 *
 	 * @return array
 	 */
-	public function download( &$db, $args ) {
+	public function download( $args ) {
 		$dir = $this->get_db_dir();
+		$db  = isset( $this->options[ $this->provider ] ) ? $this->options[ $this->provider ] : array();
 
 		// IPv4 & IPv6
 		if ( $dir !== dirname( $db['ip_path'] ) . '/' ) {
@@ -138,11 +138,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		}
 
 		// Set API Key
-		$settings = IP_Location_Block::get_option();
-		$api_key  = null;
-		if ( ! empty( $settings['providers']['GeoLite2'] ) ) {
-			$api_key = $settings['providers']['GeoLite2'];
-		}
+		$api_key = isset( $this->options['providers'][ $this->provider ] ) ? $this->options['providers'][ $this->provider ] : null;
 
 		// filter database file
 		$db['ip_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
@@ -153,16 +149,18 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 			$db['ip_last']
 		);
 
-		! empty( $res['ip']['filename'] ) and $db['ip_path'] = $res['ip']['filename'];
-		! empty( $res['ip']['modified'] ) and $db['ip_last'] = $res['ip']['modified'];
+		if ( ! empty( $res['ip']['filename'] ) ) {
+			$db['ip_path'] = $res['ip']['filename'];
+		}
+		if ( ! empty( $res['ip']['modified'] ) ) {
+			$db['ip_last'] = $res['ip']['modified'];
+		}
 
-		if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
-
+		if ( ! empty( $this->options['use_asn'] ) || ! empty( $db['asn_path'] ) ) {
 			// ASN for IPv4 and IPv6
 			if ( $dir !== dirname( $db['asn_path'] ) . '/' ) {
 				$db['asn_path'] = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_ASN;
 			}
-
 			$res['asn'] = IP_Location_Block_Util::download_zip(
 				$this->get_api_url( 'asn', $api_key ),
 				$args + array( 'method' => 'GET' ),
@@ -170,10 +168,13 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 				$db['asn_last']
 			);
 
-			! empty( $res['asn']['filename'] ) and $db['asn_path'] = $res['asn']['filename'];
-			! empty( $res['asn']['modified'] ) and $db['asn_last'] = $res['asn']['modified'];
-
-		endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
+			if ( ! empty( $res['asn']['filename'] ) ) {
+				$db['asn_path'] = $res['asn']['filename'];
+			}
+			if ( ! empty( $res['asn']['modified'] ) ) {
+				$db['asn_last'] = $res['asn']['modified'];
+			}
+		}
 
 		return $res;
 	}
@@ -265,8 +266,9 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
  */
 IP_Location_Block_Provider::register_addon( array(
 	'GeoLite2' => array(
-		'key'  => '',
-		'type' => 'IPv4, IPv6 / Apache License, Version 2.0',
-		'link' => '<a class="ip-location-block-link" href="https://dev.maxmind.com/geoip/geoip2/" title="GeoIP2 &laquo; MaxMind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/geoip2/</a>&nbsp;(IPv4, IPv6 / Apache License, Version 2.0)',
+		'key'      => '',
+		'type'     => 'IPv4, IPv6 / Apache License, Version 2.0',
+		'link'     => '<a class="ip-location-block-link" href="https://dev.maxmind.com/geoip/geoip2/" title="GeoIP2 &laquo; MaxMind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/geoip2/</a>&nbsp;(IPv4, IPv6 / Apache License, Version 2.0)',
+		'supports' => array( 'asn', 'asn_database' ),
 	),
 ) );

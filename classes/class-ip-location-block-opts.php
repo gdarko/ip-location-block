@@ -20,30 +20,30 @@ class IP_Location_Block_Opts {
 	 * @var array
 	 */
 	private static $option_table = array(
-		'version'         => IP_LOCATION_BLOCK_VERSION,// Version of this table (not package)
+		'version'              => IP_LOCATION_BLOCK_VERSION,// Version of this table (not package)
 		// since version 1.0
-		'providers'       => array(), // List of providers and API keys
-		'comment'         => array(   // Message on the comment form
+		'providers'            => array(), // List of providers and API keys
+		'comment'              => array(   // Message on the comment form
 			'pos' => 0,       // Position (0:none, 1:top, 2:bottom)
 			'msg' => null,    // Message text on comment form
 		),
-		'matching_rule'   => - 1,      // -1:neither, 0:white list, 1:black list
-		'white_list'      => null,    // Comma separeted country code
-		'black_list'      => 'ZZ',    // Comma separeted country code
-		'timeout'         => 30,      // Timeout in second
-		'response_code'   => 403,     // Response code
-		'save_statistics' => true,    // Record validation statistics
-		'clean_uninstall' => true,    // Remove all savings from DB
-		'simulate'        => false,   // just simulate, never block
+		'matching_rule'        => - 1,      // -1:neither, 0:white list, 1:black list
+		'white_list'           => null,    // Comma separeted country code
+		'black_list'           => 'ZZ',    // Comma separeted country code
+		'timeout'              => 30,      // Timeout in second
+		'response_code'        => 403,     // Response code
+		'save_statistics'      => true,    // Record validation statistics
+		'clean_uninstall'      => true,    // Remove all savings from DB
+		'simulate'             => false,   // just simulate, never block
 		// since version 1.1
-		'cache_hold'      => true,    // Record IP address cache
-		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
+		'cache_hold'           => true,    // Record IP address cache
+		'cache_time'           => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
-		'cache_time_gc'   => 900,     // Cache garbage collection time
-		'request_ua'      => null,    // since version 3.0.7
+		'cache_time_gc'        => 900,     // Cache garbage collection time
+		'request_ua'           => null,    // since version 3.0.7
 		// since version 1.2, 1.3
-		'login_fails'     => - 1,      // Limited number of login attempts
-		'validation'      => array(   // Action hook for validation
+		'login_fails'          => - 1,      // Limited number of login attempts
+		'validation'           => array(   // Action hook for validation
 			'comment'   => false,   // Validate on comment post
 			'login'     => 1,       // Validate on login
 			'admin'     => 1,       // Validate on admin (1:country 2:ZEP)
@@ -74,35 +74,21 @@ class IP_Location_Block_Opts {
 			// since version 3.0.18
 			'metadata'  => false,
 		),
-		'update'          => array(   // Updating IP address DB
+		'update'               => array(   // Updating IP address DB
 			'auto'  => true,    // Auto updating of DB files
 			'retry' => 0,       // Number of retry to download
 			'cycle' => 30,      // Updating cycle (days)
 		),
 		// since version 3.0.9, 3.0.17
-		'priority'        => array( 0, PHP_INT_MAX ), // 0:high, 1:low
+		'priority'             => array( 0, PHP_INT_MAX ), // 0:high, 1:low
 		// since version 2.2.0
-		'anonymize'       => true,    // Anonymize IP address to hide privacy
-		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
-		'extra_ips'       => array(   // Additional IP validation
+		'anonymize'            => true,    // Anonymize IP address to hide privacy
+		'signature'            => '../,/wp-config.php,/passwd', // malicious signature
+		'extra_ips'            => array(   // Additional IP validation
 			'white_list' => null,    // White list of IP addresses
 			'black_list' => null,    // Black list of IP addresses
 		),
-		'Maxmind'         => array(   // Maxmind
-			// since version 2.2.2
-			'ipv4_path' => null,    // Path to IPv4 DB file
-			'ipv6_path' => null,    // Path to IPv6 DB file
-			// since version 2.2.1
-			'ipv4_last' => 0,       // Last-Modified of DB file
-			'ipv6_last' => 0,       // Last-Modified of DB file
-			// since version 3.0.4
-			'use_asn'   => - 1,      // -1:install, 0:disable, 1:enable
-			'asn4_path' => null,    // AS Number for IPv4
-			'asn6_path' => null,    // AS Number for IPv6
-			'asn4_last' => 0,       // AS Number for IPv4
-			'asn6_last' => 0,       // AS Number for IPv6
-		),
-		'IP2Location'     => array(   // IP2Location
+		'IP2Location'          => array(   // IP2Location
 			// since version 2.2.2
 			'ipv4_path' => null,    // Path to IPv4 DB file
 			'ipv6_path' => null,    // Path to IPv6 DB file
@@ -111,17 +97,16 @@ class IP_Location_Block_Opts {
 			'ipv6_last' => 0,       // Last-Modified of DB file
 		),
 		// since version 3.0.8
-		'GeoLite2'        => array(   // Maxmind
-			'use_asn'  => - 1,      // -1:install, 0:disable, 1:enable
+		'GeoLite2'             => array(   // Maxmind
 			'ip_path'  => null,    // GeoLite2 DB: Path
 			'ip_last'  => null,    // GeoLite2 DB: Last-Modified
 			'asn_path' => null,    // GeoLite2 ASN DB: Path
 			'asn_last' => null,    // GeoLite2 ASN DB: Last-Modified
 		),
 		// since version 2.2.3
-		'api_dir'         => null,    // Path to geo-location API
+		'api_dir'              => null,    // Path to geo-location API
 		// since version 2.2.5
-		'exception'       => array(   // list of exceptional
+		'exception'            => array(   // list of exceptional
 			'plugins'   => array(), // for pliugins
 			'themes'    => array(), // for themes
 			// since version 3.0.0
@@ -139,11 +124,11 @@ class IP_Location_Block_Opts {
 			'restapi'   => array(), // for get_rest_url()
 		),
 		// since version 2.2.7
-		'api_key'         => array(   // API key
+		'api_key'              => array(   // API key
 
 		),
 		// since version 2.2.8
-		'login_action'    => array(      // Actions for wp-login.php
+		'login_action'         => array(      // Actions for wp-login.php
 			'login'        => true,
 			'register'     => true,
 			'resetpass'    => true,
@@ -151,10 +136,10 @@ class IP_Location_Block_Opts {
 			'postpass'     => true,
 		),
 		// since version 3.0.0
-		'response_msg'    => 'Sorry, your request cannot be accepted.', // message on blocking
-		'redirect_uri'    => 'http://hmpg.net/',   // redirection on blocking
-		'network_wide'    => false,      // settings page on network dashboard
-		'public'          => array(
+		'response_msg'         => 'Sorry, your request cannot be accepted.', // message on blocking
+		'redirect_uri'         => 'http://hmpg.net/',   // redirection on blocking
+		'network_wide'         => false,      // settings page on network dashboard
+		'public'               => array(
 			'matching_rule' => - 1,      // -1:follow, 0:white list, 1:black list
 			'white_list'    => null,    // Comma separeted country code
 			'black_list'    => 'ZZ',    // Comma separeted country code
@@ -173,7 +158,7 @@ class IP_Location_Block_Opts {
 			'behavior'      => false    // Bad behavior
 		),
 		// since version 3.0.3
-		'mimetype'        => array(
+		'mimetype'             => array(
 			'white_list' => array(),
 			// key and value
 			'black_list' => "asp,aspx,cgi,exe,js,jsp,php,php3,php4,php5,pl,py,pht,phtml,html,htm,shtml,htaccess,sh,svg,gz,zip,rar,tar",
@@ -182,32 +167,33 @@ class IP_Location_Block_Opts {
 			'capability' => array( 'upload_files' ),
 		),
 		// since version 3.0.5
-		'live_update'     => array(
+		'live_update'          => array(
 			'in_memory' => 0,       // -1:unavailable, 0:file, 1:memory
 		),
 		// since version 3.0.10
-		'behavior'        => array(
+		'behavior'             => array(
 			'view' => 7,       // More than 7 page view in 5 seconds
 			'time' => 5,       // More than 7 page view in 5 seconds
 		),
 		// since version 3.0.13
-		'restrict_api'    => true,       // Do not send IP address to external APIs
+		'restrict_api'         => true,       // Do not send IP address to external APIs
 		// since version 3.0.14
-		'login_link'      => array(
+		'login_link'           => array(
 			'link' => null,    // key of login link
 			'hash' => null,    // hash of 'link'
 		),
 		// since version 3.0.18
-		'monitor'         => array(
+		'monitor'              => array(
 			'updated_option'     => false,
 			'update_site_option' => false,
 		),
-		'metadata'        => array(
+		'metadata'             => array(
 			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ),
 			// @since  0.2.0.0 `manage_options`
 			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
 			// @since 3.0.0 `manage_network_options`
 		),
+		'use_asn'              => 0,
 		'migrated_from_legacy' => false,
 	);
 
@@ -264,8 +250,21 @@ class IP_Location_Block_Opts {
 	 */
 	public static function upgrade() {
 
-		// Upgrades.
-		$settings               = IP_Location_Block::get_option();
+		$settings = IP_Location_Block::get_option();
+		$version  = isset( $settings['version'] ) ? $settings['version'] : '';
+
+		// Upgrade settings to 1.0.4 (Drop use_asn from provider array in favor of use_asn global setting)
+		if ( version_compare( $version, '1.0.4' ) < 0 ) {
+			if ( isset( $settings['Maxmind'] ) ) {
+				$settings['use_asn'] = isset( $settings['Maxmind']['use_asn'] ) ? (int) $settings['Maxmind']['use_asn'] : 0;
+				unset( $settings['Maxmind'] );
+			}
+			if ( isset( $settings['GeoLite2']['use_asn'] ) ) {
+				unset( $settings['GeoLite2']['use_asn'] );
+			}
+		}
+
+		// Update Settings
 		$settings['version']    = IP_Location_Block::VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
 
@@ -475,6 +474,28 @@ class IP_Location_Block_Opts {
 		// IP Location Block.
 		if ( isset( $settings['rewrite'] ) ) {
 			unset( $settings['rewrite'] );
+		}
+
+		// Remove maxmind settings
+		if ( isset( $settings['Maxmind'] ) ) {
+			if ( isset( $settings['Maxmind']['use_asn'] ) ) {
+				$settings['use_asn'] = (int) $settings['Maxmind']['use_asn'];
+			} else {
+				$settings['use_asn'] = 0;
+			}
+			unset( $settings['Maxmind'] );
+		}
+
+		// Reset databases
+		if ( isset( $settings['GeoLite2'] ) || isset( $settings['IP2Location'] ) ) {
+			// Reset GeoLite settings
+			if ( isset( $settings['GeoLite2'] ) ) {
+				$settings['GeoLite2'] = self::$option_table['GeoLite2'];
+			}
+			// Reset IP2Location settings
+			if ( isset( $settings['IP2Location'] ) ) {
+				$settings['IP2Location'] = self::$option_table['IP2Location'];
+			}
 		}
 
 		return $settings;

@@ -895,7 +895,7 @@ class IP_Location_Block_Admin {
 				// show attribution (higher priority order)
 				$tab = array();
 				foreach ( IP_Location_Block_Provider::get_addons() as $provider ) {
-					if ( $geo = IP_Location_Block_API::get_instance( $provider, null ) ) {
+					if ( $geo = IP_Location_Block_API::get_instance( $provider, $settings ) ) {
 						$tab[] = $geo->get_attribution();
 					}
 				}
@@ -963,7 +963,8 @@ class IP_Location_Block_Admin {
 					$name = "${args['option']}[providers][$key]";
 					$stat = ( null === $val && ! isset( $args['value'][ $key ] ) ) ||
 					        ( false === $val && ! empty( $args['value'][ $key ] ) ) ||
-					        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) ); ?>
+					        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) );
+					?>
                     <li>
                         <input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>"
                                value="<?php echo $val; ?>"<?php checked( $stat && - 1 !== (int) $val );
@@ -1251,7 +1252,8 @@ class IP_Location_Block_Admin {
 				'restrict_api',
 				'network_wide',
 				'clean_uninstall',
-				'simulate'
+				'simulate',
+                'use_asn',
 			) as $key
 		) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
@@ -1286,9 +1288,6 @@ class IP_Location_Block_Admin {
 
 		// disabled in case IP address cache is disabled
 		empty( $output['cache_hold'] ) and $output['login_fails'] = - 1;
-
-		// 3.0.4 AS number, 3.0.6 Auto updating of DB files, 3.0.8 GeoLite2
-		$output['Maxmind']['use_asn'] = $output['GeoLite2']['use_asn'] = $output['update']['auto'] = false;
 
 		// 3.0.5 Live update
 		$output['live_update']['in_memory'] = 0;
@@ -1359,32 +1358,38 @@ class IP_Location_Block_Admin {
 			}
 		}
 
-		// 3.0.4 AS number, 3.0.8 GeoLite2
-		if ( version_compare( PHP_VERSION, '5.4' ) >= 0 ) {
-			$output['GeoLite2']['use_asn'] = $output['Maxmind']['use_asn'];
-		}
-
-		// force to update asn file not immediately but after `validate_settings()` and `validate_network_settings()`
-		if ( $output['Maxmind']['use_asn'] && ( ( empty( $output['GeoLite2']['asn_path'] ) && class_exists( 'IP_Location_Block_API_GeoLite2', false ) ) ) ) {
-			require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
-			add_action( IP_Location_Block::PLUGIN_NAME . '-settings-updated', array(
-				'IP_Location_Block_Cron',
-				'start_update_db'
-			), 10, 2 );
+		if ( isset( $output['use_asn'] ) && (int) $output['use_asn'] > 0 ) {
+			// If provider supports asn database, then trigger downloading databases.
+			$supporting = 0;
+			$providers  = IP_Location_Block_Provider::get_providers();
+			foreach ( $providers as $key => $provider ) {
+				if ( IP_Location_Block_Provider::supports( $key, 'asn_database' ) ) {
+					$supporting ++;
+				}
+			}
+			if ( $supporting ) {
+				require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
+				add_action( IP_Location_Block::PLUGIN_NAME . '-settings-updated', array(
+					'IP_Location_Block_Cron',
+					'start_update_db'
+				), 10, 2 );
+			}
 		} else {
-			// reset path if asn file does not exist
+			// If asn databases doesn't exist but path is specified, clear the path.
 			require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
-			$fs = IP_Location_Block_FS::init( __FUNCTION__ );
-
-			if ( ! $output['Maxmind']['use_asn'] && ! $fs->exists( $output['Maxmind']['asn4_path'] ) ) {
-				$output['Maxmind']['asn4_path'] = null;
-				$output['Maxmind']['asn6_path'] = null;
-			}
-			if ( empty( $output['GeoLite2']['asn_path'] ) ) {
-				$output['GeoLite2']['asn_path'] = null;
-			}
-			if ( ! $output['GeoLite2']['use_asn'] && ! $fs->exists( $output['GeoLite2']['asn_path'] ) ) {
-				$output['GeoLite2']['asn_path'] = null;
+			$filesystem = IP_Location_Block_FS::init( __FUNCTION__ );
+			$providers  = IP_Location_Block_Provider::get_providers();
+			foreach ( $providers as $key => $provider ) {
+				if ( ! isset( $output[ $key ] ) ) {
+					continue;
+				}
+				if ( empty( $output[ $key ]['asn_path'] ) ) {
+					$output[ $key ]['asn_path'] = null;
+				} else {
+					if ( ! $filesystem->exists( $output[ $key ]['asn_path'] ) ) {
+						$output[ $key ]['asn_path'] = null;
+					}
+				}
 			}
 		}
 

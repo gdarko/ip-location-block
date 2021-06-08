@@ -480,23 +480,33 @@ class IP_Location_Block {
 
 		foreach ( $providers as $provider ) {
 			$time = microtime( true );
-			if ( ( $geo = IP_Location_Block_API::get_instance( $provider, $settings ) ) &&
-			     ( $code = $geo->$callback( $ip, $args ) ) ) {
-				// Get AS number @since 3.0.4
-				if ( ( ! empty( $settings[ $provider ]['use_asn'] ) ) &&
-				     ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&
-				     ( $geo = IP_Location_Block_API::get_instance( $provider, $settings ) ) ) {
-					$asn = $geo->get_location( $ip, array( 'ASN' => true ) );
-					$asn = isset( $asn['ASN'] ) ? strtok( $asn['ASN'], ' ' ) : null;
+			$geo  = IP_Location_Block_API::get_instance( $provider, $settings );
+
+			if ( ! method_exists( $geo, $callback ) ) {
+				continue;
+			}
+
+			if ( $geo && ( $code = $geo->$callback( $ip, $args ) ) ) {
+
+				$asn = isset( $code['asn'] ) ? $code['asn'] : null;
+				if ( ! empty( $settings['use_asn'] ) && 0 !== strpos( $asn, 'AS' ) ) {
+					if ( $geo->supports( 'asn' ) ) {
+						$asn = $geo->get_location( $ip, array( 'asn' => true ) );
+						$asn = isset( $asn['asn'] ) ? $asn['asn'] : null;
+					}
 				}
 
-				return self::make_validation( $ip, array(
-					                                   'time'     => microtime( true ) - $time,
-					                                   'provider' => $provider,
-				                                   ) + ( is_array( $code ) ? $code : array(
-						'code' => $code,
-						'asn'  => isset( $asn ) ? $asn : null
-					) ) );
+				if ( ! is_array( $code ) ) {
+					$code = array( 'code' => $code );
+				}
+
+				$data = array_merge( array(
+					'time'     => microtime( true ) - $time,
+					'provider' => $provider,
+					'asn'      => $asn,
+				), $code );
+
+				return self::make_validation( $ip, $data );
 			}
 		}
 

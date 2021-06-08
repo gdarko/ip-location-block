@@ -1621,6 +1621,19 @@ class IP_Location_Block_Util {
 		return self::hash_equals( self::hash_link( $link ), pack( 'H*', $hash ? $hash : self::get_link() ) ); // hex2bin() for PHP 5.4+
 	}
 
+
+	/**
+	 * Parses asn in default format.
+	 * e.g:
+	 * 1. AS81281 Provider Name -> AS81281
+	 * 2. 9239 -> AS9239
+	 * 3. AS1111 -> AS1111
+	 */
+	public static function parse_asn($asn) {
+		$asn = str_replace( 'AS', '', strtok( $asn, ' ' ) );
+		return sprintf( 'AS%s', $asn );
+	}
+
 }
 
 // Some plugins need this when this plugin is installed as mu-plugins

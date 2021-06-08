@@ -4,7 +4,7 @@ Donate link:
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 5.7
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -234,6 +234,9 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.0.4 =
+**Improvement**: Fix bugs related to the asn blocking feature
 
 = 1.0.3 =
 **Improvement**: Add "Migrate from IP Geo Block" option if IP Geo Block settings are detected. This will copy the IP Geo Block settings.

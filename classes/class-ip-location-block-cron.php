@@ -67,6 +67,7 @@ class IP_Location_Block_Cron {
 	 * @return mixed|null
 	 */
 	public static function exec_update_db( $immediate = false ) {
+
 		$settings = IP_Location_Block::get_option();
 
 		// extract ip address from transient API to confirm the request source
@@ -88,7 +89,7 @@ class IP_Location_Block_Cron {
 					continue;
 				}
 
-				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
+				$res[ $provider ] = $geo->download( $args );
 
 				// re-schedule cron job
 				self::schedule_cron_job( $settings['update'], $settings[ $provider ], false );

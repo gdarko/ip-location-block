@@ -143,6 +143,19 @@ class IP_Location_Block_Admin_Tab {
 			}
 
 			// Bulk action
+			$blk_action_options = array(
+				0                      => null,
+				'bulk-action-ip-erase' => __( 'Remove entries by IP address', 'ip-location-block' ),
+				'bulk-action-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-location-block' ),
+				'bulk-action-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-location-block' ),
+			);
+			if ( isset( $options['use_asn'] ) && (int) $options['use_asn']  ) {
+				$blk_action_options = array_merge( $blk_action_options, array(
+					'bulk-action-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;', 'ip-location-block' ),
+					'bulk-action-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;', 'ip-location-block' ),
+				) );
+			}
+
 			add_settings_field(
 				$option_name . '_bulk_action',
 				__( 'Bulk action', 'ip-location-block' ),
@@ -154,15 +167,7 @@ class IP_Location_Block_Admin_Tab {
 					'option' => $option_name,
 					'field'  => 'bulk_action',
 					'value'  => 0,
-					'list'   => array(
-						            0                      => null,
-						            'bulk-action-ip-erase' => __( 'Remove entries by IP address', 'ip-location-block' ),
-						            'bulk-action-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-location-block' ),
-						            'bulk-action-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-location-block' ),
-					            ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
-							'bulk-action-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;', 'ip-location-block' ),
-							'bulk-action-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;', 'ip-location-block' ),
-						) ),
+					'list'   => $blk_action_options,
 					'after'  => '<a class="button button-secondary" id="ip-location-block-bulk-action" title="' . __( 'Apply', 'ip-location-block' ) . '" href="#!">' . __( 'Apply', 'ip-location-block' ) . '</a>' . '<div id="' . $plugin_slug . '-loading"></div>',
 				)
 			);

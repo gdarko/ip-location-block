@@ -192,20 +192,22 @@ class IP_Location_Block_Admin_Tab {
 		);
 
 		// Use AS number
+		$providers   = array_keys( IP_Location_Block_Provider::get_providers_by_feature( 'asn' ) );
+		$description = '<p class="ip-location-block-desc">' . sprintf( __( '<strong>Important</strong>: Currently supported providers are: <strong>%s</strong>. If using this feature make sure <strong>ONLY</strong> those providers are enabled.', 'ip-location-block' ), implode( ', ', $providers ) ) . '</p>';
+		$description .= '<p class="ip-location-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-location-block' ), '<a rel="noreferrer" href="https://iplocationblock.com/codex/utilizing-as-number/" title="Utilizing AS number | IP Location Block">Utilizing AS number</a>' ) . '</p>';
 		add_settings_field(
-			$option_name . '_Maxmind_use_asn',
+			$option_name . '_use_asn',
 			__( '<dfn title="It enables utilizing &#8220;AS number&#8221; in the &#8220;Whitelist/Blacklist of extra IP addresses&#8221; to specify a group of IP networks.">Use Autonomous System Number</dfn>', 'ip-location-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type'      => 'checkbox',
-				'option'    => $option_name,
-				'field'     => 'Maxmind',
-				'sub-field' => 'use_asn',
-				'value'     => 1 === (int) $options['Maxmind']['use_asn'],
-				'after'     => '<p class="ip-location-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-location-block' ), '<a rel="noreferrer" href="https://iplocationblock.com/codex/utilizing-as-number/" title="Utilizing AS number | IP Location Block">Utilizing AS number</a>' ) . '</p>',
+				'type'   => 'checkbox',
+				'option' => $option_name,
+				'field'  => 'use_asn',
+				'value'  => isset( $options['use_asn'] ) ? 1 === (int) $options['use_asn'] : 0,
+				'after'  => $description
 			)
 		);
 
@@ -1446,17 +1448,19 @@ class IP_Location_Block_Admin_Tab {
 		);
 
 		foreach ( $providers as $provider ) {
-			if ( $geo = IP_Location_Block_API::get_instance( $provider, null ) ) {
-				$geo->add_settings_field(
-					$provider,
-					$section,
-					$option_slug,
-					$option_name,
-					$options,
-					array( $context, 'callback_field' ),
-					__( 'database', 'ip-location-block' ),
-					__( 'Last update: %s', 'ip-location-block' )
-				);
+			if ( $geo = IP_Location_Block_API::get_instance( $provider, $options ) ) {
+				if ( method_exists( $geo, 'add_settings_field' ) ) {
+					$geo->add_settings_field(
+						$provider,
+						$section,
+						$option_slug,
+						$option_name,
+						$options,
+						array( $context, 'callback_field' ),
+						__( 'database', 'ip-location-block' ),
+						__( 'Last update: %s', 'ip-location-block' )
+					);
+				}
 			}
 		}
 

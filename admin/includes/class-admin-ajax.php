@@ -29,12 +29,13 @@ class IP_Location_Block_Admin_Ajax {
 	public static function search_ip( $which ) {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-lkup.php';
 
+		$options = IP_Location_Block::get_option();
+
 		// check format
 		$ip = isset( $_POST['ip'] ) ? sanitize_text_Field( trim( $_POST['ip'] ) ) : '';
 		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
-			$options = IP_Location_Block::get_option();
-			$tmp     = IP_Location_Block::get_request_headers( $options );
+			$tmp = IP_Location_Block::get_request_headers( $options );
 
 			// create object for provider and get location
 			if ( $geo = IP_Location_Block_API::get_instance( $which, $options ) ) {
@@ -47,13 +48,19 @@ class IP_Location_Block_Admin_Ajax {
 		}
 
 		if ( empty( $res['errorMessage'] ) ) {
-			if ( $geo = IP_Location_Block_API::get_instance( 'Maxmind', $options ) ) {
-				$tmp = microtime( true );
-				$geo = $geo->get_location( $ip, array( 'ASN' => true ) );
-				$tmp = microtime( true ) - $tmp;
 
-				$res['AS number'] = isset( $geo['ASN'] ) ? esc_html( $geo['ASN'] ) : '';
-				$res['AS number'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
+			$providers = IP_Location_Block_Provider::get_providers_by_feature( 'asn' );
+			foreach ( $providers as $key => $provider ) {
+				if ( $geo = IP_Location_Block_API::get_instance( $key, $options ) ) {
+					$tmp = microtime( true );
+					$inf = $geo->get_location( $ip, array( 'asn' => true ) );
+					$tmp = microtime( true ) - $tmp;
+					if ( empty( $inf['asn'] ) ) {
+						continue;
+					}
+					$res['AS number'] = esc_html( $inf['asn'] );
+					$res['AS number'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
+				}
 			}
 
 			$tmp               = microtime( true );

@@ -97,13 +97,14 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 	/**
 	 * Download database
 	 *
-	 * @param $db
 	 * @param $args
 	 *
 	 * @return array
 	 */
-	public function download( &$db, $args ) {
+	public function download( $args ) {
 		$dir = $this->get_db_dir();
+
+		$db = isset( $this->options[ $this->provider ] ) ? $this->options[ $this->provider ] : array();
 
 		// IPv4
 		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' ) {
@@ -129,10 +130,18 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 			$db['ipv6_last']
 		);
 
-		! empty( $res['ipv4']['filename'] ) and $db['ipv4_path'] = $res['ipv4']['filename'];
-		! empty( $res['ipv6']['filename'] ) and $db['ipv6_path'] = $res['ipv6']['filename'];
-		! empty( $res['ipv4']['modified'] ) and $db['ipv4_last'] = $res['ipv4']['modified'];
-		! empty( $res['ipv6']['modified'] ) and $db['ipv6_last'] = $res['ipv6']['modified'];
+		if ( ! empty( $res['ipv4']['filename'] ) ) {
+			$db['ipv4_path'] = $res['ipv4']['filename'];
+		}
+		if ( ! empty( $res['ipv6']['filename'] ) ) {
+			$db['ipv6_path'] = $res['ipv6']['filename'];
+		}
+		if ( ! empty( $res['ipv4']['modified'] ) ) {
+			$db['ipv4_last'] = $res['ipv4']['modified'];
+		}
+		if ( ! empty( $res['ipv6']['modified'] ) ) {
+			$db['ipv6_last'] = $res['ipv6']['modified'];
+		}
 
 		return $res;
 	}
@@ -236,8 +245,9 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
  */
 IP_Location_Block_Provider::register_addon( array(
 	'IP2Location' => array(
-		'key'  => null,
-		'type' => 'IPv4, IPv6 / LGPLv3',
-		'link' => '<a class="ip-location-block-link" href="https://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>https://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
+		'key'      => null,
+		'type'     => 'IPv4, IPv6 / LGPLv3',
+		'link'     => '<a class="ip-location-block-link" href="https://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>https://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
+		'supports' => array(),
 	),
 ) );

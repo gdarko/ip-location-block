@@ -47,7 +47,7 @@ class IP_Location_Block_Admin_Tab {
 		$cookie    = $context->get_cookie();
 		if ( isset( $cookie[ $tab ] ) ) {
 			foreach ( array_slice( (array) $cookie[ $tab ], 3 ) as $key => $val ) {
-				if ( 'o' === $val ) {
+				if ( 'o' === $val && isset( $providers[ $key ] ) ) {
 					$provider[] = $providers[ $key ];
 				}
 			}
