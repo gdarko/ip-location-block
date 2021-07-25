@@ -3,7 +3,7 @@ Contributors: darkog
 Donate link:
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
-Tested up to: 5.7
+Tested up to: 5.8
 Stable tag: 1.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
