@@ -1306,7 +1306,7 @@ class IP_Location_Block_Admin_Tab {
 		endif;
 
 		// Get the next schedule of cron
-		$tmp = wp_next_scheduled( IP_Location_Block::CRON_NAME );
+		$tmp = wp_next_scheduled( IP_Location_Block::CRON_NAME, array( false ) );
 		$tmp = $tmp ? IP_Location_Block_Util::localdate( $tmp ) : '<span class="ip-location-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-location-block' ) . '</span>';
 
 		// Interval [sec] to cleanup expired entries of IP address
