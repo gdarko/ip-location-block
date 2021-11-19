@@ -1,10 +1,9 @@
 === IP Location Block ===
 Contributors: darkog
-Donate link:
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 5.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -20,55 +19,55 @@ Combined with those methods and IP address geolocation, you'll be surprised to f
 
 = Features =
 
-* **Privacy by design:**  
+* **Privacy by design:**
   IP address is always encrypted on recording in logs/cache. Moreover, it can be anonymized and restricted on sending to the 3rd parties such as geolocation APIs or whois service.
 
-* **Immigration control:**  
+* **Immigration control:**
   Access to the basic and important entrances into back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
 
-* **Zero-day Exploit Prevention:**  
+* **Zero-day Exploit Prevention:**
   Unlike other security firewalls based on attack patterns (vectors), the original feature "**W**ord**P**ress **Z**ero-day **E**xploit **P**revention" (WP-ZEP) is focused on patterns of vulnerability. It is simple but still smart and strong enough to block any malicious accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from the permitted countries. It will protect your site against certain types of attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some vulnerable plugins and themes in your site**.
 
-* **Guard against login attempts:**  
+* **Guard against login attempts:**
   In order to prevent hacking through the login form and XML-RPC by brute-force and the reverse-brute-force attacks, the number of login attempts will be limited per IP address even from the permitted countries.
 
-* **Minimize server load against brute-force attacks:**  
+* **Minimize server load against brute-force attacks:**
   You can configure this plugin as a [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex") so that this plugin can be loaded prior to regular plugins. It can massively [reduce the load on server](https://iplocationblock.com/codex/validation-timing/ "Validation timing | IP Location Block").
 
-* **Prevent malicious down/uploading:**  
+* **Prevent malicious down/uploading:**
   A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
 
-* **Block badly-behaved bots and crawlers:**  
+* **Block badly-behaved bots and crawlers:**
   A simple logic may help to reduce the number of rogue bots and crawlers scraping your site.
 
-* **Support of BuddyPress and bbPress:**  
+* **Support of BuddyPress and bbPress:**
   You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress &rsaquo; bbPress &laquo; WordPress Plugins") to help reducing spams.
 
-* **Referrer suppressor for external links:**  
+* **Referrer suppressor for external links:**
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
-* **Multiple source of IP Geolocation databases:**  
-  [MaxMind GeoLite2 free databases](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
+* **Multiple source of IP Geolocation databases:**
+  [MaxMind GeoLite2 free databases](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.
   Father more, [dedicated API class libraries](https://iplocationblock.com/cloudflare-cloudfront-api-class-library/ "CloudFlare & CloudFront API class library | IP Location Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
 
-* **Customizing response:**  
+* **Customizing response:**
   HTTP response code can be selectable as `403 Forbidden` to deny access pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
   You can also have a human friendly page (like `404.php`) in your parent/child theme template directory to fit your site design.
 
-* **Validation logs:**  
+* **Validation logs:**
   Validation logs for useful information to audit attack patterns can be manageable.
 
-* **Cooperation with full spec security plugin:**  
+* **Cooperation with full spec security plugin:**
   This plugin is lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](https://iplocationblock.com/codex/page-speed-performance/ "Page speed performance | IP Location Block") about page speed performance.
 
-* **Extendability:**  
+* **Extendability:**
   You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](https://iplocationblock.com/codex/ "Codex | IP Location Block"). See various use cases in [samples.php](https://iplocationblock.com/codex/example-use-cases-for-the-developer-hooks/) bundled within this package.
   You can also get the extension [IP Geo Allow](https://github.com/ddur/WordPress-IP-Geo-Allow "GitHub - ddur/WordPress-IP-Geo-Allow: WordPress Plugin Exension for WordPress-IP-Geo-Block Plugin") by [Dragan](https://github.com/ddur "ddur (Dragan) - GitHub"). It makes admin screens strictly private with more flexible way than specifying IP addresses.
 
-* **Self blocking prevention and easy rescue:**  
+* **Self blocking prevention and easy rescue:**
   Website owners do not prefer themselves to be blocked. This plugin prevents such a sad thing unless you force it. And futhermore, if such a situation occurs, you can [rescue yourself](https://iplocationblock.com/codex/what-should-i-do-when-im-locked-out/ "What should I do when I'm locked out? | IP Location Block") easily.
 
-* **Clean uninstallation:**  
+* **Clean uninstallation:**
   Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality.
 
 = Attribution =
@@ -178,16 +177,16 @@ Remember that you should upload the original one after re-configuration to deact
 
 Yes. Roughly speaking, the strategy of this plugin has been constructed as follows:
 
-- **Block by country**  
+- **Block by country**
   It blocks malicious requests from outside your country.
 
-- **Prevent Zero-day Exploit**  
+- **Prevent Zero-day Exploit**
   It blocks malicious requests from your country.
 
-- **Force to load WP core**  
+- **Force to load WP core**
   It blocks the request which has not been covered in the above two.
 
-- **Bad signatures in query**  
+- **Bad signatures in query**
   It blocks the request which has not been covered in the above three.
 
 Please try "**Best for Back-end**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](https://iplocationblock.com/codex/the-best-practice-for-target-settings/ 'The best practice of target settings | IP Location Block')".
@@ -234,6 +233,12 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.0.5 =
+**Bug fix**: Fix 307 Response Redirect loop
+**Bug fix**: Fix wrong cron info in admin settings
+**Bug fix**: Fix Undefined array key warnings in PHP8
+**Bug fix**: FIx undefined IP_LOCATION_BLOCK_AUTH in some environments.
 
 = 1.0.4 =
 **Bug fix**: Fix bugs related to the asn blocking feature
