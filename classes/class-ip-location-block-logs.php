@@ -683,7 +683,8 @@ class IP_Location_Block_Logs {
 		$agent  = self::get_user_agent();
 		$heads  = self::get_http_headers( $settings['anonymize'] );
 		$posts  = self::get_post_data( $hook, $validate, $settings );
-		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
+		$port   = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : 'UNKNOWN_PORT';
+		$method = $_SERVER['REQUEST_METHOD'] . '[' . $port . ']:' . $_SERVER['REQUEST_URI'];
 
 		// mark if any uploaded files exist
 		if ( ! empty( $_FILES ) ) {
