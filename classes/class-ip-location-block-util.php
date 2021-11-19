@@ -949,7 +949,7 @@ class IP_Location_Block_Util {
 
 		// Filters the redirect fallback URL for when the provided redirect is not safe (local).
 		$location = self::validate_redirect( $location, apply_filters( 'wp_safe_redirect_fallback', admin_url(), $status ) );
-
+		
 		self::redirect( $location, $status );
 	}
 
@@ -996,16 +996,6 @@ class IP_Location_Block_Util {
 			if ( isset( $lp[ $component ] ) && strpbrk( $lp[ $component ], ':/?#@' ) ) {
 				return $default;
 			}
-		}
-
-		$wpp = parse_url( home_url() );
-
-		// Filters the whitelist of hosts to redirect to.
-		$allowed_hosts   = (array) apply_filters( 'allowed_redirect_hosts', array( $wpp['host'] ), isset( $lp['host'] ) ? $lp['host'] : '' );
-		$allowed_hosts[] = 'blackhole.webpagetest.org';
-
-		if ( isset( $lp['host'] ) && ( ! in_array( $lp['host'], $allowed_hosts ) && $lp['host'] != strtolower( $wpp['host'] ) ) ) {
-			$location = $default;
 		}
 
 		return $location;
