@@ -365,6 +365,7 @@ class IP_Location_Block_Admin {
 				),
 				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
 				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
+				'auth' => IP_Location_Block::get_auth_details()
 			)
 		);
 		wp_enqueue_script( $handle );

@@ -3,6 +3,7 @@
 /*!
  * Project: WordPress IP Geo Block
  * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2021 DarkoG (dg@darkog.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document, undefined) {
@@ -11,7 +12,7 @@
         timer_stack = [],
         window_width = $(window).width(),
         ip_location_block = IP_LOCATION_BLOCK,
-        ip_location_block_auth = IP_LOCATION_BLOCK_AUTH;
+        ip_location_block_auth = IP_LOCATION_BLOCK.auth;
 
     function ID(selector, id) {
         var keys = {
