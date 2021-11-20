@@ -335,31 +335,30 @@ class IP_Location_Block {
 	 * @param $hook
 	 */
 	public static function enqueue_nonce( $hook ) {
-		if ( IP_Location_Block_Util::is_user_logged_in() ) {
 
-			$script = plugins_url(
-				! defined( 'IP_LOCATION_BLOCK_DEBUG' ) || ! IP_LOCATION_BLOCK_DEBUG ?
-					'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_LOCATION_BLOCK_BASE
-			);
-
-			wp_enqueue_script( self::$auth_key, $script, array( 'jquery' ), self::VERSION );
-			wp_localize_script( self::$auth_key, 'IP_LOCATION_BLOCK_AUTH', self::get_auth_details() );
+		if ( ! empty( self::$auth_key ) && wp_script_is( self::$auth_key, 'enqueued' ) ) {
+			return;
 		}
-	}
 
-	/**
-	 * Return the auth object.
-	 * @return array
-	 */
-	public static function get_auth_details() {
+		if ( ! IP_Location_Block_Util::is_user_logged_in() ) {
+			return;
+		}
+
 		$settings = self::get_option();
 		$validate = $settings['validation'];
 
-		return array(
-			'sites' => IP_Location_Block_Util::get_sites_of_user(),
-			'nonce' => IP_Location_Block_Util::create_nonce( self::$auth_key ),
-			'key'   => $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : false
+		$args['sites'] = IP_Location_Block_Util::get_sites_of_user();
+		$args['nonce'] = IP_Location_Block_Util::create_nonce( self::$auth_key );
+		$args['key']   = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : false;
+
+		$script = plugins_url(
+			! defined( 'IP_LOCATION_BLOCK_DEBUG' ) || ! IP_LOCATION_BLOCK_DEBUG ?
+				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_LOCATION_BLOCK_BASE
 		);
+
+		wp_enqueue_script( self::$auth_key, $script, array( 'jquery' ), self::VERSION );
+		wp_localize_script( self::$auth_key, 'IP_LOCATION_BLOCK_AUTH', $args + self::$wp_path );
+
 	}
 
 	/**

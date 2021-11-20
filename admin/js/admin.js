@@ -12,7 +12,7 @@
         timer_stack = [],
         window_width = $(window).width(),
         ip_location_block = IP_LOCATION_BLOCK,
-        ip_location_block_auth = IP_LOCATION_BLOCK.auth;
+        ip_location_block_auth = IP_LOCATION_BLOCK_AUTH;
 
     function ID(selector, id) {
         var keys = {

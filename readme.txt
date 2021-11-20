@@ -234,6 +234,9 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Changelog ==
 
+= 1.0.6 =
+**Hot fix**: Fixes broken plugin admin settings / stats pages
+
 = 1.0.5 =
 **Bug fix**: Fix 307 Response Redirect loop
 **Bug fix**: Fix wrong cron info in admin settings
