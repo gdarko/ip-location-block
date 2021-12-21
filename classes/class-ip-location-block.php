@@ -1196,8 +1196,9 @@ class IP_Location_Block {
 				}
 			}
 		} elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			require_once IP_LOCATION_BLOCK_PATH . 'includes/IP/IPv6.php';
-
+			if ( ! class_exists( 'Net_IPv6' ) ) {
+				require_once IP_LOCATION_BLOCK_PATH . 'includes/IP/IPv6.php';
+			}
 			foreach ( IP_Location_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j    = explode( '/', $i, 2 );
 				$j[1] = isset( $j[1] ) ? min( 128, max( 0, (int) $j[1] ) ) : 128;
