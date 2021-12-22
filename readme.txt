@@ -86,7 +86,7 @@ Also thanks for providing the following great services and REST APIs for free.
 
 = Development =
 
-Development of this plugin is promoted at [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub") and class libraries to handle geo-location database are developed separately as "add-in"s at [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
+Development of this plugin happens at [IP Location Block](https://github.com/gdarko/ip-location-block "gdarko/ip-location-block - GitHub")
 
 All contributions will always be welcome. Or visit my [development blog](https://iplocationblock.com/ "IP Location Block").
 
