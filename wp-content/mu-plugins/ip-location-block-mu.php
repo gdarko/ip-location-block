@@ -41,7 +41,7 @@ if ( ! class_exists( 'IP_Location_Block', false ) ) {
 			require WP_PLUGIN_DIR . '/' . $plugin_basename;
 			$options = IP_Location_Block::get_option();
 			// check setup had already done
-			if ( version_compare( $options['version'], IP_Location_Block::VERSION ) >= 0 && $options['matching_rule'] >= 0 ) {
+			if ( version_compare( $options['version'], IP_LOCATION_BLOCK_VERSION ) >= 0 && $options['matching_rule'] >= 0 ) {
 				// Remove instanciation
 				remove_action( 'plugins_loaded', 'ip_location_block_update' );
 				remove_action( 'plugins_loaded', array( 'IP_Location_Block', 'get_instance' ) );

@@ -73,7 +73,7 @@ if ( ! class_exists( 'IP_Location_Block', false ) ):
 	 */
 	function ip_location_block_update() {
 		$settings = IP_Location_Block::get_option();
-		if ( version_compare( $settings['version'], IP_Location_Block::VERSION ) < 0 ) {
+		if ( version_compare( $settings['version'], IP_LOCATION_BLOCK_VERSION ) < 0 ) {
 			ip_location_block_activate( is_plugin_active_for_network( IP_LOCATION_BLOCK_BASE ) );
 		}
 	}

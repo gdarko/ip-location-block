@@ -235,7 +235,7 @@ class IP_Location_Block_Admin {
 
 		$footer     = true;
 		$dependency = array( 'jquery' );
-		$version    = $release ? IP_Location_Block::VERSION : max(
+		$version    = $release ? IP_LOCATION_BLOCK_VERSION : max(
 			filemtime( IP_LOCATION_BLOCK_PATH . 'admin/css/admin.css' ),
 			filemtime( IP_LOCATION_BLOCK_PATH . 'admin/js/admin.js' )
 		);
@@ -246,11 +246,11 @@ class IP_Location_Block_Admin {
 				// css and js for DataTables
 				wp_enqueue_style( IP_Location_Block::PLUGIN_NAME . '-datatables-css',
 					plugins_url( 'datatables/css/datatables-all.min.css', __FILE__ ),
-					array(), IP_Location_Block::VERSION
+					array(), IP_LOCATION_BLOCK_VERSION
 				);
 				wp_enqueue_script( IP_Location_Block::PLUGIN_NAME . '-datatables-js',
 					plugins_url( 'datatables/js/datatables-all.min.js', __FILE__ ),
-					$dependency, IP_Location_Block::VERSION, $footer
+					$dependency, IP_LOCATION_BLOCK_VERSION, $footer
 				);
 				if ( 4 === $this->admin_tab ) {
 					break;
@@ -277,20 +277,20 @@ class IP_Location_Block_Admin {
 					IP_Location_Block::PLUGIN_NAME . '-leaflet',
 					plugins_url( 'vendor/leaflet/leaflet.css', __FILE__ ),
 					array(),
-					IP_Location_Block::VERSION,
+					IP_LOCATION_BLOCK_VERSION,
 					'all'
 				);
 				wp_enqueue_script(
 					IP_Location_Block::PLUGIN_NAME . '-leaflet',
 					plugins_url( 'vendor/leaflet/leaflet.js', __FILE__ ),
 					array(),
-					IP_Location_Block::VERSION,
+					IP_LOCATION_BLOCK_VERSION,
 					$footer
 				);
 
 				wp_enqueue_script( IP_Location_Block::PLUGIN_NAME . '-whois-js',
 					plugins_url( $release ? 'js/whois.min.js' : 'js/whois.js', __FILE__ ),
-					$dependency, IP_Location_Block::VERSION, $footer
+					$dependency, IP_LOCATION_BLOCK_VERSION, $footer
 				);
 				break;
 		}
@@ -298,7 +298,7 @@ class IP_Location_Block_Admin {
 		// css for option page
 		wp_enqueue_style( IP_Location_Block::PLUGIN_NAME . '-admin-icons',
 			plugins_url( $release ? 'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__ ),
-			array(), IP_Location_Block::VERSION
+			array(), IP_LOCATION_BLOCK_VERSION
 		);
 		wp_enqueue_style( IP_Location_Block::PLUGIN_NAME . '-admin-styles',
 			plugins_url( $release ? 'css/admin.min.css' : 'css/admin.css', __FILE__ ),
@@ -553,7 +553,7 @@ class IP_Location_Block_Admin {
 				plugins_url( ! defined( 'IP_LOCATION_BLOCK_DEBUG' ) || ! IP_LOCATION_BLOCK_DEBUG ?
 					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
 				),
-				array(), IP_Location_Block::VERSION
+				array(), IP_LOCATION_BLOCK_VERSION
 			);
 		}
 
