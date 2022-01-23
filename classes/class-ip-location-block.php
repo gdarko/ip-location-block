@@ -14,9 +14,7 @@ class IP_Location_Block {
 
 	/**
 	 * Unique identifier for this plugin.
-	 *
 	 */
-	const VERSION = IP_LOCATION_BLOCK_VERSION;
 	const PLUGIN_NAME = 'ip-location-block';
 	const OPTION_NAME = 'ip_location_block_settings';
 	const OPTION_META = 'ip_location_block_metadata';
@@ -356,7 +354,7 @@ class IP_Location_Block {
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_LOCATION_BLOCK_BASE
 		);
 
-		wp_enqueue_script( self::$auth_key, $script, array( 'jquery' ), self::VERSION );
+		wp_enqueue_script( self::$auth_key, $script, array( 'jquery' ), IP_LOCATION_BLOCK_VERSION );
 		wp_localize_script( self::$auth_key, 'IP_LOCATION_BLOCK_AUTH', $args + self::$wp_path );
 
 	}
