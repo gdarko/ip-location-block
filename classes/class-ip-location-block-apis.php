@@ -1114,7 +1114,7 @@ if ( class_exists( 'IP_Location_Block', false ) ) {
 	// Avoid "The plugin does not have a valid header" on activation under WP4.0
 	if ( is_plugin_active( IP_LOCATION_BLOCK_BASE ) ) {
 		$dir     = IP_Location_Block_Util::slashit(
-			apply_filters( IP_Location_Block::PLUGIN_NAME . '-api-dir', IP_Location_Block_Util::get_storage_dir( 'apis' ) )
+			apply_filters( 'ip-location-block-api-dir', IP_Location_Block_Util::get_storage_dir( 'apis' ) )
 		);
 		$plugins = ( is_dir( $dir ) ? scandir( $dir, defined( 'SCANDIR_SORT_DESCENDING' ) ? SCANDIR_SORT_DESCENDING : 1 ) : false );
 		if ( false !== $plugins ) {

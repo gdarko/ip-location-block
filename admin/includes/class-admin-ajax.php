@@ -228,7 +228,7 @@ class IP_Location_Block_Admin_Ajax {
 	public static function restore_logs( $which ) {
 		return array(
 			'data' => self::format_logs(
-				apply_filters( IP_Location_Block::PLUGIN_NAME . '-logs', IP_Location_Block_Logs::restore_logs( $which ) )
+				apply_filters( 'ip-location-block-logs', IP_Location_Block_Logs::restore_logs( $which ) )
 			)
 		); // DataTables requires `data`
 	}
@@ -288,7 +288,7 @@ class IP_Location_Block_Admin_Ajax {
 		}
 
 		if ( ! is_wp_error( $res = IP_Location_Block_Logs::restore_live_log( $hook, $settings ) ) ) {
-			return array( 'data' => self::format_logs( apply_filters( IP_Location_Block::PLUGIN_NAME . '-logs', $res ) ) );
+			return array( 'data' => self::format_logs( apply_filters( 'ip-location-block-logs', $res ) ) );
 		} else {
 			return array( 'error' => $res->get_error_message() );
 		}

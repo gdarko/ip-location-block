@@ -112,7 +112,7 @@ class IP_Location_Block_Admin_Tab {
 			);
 
 			// Preset filters
-			$filters = has_filter( $plugin_slug . '-logs-preset' ) ? apply_filters( $plugin_slug . '-logs-preset', array() ) : $context->preset_filters();
+			$filters = has_filter( 'ip-location-block-logs-preset' ) ? apply_filters( 'ip-location-block-logs-preset', array() ) : $context->preset_filters();
 			if ( ! empty( $filters ) ) {
 				// allowed tags and attributes
 				$allow_tags = array(

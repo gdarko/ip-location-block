@@ -65,7 +65,7 @@ class IP_Location_Block {
 		}
 
 		// global settings after `drop-in.php`
-		self::$auth_key = apply_filters( self::PLUGIN_NAME . '-auth-key', self::PLUGIN_NAME . '-auth-nonce' );
+		self::$auth_key = apply_filters( 'ip-location-block-auth-key', self::PLUGIN_NAME . '-auth-nonce' );
 		self::$live_log = ( $validate['reclogs'] ? get_transient( self::PLUGIN_NAME . '-live-log' ) : false );
 
 		// normalize requested uri and page
@@ -369,7 +369,7 @@ class IP_Location_Block {
 	 * @return mixed|void
 	 */
 	public static function get_request_headers( $settings ) {
-		return apply_filters( self::PLUGIN_NAME . '-headers', array(
+		return apply_filters( 'ip-location-block-headers', array(
 			'timeout'    => (int) $settings['timeout'],
 			'user-agent' => ! empty( $settings['request_ua'] ) ? $settings['request_ua'] : @$_SERVER['HTTP_USER_AGENT']
 		) );
@@ -386,7 +386,7 @@ class IP_Location_Block {
 		$settings or $settings = self::get_option();
 		self::$remote_addr or self::$remote_addr = IP_Location_Block_Util::get_client_ip( $settings['validation']['proxy'] );
 
-		return has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr ) : self::$remote_addr;
+		return has_filter(  'ip-location-block-ip-addr' ) ? apply_filters(  'ip-location-block-ip-addr', self::$remote_addr ) : self::$remote_addr;
 	}
 
 	/**
@@ -557,8 +557,8 @@ class IP_Location_Block {
 	public function send_response( $hook, $validate, $settings ) {
 		require_once ABSPATH . WPINC . '/functions.php'; // for get_status_header_desc() @since  0.2.3.0
 
-		$code = (int   ) apply_filters( self::PLUGIN_NAME . '-' . $hook . '-status', $settings['response_code'] );
-		$mesg = (string) apply_filters( self::PLUGIN_NAME . '-' . $hook . '-reason', $settings['response_msg'] ? $settings['response_msg'] : get_status_header_desc( $code ) );
+		$code = (int   ) apply_filters( 'ip-location-block-' . $hook . '-status', $settings['response_code'] );
+		$mesg = (string) apply_filters( 'ip-location-block-' . $hook . '-reason', $settings['response_msg'] ? $settings['response_msg'] : get_status_header_desc( $code ) );
 
 		// custom action (for fail2ban) @since 1.2.0
 		do_action( self::PLUGIN_NAME . '-send-response', $hook, $code, $validate );
@@ -727,7 +727,7 @@ class IP_Location_Block {
 		$var = self::PLUGIN_NAME . '-' . $hook;
 		$settings['validation']['mimetype'] and add_filter( $var, array( $this, 'check_upload' ), 5, 2 );
 		$die and add_filter( $var, array( $this, 'check_auth' ), 6, 2 );
-		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
+		$settings['extra_ips'] = apply_filters( 'ip-location-block-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['login_fails'] >= 0 && $block and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
@@ -925,7 +925,7 @@ class IP_Location_Block {
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
-		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
+		$list = array_merge( apply_filters( 'ip-location-block-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker, bbPress
 			'heartbeat',
 			'save-widget',
@@ -1050,7 +1050,7 @@ class IP_Location_Block {
 			}
 
 			// apply filter hook for emergent functionality
-			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
+			$validate = apply_filters( 'ip-location-block-login', $validate, $settings );
 
 			// send response code to die if the number of login attempts exceeds the limit
 			$this->endof_validate( defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings, true, 'failed' !== $validate['result'], false );
@@ -1149,8 +1149,8 @@ class IP_Location_Block {
 			}
 
 			// when a user does not have the capability, then block
-			if ( ! apply_filters( self::PLUGIN_NAME . '-upload-capability', $files ) ) {
-				return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array(
+			if ( ! apply_filters( 'ip-location-block-upload-capability', $files ) ) {
+				return apply_filters( 'ip-location-block-upload-forbidden', $validate + array(
 						'upload' => true,
 						'result' => 'upload'
 					) );
@@ -1161,7 +1161,7 @@ class IP_Location_Block {
 					// check $_FILES corruption attack or mime type and extension
 					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] ||
 					     ! IP_Location_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
-						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array(
+						return apply_filters( 'ip-location-block-upload-forbidden', $validate + array(
 								'upload' => true,
 								'result' => 'upload'
 							) );

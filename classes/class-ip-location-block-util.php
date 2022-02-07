@@ -297,7 +297,7 @@ class IP_Location_Block_Util {
 	 */
 	public static function get_temp_dir() {
 		$dir = \get_temp_dir();
-		$dir = apply_filters( IP_Location_Block::PLUGIN_NAME . '-temp-dir', $dir );
+		$dir = apply_filters( 'ip-location-block-temp-dir', $dir );
 		if ( ! file_exists( $dir ) || ! is_writable( $dir ) ) {
 			$uploads = wp_upload_dir();
 			$basedir = $uploads['basedir'];
@@ -949,7 +949,7 @@ class IP_Location_Block_Util {
 
 		// Filters the redirect fallback URL for when the provided redirect is not safe (local).
 		$location = self::validate_redirect( $location, apply_filters( 'wp_safe_redirect_fallback', admin_url(), $status ) );
-		
+
 		self::redirect( $location, $status );
 	}
 

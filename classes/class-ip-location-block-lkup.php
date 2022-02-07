@@ -72,7 +72,7 @@ class IP_Location_Block_Lkup {
 	public static function gethostbyaddr( $ip ) {
 		// array( 'nameservers' => array( '8.8.8.8', '8.8.4.4' ) ) // Google public DNS
 		// array( 'nameservers' => array( '1.1.1.1', '1.0.0.1' ) ) // APNIC public DNS
-		$servers = array( 'nameservers' => apply_filters( IP_LOCATION_BLOCK::PLUGIN_NAME . '-dns', array() ) );
+		$servers = array( 'nameservers' => apply_filters( 'ip-location-block-dns', array() ) );
 		if ( ! empty( $servers['nameservers'] ) ) {
 			set_include_path( IP_LOCATION_BLOCK_PATH . 'includes' . PATH_SEPARATOR . get_include_path() );
 			require_once IP_LOCATION_BLOCK_PATH . 'includes/Net/DNS2.php';

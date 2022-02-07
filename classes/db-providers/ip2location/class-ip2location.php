@@ -59,7 +59,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		// setup database file and function
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			$type = IP_LOCATION_BLOCK_API_TYPE_IPV4;
-			$file = apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-path', empty( $settings['IP2Location']['ipv4_path'] ) ? $this->get_db_dir() . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT : $settings['IP2Location']['ipv4_path'] );
+			$file = apply_filters( 'ip-location-block-ip2location-path', empty( $settings['IP2Location']['ipv4_path'] ) ? $this->get_db_dir() . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT : $settings['IP2Location']['ipv4_path'] );
 		} elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$type = IP_LOCATION_BLOCK_API_TYPE_IPV6;
 			$file = empty( $settings['IP2Location']['ipv6_path'] ) ? $this->get_db_dir() . IP_LOCATION_BLOCK_IP2LOC_IPV6_DAT : $settings['IP2Location']['ipv6_path'];
@@ -91,7 +91,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 	 * @return string
 	 */
 	private function get_db_dir() {
-		return apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-dir', IP_Location_Block_Util::get_databases_storage_dir( 'IP2Location' ) );
+		return apply_filters( 'ip-location-block-ip2location-dir', IP_Location_Block_Util::get_databases_storage_dir( 'IP2Location' ) );
 	}
 
 	/**
@@ -112,7 +112,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		}
 
 		$res['ipv4'] = IP_Location_Block_Util::download_zip(
-			apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-zip-ipv4', IP_LOCATION_BLOCK_IP2LOC_IPV4_ZIP ),
+			apply_filters( 'ip-location-block-ip2location-zip-ipv4', IP_LOCATION_BLOCK_IP2LOC_IPV4_ZIP ),
 			$args,
 			$db['ipv4_path'],
 			$db['ipv4_last']
@@ -124,7 +124,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		}
 
 		$res['ipv6'] = IP_Location_Block_Util::download_zip(
-			apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-zip-ipv6', IP_LOCATION_BLOCK_IP2LOC_IPV6_ZIP ),
+			apply_filters( 'ip-location-block-ip2location-zip-ipv6', IP_LOCATION_BLOCK_IP2LOC_IPV6_ZIP ),
 			$args,
 			$db['ipv6_path'],
 			$db['ipv6_last']
@@ -181,7 +181,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		}
 
 		// filter database file
-		$db['ipv4_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv4_path'] );
+		$db['ipv4_path'] = apply_filters( 'ip-location-block-ip2location-path', $db['ipv4_path'] );
 
 		if ( $fs->exists( $db['ipv4_path'] ) ) {
 			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ipv4_last'] ) );
@@ -212,7 +212,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		}
 
 		// filter database file
-		$db['ipv6_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-ip2location-path-ipv6', $db['ipv6_path'] );
+		$db['ipv6_path'] = apply_filters( 'ip-location-block-ip2location-path-ipv6', $db['ipv6_path'] );
 
 		if ( $fs->exists( $db['ipv6_path'] ) ) {
 			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ipv6_last'] ) );

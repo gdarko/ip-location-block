@@ -65,7 +65,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$settings = IP_Location_Block::get_option();
 
 		if ( empty( $args['asn'] ) ) {
-			$file = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path',
+			$file = apply_filters( 'ip-location-block-geolite2-path',
 				( ! empty( $settings['GeoLite2']['ip_path'] ) ?
 					$settings['GeoLite2']['ip_path'] :
 					$this->get_db_dir() . IP_LOCATION_BLOCK_GEOLITE2_DB_IP
@@ -99,7 +99,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 	 * @return string
 	 */
 	private function get_db_dir() {
-		return apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-dir', IP_Location_Block_Util::get_databases_storage_dir( 'GeoLite2' ) );
+		return apply_filters( 'ip-location-block-geolite2-dir', IP_Location_Block_Util::get_databases_storage_dir( 'GeoLite2' ) );
 	}
 
 	/**
@@ -113,9 +113,9 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 	private function get_api_url( $type, $key = '' ) {
 		$url = null;
 		if ( 'country' === $type ) {
-			$url = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-zip-ip', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_IP, $key ) );
+			$url = apply_filters( 'ip-location-block-geolite2-zip-ip', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_IP, $key ) );
 		} elseif ( 'asn' === $type ) {
-			$url = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-zip-asn', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_ASN, $key ) );
+			$url = apply_filters( 'ip-location-block-geolite2-zip-asn', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_ASN, $key ) );
 		}
 
 		return $url;
@@ -141,7 +141,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$api_key = isset( $this->options['providers'][ $this->provider ] ) ? $this->options['providers'][ $this->provider ] : null;
 
 		// filter database file
-		$db['ip_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
+		$db['ip_path'] = apply_filters( 'ip-location-block-geolite2-path', $db['ip_path'] );
 		$res['ip']     = IP_Location_Block_Util::download_zip(
 			$this->get_api_url( 'country', $api_key ),
 			$args + array( 'method' => 'GET' ),
@@ -197,7 +197,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		}
 
 		// filter database file
-		$db['ip_path'] = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
+		$db['ip_path'] = apply_filters( 'ip-location-block-geolite2-path', $db['ip_path'] );
 
 		if ( $fs->exists( $db['ip_path'] ) ) {
 			if ( empty( $db['ip_last'] ) ) {

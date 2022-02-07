@@ -589,7 +589,7 @@ class IP_Location_Block_Logs {
 
 		// Set data source name
 		$db_path = $dsn ? ':memory:' : ( $tmp_d . IP_Location_Block::PLUGIN_NAME . "-${id}.sqlite" );
-		$id      = apply_filters( IP_Location_Block::PLUGIN_NAME . '-live-log', $db_path );
+		$id      = apply_filters( 'ip-location-block-live-log', $db_path );
 
 		try {
 			$pdo = new PDO( 'sqlite:' . $id, null, null, array(
@@ -671,7 +671,7 @@ class IP_Location_Block_Logs {
 	 * @param bool $block
 	 */
 	public static function record_logs( $hook, $validate, $settings, $block = true ) {
-		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Location_Block::PLUGIN_NAME . '-record-logs', (int) $settings['validation']['reclogs'], $hook, $validate ) : 0;
+		$record = $settings['validation'][ $hook ] ? apply_filters( 'ip-location-block-record-logs', (int) $settings['validation']['reclogs'], $hook, $validate ) : 0;
 		$record = ( 1 === $record && $block ) || // blocked
 		          ( 6 === $record && ( $block || IP_Location_Block::is_blocked( IP_Location_Block::validate_country( null, $validate, $settings ) ) ) ) || // blocked or qualified
 		          ( 2 === $record && ! $block ) || // passed
@@ -761,7 +761,7 @@ class IP_Location_Block_Logs {
 			}
 
 			// backup logs to text files
-			if ( $dir = apply_filters( IP_Location_Block::PLUGIN_NAME . '-backup-dir', $settings['validation']['backup'], $hook ) ) {
+			if ( $dir = apply_filters( 'ip-location-block-backup-dir', $settings['validation']['backup'], $hook ) ) {
 				self::backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $dir );
 			}
 		}
