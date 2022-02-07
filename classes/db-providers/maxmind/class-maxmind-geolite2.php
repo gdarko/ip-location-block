@@ -106,7 +106,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 	 * Return download url with api key
 	 *
 	 * @param $type
-	 * @param string $key
+	 * @param  string  $key
 	 *
 	 * @return mixed|void|null
 	 */
@@ -114,7 +114,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$url = null;
 		if ( 'country' === $type ) {
 			$url = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-zip-ip', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_IP, $key ) );
-		} else if ( 'asn' === $type ) {
+		} elseif ( 'asn' === $type ) {
 			$url = apply_filters( IP_Location_Block::PLUGIN_NAME . '-geolite2-zip-asn', sprintf( IP_LOCATION_BLOCK_GEOLITE2_ZIP_ASN, $key ) );
 		}
 
@@ -262,13 +262,16 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 
 /**
  * Register API
- *
  */
 IP_Location_Block_Provider::register_addon( array(
 	'GeoLite2' => array(
 		'key'      => '',
 		'type'     => 'IPv4, IPv6 / Apache License, Version 2.0',
-		'link'     => '<a class="ip-location-block-link" href="https://dev.maxmind.com/geoip/geoip2/" title="GeoIP2 &laquo; MaxMind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/geoip2/</a>&nbsp;(IPv4, IPv6 / Apache License, Version 2.0)',
-		'supports' => array( 'asn', 'asn_database' ),
+		'link'     => 'https://dev.maxmind.com/geoip/geolite2-free-geolocation-data',
+		'supports' => array( 'ipv4', 'ipv6', 'asn', 'asn_database' ),
+		'limits'   => array( __( 'System memory', 'ip-location-block' ) ),
+		'requests' => array( 'total' => - 1, 'term' => '' ),
+		'api_auth' => IP_Location_Block_Provider::API_AUTH_REQUIRED,
+		'local'    => true,
 	),
 ) );

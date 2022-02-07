@@ -27,7 +27,10 @@ class IP_Location_Block_Admin_Tab {
 			$option_slug
 		);
 
-		foreach ( IP_Location_Block_Provider::get_providers( 'link' ) as $provider => $key ) {
+		foreach ( IP_Location_Block_Provider::all() as $provider => $data ) {
+			if ( 'Cache' === $provider ) {
+				continue;
+			}
 			add_settings_field(
 				$option_name . '_attribution_' . $provider,
 				$provider,
@@ -38,7 +41,7 @@ class IP_Location_Block_Admin_Tab {
 					'type'   => 'html',
 					'option' => $option_name,
 					'field'  => 'attribution',
-					'value'  => $key,
+					'value'  => sprintf( '<a href="%s" target="_blank">%s</a> (%s)', esc_url( $data['link'] ), esc_url( $data['link'] ), $data['type'] ),
 				)
 			);
 		}

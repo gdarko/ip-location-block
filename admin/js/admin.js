@@ -2103,4 +2103,19 @@
 
     }); // document.ready()
 
+
+    $(function () {
+        $(document).on('click', ID('#', 'providers-compare-toggle'), function (e) {
+            e.preventDefault();
+            var $wrap = $(this).closest(ID('.', 'providers'));
+            var compactClass = ID('.', 'providers-compact');
+            compactClass = compactClass ? compactClass.replace('.', '') : compactClass;
+            if ($wrap.hasClass(compactClass)) {
+                $wrap.removeClass(compactClass)
+            } else {
+                $wrap.addClass(compactClass);
+            }
+        })
+    })
+
 }(jQuery, window, document));

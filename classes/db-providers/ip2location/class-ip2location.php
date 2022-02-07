@@ -46,7 +46,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 	 * Returns location
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|string[]
 	 */
@@ -247,7 +247,11 @@ IP_Location_Block_Provider::register_addon( array(
 	'IP2Location' => array(
 		'key'      => null,
 		'type'     => 'IPv4, IPv6 / LGPLv3',
-		'link'     => '<a class="ip-location-block-link" href="https://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>https://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
-		'supports' => array(),
+		'link'     => 'https://lite.ip2location.com/',
+		'supports' => array( 'ipv4', 'ipv6' ),
+		'limits'   => array( 'System memory' ),
+		'requests' => array( 'total' => - 1, 'term' => '' ),
+		'api_auth' => IP_Location_Block_Provider::API_AUTH_NOT_REQUIRED,
+		'local'    => true,
 	),
 ) );

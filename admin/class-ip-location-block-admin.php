@@ -367,7 +367,7 @@ class IP_Location_Block_Admin {
 				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
 			)
 		);
-		IP_Location_Block::enqueue_nonce(NULL);
+		IP_Location_Block::enqueue_nonce( null );
 		wp_enqueue_script( $handle );
 	}
 
@@ -469,7 +469,7 @@ class IP_Location_Block_Admin {
 	/**
 	 * Get the admin url that depends on network multisite.
 	 *
-	 * @param bool $network_wide
+	 * @param  bool  $network_wide
 	 *
 	 * @return string|void
 	 */
@@ -859,25 +859,19 @@ class IP_Location_Block_Admin {
 					echo '<a href="?page=', IP_Location_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ( $tab === $key ? ' nav-tab-active' : '' ), '">', $val, '</a>';
 				} ?>
             </h2>
-            <p class="ip-location-block-navi-link">[ <a id="ip-location-block-toggle-sections"
-                                                        href="#!"><?php _e( 'Toggle all', 'ip-location-block' ); ?></a>
+            <p class="ip-location-block-navi-link">[ <a id="ip-location-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-location-block' ); ?></a>
                 ]
 				<?php if ( 4 === $tab ) { /* Logs tab */ ?>
-                    <input id="ip-location-block-live-update"
-                           type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );
-					disabled( $settings['validation']['reclogs'] && extension_loaded( 'pdo_sqlite' ), false ); ?> />
-                    <label for="ip-location-block-live-update">
+                    <input id="ip-location-block-live-update" type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );
+					disabled( $settings['validation']['reclogs'] && extension_loaded( 'pdo_sqlite' ), false ); ?> /><label for="ip-location-block-live-update">
                         <dfn title="<?php _e( 'Independent of &#8220;Privacy and record settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-location-block' ); ?>"><?php _e( 'Live update', 'ip-location-block' ); ?></dfn>
                     </label>
 				<?php } elseif ( 5 === $tab ) { /* Sites list tab */ ?>
-                    <input id="ip-location-block-open-new"
-                           type="checkbox"<?php checked( isset( $cookie[5][1] ) && 'o' === $cookie[5][1] ); ?> /><label
-                            for="ip-location-block-open-new">
+                    <input id="ip-location-block-open-new" type="checkbox"<?php checked( isset( $cookie[5][1] ) && 'o' === $cookie[5][1] ); ?> /><label for="ip-location-block-open-new">
                         <dfn title="<?php _e( 'Open a new window on clicking the link in the chart.', 'ip-location-block' ); ?>"><?php _e( 'Open a new window', 'ip-location-block' ); ?></dfn>
                     </label>
 				<?php } ?></p>
-            <form method="post" action="<?php echo $action; ?>"
-                  id="<?php echo IP_Location_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) {
+            <form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Location_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) {
 				echo " class=\"", IP_Location_Block::PLUGIN_NAME, "-inhibit\"";
 			} ?>>
 				<?php
@@ -907,8 +901,7 @@ class IP_Location_Block_Admin {
 			<?php if ( defined( 'IP_LOCATION_BLOCK_DEBUG' ) && IP_LOCATION_BLOCK_DEBUG ) {
 				echo '<p>', get_num_queries(), ' queries. ', timer_stop( 0 ), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 			} ?>
-            <p id="ip-location-block-back-to-top">[ <a href="#"><?php _e( 'Back to top', 'ip-location-block' ); ?></a> ]
-            </p>
+            <p id="ip-location-block-back-to-top">[ <a href="#"><?php _e( 'Back to top', 'ip-location-block' ); ?></a> ] </p>
         </div>
 		<?php
 	}
@@ -935,7 +928,7 @@ class IP_Location_Block_Admin {
 	 * Function that fills the field with the desired inputs as part of the larger form.
 	 * The 'id' and 'name' should match the $id given in the add_settings_field().
 	 *
-	 * @param array $args ['value'] must be sanitized because it comes from external.
+	 * @param  array  $args  ['value'] must be sanitized because it comes from external.
 	 */
 	public function callback_field( $args ) {
 		if ( ! empty( $args['before'] ) ) {
@@ -958,39 +951,80 @@ class IP_Location_Block_Admin {
 
 		switch ( $args['type'] ) {
 			case 'check-provider':
-				echo "\n<ul class=\"ip-location-block-list\">\n";
-				foreach ( $args['providers'] as $key => $val ) {
-					$id   = "${args['option']}_providers_{$key}";
-					$name = "${args['option']}[providers][$key]";
-					$stat = ( null === $val && ! isset( $args['value'][ $key ] ) ) ||
-					        ( false === $val && ! empty( $args['value'][ $key ] ) ) ||
-					        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) );
-					?>
-                    <li>
-                        <input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>"
-                               value="<?php echo $val; ?>"<?php checked( $stat && - 1 !== (int) $val );
-						disabled( - 1 === (int) $val ); ?>
-                               class="<?php echo in_array( $key, $args['local'], true ) ? 'API-local' : 'API-remote'; ?>"/>
-                        <label for="<?php echo $id; ?>"><?php echo '<dfn title="', esc_attr( $args['titles'][ $key ] ), '">', $key, '</dfn>'; ?></label>
-						<?php if ( ! is_null( $val ) ) { ?>
-                            <input type="text" class="regular-text code" name="<?php echo $name; ?>"
-                                   value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"
-                                   placeholder="API key"/>
-						<?php } ?>
-                    </li>
-				<?php }
-				echo "</ul>\n";
-				break;
+				?>
+                <div class="ip-location-block-providers ip-location-block-providers-compact">
+                    <table class="wp-list-table widefat striped ip-location-block-services">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="manage-column"><?php _e( 'Name', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column"><?php _e( 'API Key', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-requests"><?php _e( 'Free Requests', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-ipv4"><?php _e( 'IPv4 Lookups', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-ipv6"><?php _e( 'IPv6 Lookups', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-asn"><?php _e( 'ASN Blocking', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-limits"><?php _e( 'Limitations', 'ip-location-block' ); ?></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="the-list">
+						<?php foreach ( $args['providers'] as $key => $val ):
+							$id = "${args['option']}_providers_{$key}";
+							$name = "${args['option']}[providers][$key]";
+							$stat = ( null === $val && ! isset( $args['value'][ $key ] ) ) ||
+							        ( false === $val && ! empty( $args['value'][ $key ] ) ) ||
+							        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) );
 
-			case 'checkboxes':
+
+							?>
+                            <tr class="format-standard hentry">
+                                <td>
+									<?php
+									$checked  = $stat && - 1 !== (int) $val ? 'checked' : '';
+									$disabled = - 1 === (int) $val ? 'disabled' : '';
+									$cssClass = isset( $args['local'] ) && $args['local'] ? 'API-local' : 'API-remote';
+									echo sprintf(
+										'<input %s %s id="%s" type="checkbox" name="%s" value="%s" class="%s"/> %s',
+										esc_attr( $checked ),
+										esc_attr( $disabled ),
+										esc_attr( $id ),
+										esc_attr( $name ),
+										esc_attr( $val ),
+										esc_attr( $cssClass ),
+										IP_Location_Block_Provider::format_provider_meta( $key, 'name' )
+									);
+									?>
+                                </td>
+                                <td style="padding-left: 0;padding-right: 0;">
+									<?php
+									if ( ! is_null( $val ) ) {
+										$value = ! empty( $args['value'][ $key ] ) ? $args['value'][ $key ] : '';
+										echo sprintf( '<input type="text" class="code" name="%s" value="%s" placeholder="%s"/>', esc_attr( $name ), esc_attr( $value ), __( 'API Key', 'ip-location-block' ) );
+									} ?>
+                                </td>
+                                <td class="meta-compare meta-requests"><?php echo IP_Location_Block_Provider::format_provider_meta( $key, 'requests' ); ?></td>
+                                <td class="meta-compare meta-ipv4"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, 'ipv4' ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
+                                <td class="meta-compare meta-ipv6"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, 'ipv6' ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
+                                <td class="meta-compare meta-asn"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, array( 'asn', 'asn_database' ) ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
+                                <td class="meta-compare meta-limits"><?php echo IP_Location_Block_Provider::format_provider_meta( $key, 'limits' ); ?></td>
+                                <td><?php echo IP_Location_Block_Provider::format_provider_meta( $key, 'signup-button' ); ?></td>
+                            </tr>
+						<?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <div class="ip-location-block-providers-actions">
+                        <a id="ip-location-block-providers-compare-toggle" href="#" class="button-primary"><?php _e( 'Compare', 'ip-location-block' ); ?></a>
+                    </div>
+                </div>
+				<?php
+				break;
+			case
+			'checkboxes':
 				echo "\n<ul class=\"ip-location-block-list\">\n";
 				foreach ( $args['list'] as $key => $val ) { ?>
                     <li>
-                        <input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>"
-                               name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
-						checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? true : false ) ); ?> /><label
-                                for="<?php
-								echo $id, $sub_id, '_', $key; ?>"><?php
+                        <input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
+						checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? true : false ) ); ?> /><label for="<?php
+						echo $id, $sub_id, '_', $key; ?>"><?php
 							if ( isset( $args['desc'][ $key ] ) ) {
 								echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
 							} else {
@@ -1004,14 +1038,13 @@ class IP_Location_Block_Admin {
 				break;
 
 			case 'checkbox': ?>
-                <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"
-                       value="1"<?php
+                <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
 				checked( esc_attr( $args['value'] ) );
 				disabled( ! empty( $args['disabled'] ), true ); ?> /><label for="<?php
 				echo $id, $sub_id; ?>"><?php
 					if ( isset( $args['text'] ) ) {
 						echo esc_attr( $args['text'] );
-					} else if ( isset( $args['html'] ) ) {
+					} elseif ( isset( $args['html'] ) ) {
 						echo $args['html'];
 					} else {
 						_e( 'Enable', 'ip-location-block' );
@@ -1048,8 +1081,7 @@ class IP_Location_Block_Admin {
 				$args['value'] = $args['text']; // should be escaped because it can contain allowed tags
 
 			case 'text': ?>
-                <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>"
-                       name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
+                <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
 				disabled( ! empty( $args['disabled'] ) );
 				if ( isset( $args['placeholder'] ) ) {
 					echo ' placeholder="', esc_html( $args['placeholder'] ), '"';
@@ -1058,8 +1090,7 @@ class IP_Location_Block_Admin {
 				break; // disabled @since 3.0
 
 			case 'textarea': ?>
-                <textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>"
-                          name="<?php echo $name, $sub_name; ?>"<?php
+                <textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php
 				disabled( ! empty( $args['disabled'] ) );
 				if ( isset( $args['placeholder'] ) ) {
 					echo ' placeholder="', esc_html( $args['placeholder'] ), '"';
@@ -1069,8 +1100,7 @@ class IP_Location_Block_Admin {
 				break;
 
 			case 'button': ?>
-                <input type="button" class="button-secondary" id="<?php echo $id; ?>"
-                       value="<?php echo esc_attr( $args['value'] ); ?>"
+                <input type="button" class="button-secondary" id="<?php echo $id; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
 					<?php disabled( ! empty( $args['disabled'] ) ); ?>/>
 				<?php
 				break;
@@ -1088,7 +1118,7 @@ class IP_Location_Block_Admin {
 	/**
 	 * Sanitize options before saving them into DB.
 	 *
-	 * @param array $input The values to be validated.
+	 * @param  array  $input  The values to be validated.
 	 *
 	 * @return mixed
 	 * @link https://codex.wordpress.org/Function_Reference/sanitize_option
@@ -1254,7 +1284,7 @@ class IP_Location_Block_Admin {
 				'network_wide',
 				'clean_uninstall',
 				'simulate',
-                'use_asn',
+				'use_asn',
 			) as $key
 		) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
@@ -1399,7 +1429,7 @@ class IP_Location_Block_Admin {
 		if ( $output['update']['auto'] && ! $key ) {
 			require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
 			IP_Location_Block_Cron::start_update_db( $output, false );
-		} else if ( ! $output['update']['auto'] && $key ) {
+		} elseif ( ! $output['update']['auto'] && $key ) {
 			require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
 			IP_Location_Block_Cron::stop_update_db();
 		}
@@ -1580,7 +1610,7 @@ class IP_Location_Block_Admin {
 	/**
 	 * Analyze entries in "Validation logs"
 	 *
-	 * @param array $logs An array including each entry where:
+	 * @param  array  $logs  An array including each entry where:
 	 * Array (
 	 *     [0 DB row number] => 154
 	 *     [1 Target       ] => comment
@@ -1645,7 +1675,7 @@ class IP_Location_Block_Admin {
 	/**
 	 * Register UI "Preset filters" at "Search in logs"
 	 *
-	 * @param array $filters An empty array by default.
+	 * @param  array  $filters  An empty array by default.
 	 *
 	 * @return array $filters The array of paired with 'title' and 'value'.
 	 */

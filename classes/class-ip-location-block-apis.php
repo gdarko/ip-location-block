@@ -70,7 +70,7 @@ abstract class IP_Location_Block_API {
 	/**
 	 * IP_Location_Block_API constructor.
 	 *
-	 * @param string $provider
+	 * @param  string  $provider
 	 * @param $options
 	 */
 	protected function __construct( $provider, $options = array() ) {
@@ -209,7 +209,7 @@ abstract class IP_Location_Block_API {
 	 * Get geolocation information from service provider
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|false|string[]
 	 */
@@ -225,7 +225,7 @@ abstract class IP_Location_Block_API {
 	 * Override this method if a provider supports this feature for quick response.
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return false|mixed|string|null
 	 */
@@ -269,6 +269,8 @@ abstract class IP_Location_Block_API {
 		if ( 'Maxmind' === $provider ) {
 			$provider = 'GeoLite2';
 		}
+
+		$provider = str_replace( ' ', '', $provider );
 		$provider = 'IP_Location_Block_API_' . preg_replace( '/[\W]/', '', $provider );
 
 		return class_exists( $provider, false ) ? $provider : null;
@@ -283,8 +285,13 @@ abstract class IP_Location_Block_API {
 	 * @return mixed|null
 	 */
 	public static function get_api_key( $provider, $options ) {
+
+		if ( empty( $provider ) || empty( $options['providers'] ) ) {
+			return null;
+		}
+
 		$providers = array();
-		if ( ! empty( $options['providers'] ) ) {
+		if ( ! empty( $options['providers'] ) && is_array( $options['providers'] ) ) {
 			$providers = array_change_key_case( $options['providers'], CASE_LOWER );
 		}
 		$provider = strtolower( $provider );
@@ -315,6 +322,33 @@ abstract class IP_Location_Block_API {
 
 		return null;
 	}
+}
+
+/**
+ * Class for IPLocationBlock
+ *
+ * URL         : https://iplocationblock.com/
+ * Term of use : https://iplocationblock.com/terms-of-use
+ * Licence fee : free
+ * Rate limit  : none
+ * Sample URL  : https://api.iplocationblock.com/v1/77.29.188.15
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : xml
+ */
+class IP_Location_Block_API_iplocationblock extends IP_Location_Block_API {
+	protected $template = array(
+		'type'      => IP_LOCATION_BLOCK_API_TYPE_BOTH,
+		'url'       => 'https://api.iplocationblock.com/v1/%API_IP%?api_key=%API_KEY%',
+		'api'       => array(),
+		'transform' => array(
+			'countryCode' => 'country_code',
+			'countryName' => 'country_name',
+			'regionName'  => 'region',
+			'cityName'    => 'city',
+			'latitude'    => 'latitude',
+			'longitude'   => 'longitude',
+		)
+	);
 }
 
 /**
@@ -352,7 +386,7 @@ class IP_Location_Block_API_IPAPIcom extends IP_Location_Block_API {
 	 * Returns the location
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|false|string[]
 	 */
@@ -427,7 +461,7 @@ class IP_Location_Block_API_ipinfoio extends IP_Location_Block_API {
 	 * Returns the location
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|false|string[]
 	 */
@@ -454,7 +488,7 @@ class IP_Location_Block_API_ipinfoio extends IP_Location_Block_API {
 	 * Returns the country
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return false|mixed|string|null
 	 */
@@ -497,7 +531,7 @@ class IP_Location_Block_API_ipapi extends IP_Location_Block_API {
 	 * Returns the location
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|false|string[]
 	 */
@@ -611,7 +645,7 @@ class IP_Location_Block_API_IPInfoDB extends IP_Location_Block_API {
 	 * IP_Location_Block_API_IPInfoDB constructor.
 	 *
 	 * @param $provider
-	 * @param null $api_key
+	 * @param  null  $api_key
 	 */
 	public function __construct( $provider, $api_key = null ) {
 		// sanitization
@@ -622,7 +656,7 @@ class IP_Location_Block_API_IPInfoDB extends IP_Location_Block_API {
 	 * Returns the country
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return false|mixed|string|null
 	 */
@@ -653,7 +687,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * @param $hook
 	 * @param $validate
 	 * @param $settings
-	 * @param bool $countup
+	 * @param  bool  $countup
 	 *
 	 * @return array
 	 */
@@ -716,7 +750,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * Return the cache
 	 *
 	 * @param $ip
-	 * @param bool $use_cache
+	 * @param  bool  $use_cache
 	 *
 	 * @return array|mixed|null
 	 */
@@ -732,7 +766,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * Return the location
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|string[]
 	 */
@@ -748,7 +782,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * Returns the country
 	 *
 	 * @param $ip
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return array|false|mixed|string|null
 	 */
@@ -759,55 +793,100 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 
 /**
  * Provider support class
- *
  */
 class IP_Location_Block_Provider {
 
+	const API_AUTH_OPTIONAL = 1;
+	const API_AUTH_REQUIRED = 2;
+	const API_AUTH_NOT_REQUIRED = 3;
+
+
+	/**
+	 * List of providers
+	 * @var array[]
+	 */
 	protected static $providers = array(
-		'IP-API.com' => array(
-			'key'      => null,
+
+		'IP Location Block' => array(
+			'key'      => '',
 			'type'     => 'IPv4, IPv6 / free for non-commercial use',
-			'link'     => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
-			'supports' => array( 'asn' ),
+			'link'     => 'https://iplocationblock.com/pricing',
+			'supports' => array( 'ipv4', 'ipv6', 'asn' ),
+			'requests' => array( 'total' => 15000, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_OPTIONAL,
+			'local'    => false,
+		),
+
+		'IP-API.com' => array(
+			'key'      => '',
+			'type'     => 'IPv4, IPv6 / free for non-commercial use',
+			'link'     => 'https://members.ip-api.com/#pricing',
+			'supports' => array( 'ipv4', 'ipv6', 'asn' ),
+			'limits'   => array( 'Up to 45 requests / minute' ),
+			'requests' => array( 'total' => - 1, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_OPTIONAL,
+			'local'    => false,
+
 		),
 
 		'GeoIPLookup' => array(
 			'key'      => null,
 			'type'     => 'IPv4, IPv6 / free',
-			'link'     => '<a rel="noreferrer" href="http://geoiplookup.net/" title="What Is My IP Address | GeoIP Lookup">GeoIPLookup.net</a>&nbsp;(IPv4, IPv6 / free)',
-			'supports' => array(),
-		),
-
-		'ipinfo.io' => array(
-			'key'      => '',
-			'type'     => 'IPv4, IPv6 / free',
-			'link'     => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1,000 lookups daily)',
-			'supports' => array( 'asn' ),
-		),
-
-		'ipapi' => array(
-			'key'      => '',
-			'type'     => 'IPv4, IPv6 / free',
-			'link'     => '<a rel="noreferrer" href="https://ipapi.com/" title="ipapi - IP Address Lookup and Geolocation API">https://ipapi.com/</a>&nbsp;(IPv4, IPv6 / free up to 10,000 lookups monthly for registered user)',
-			'supports' => array(),
-		),
-
-		'ipstack' => array(
-			'key'      => '',
-			'type'     => 'IPv4, IPv6 / free for registered user',
-			'link'     => '<a rel="noreferrer" href="https://ipstack.com/" title="ipstack - Free IP Geolocation API">https://ipstack.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
-			'supports' => array(),
+			'link'     => 'http://geoiplookup.net/',
+			'supports' => array( 'ipv4', 'ipv6' ),
+			'limits'   => array( 'Up to 1000 requests / hour' ),
+			'requests' => array( 'total' => - 1, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_NOT_REQUIRED,
+			'local'    => false,
 		),
 
 		'IPInfoDB' => array(
 			'key'      => '',
-			'type'     => 'IPv4, IPv6 / free for registered user',
-			'link'     => '<a rel="noreferrer" href="https://ipinfodb.com/" title="Free IP Geolocation Tools and API| IPInfoDB">https://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
-			'supports' => array(),
+			'type'     => 'IPv4, IPv6 / free',
+			'link'     => 'https://ipinfodb.com/',
+			'supports' => array( 'ipv4', 'ipv6' ),
+			'limits'   => array( 'Up to 2 requests / second' ),
+			'requests' => array( 'total' => - 1, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_REQUIRED,
+			'local'    => false,
 		),
+
+		'ipinfo.io' => array(
+			'key'      => '',
+			'type'     => 'IPv4, IPv6 / free for non-commercial use',
+			'link'     => 'https://ipinfo.io/pricing',
+			'supports' => array( 'ipv4', 'ipv6' ),
+			'requests' => array( 'total' => 50000, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_REQUIRED,
+			'local'    => false,
+		),
+
+		'ipapi' => array(
+			'key'      => '',
+			'type'     => 'IPv4, IPv6 / free for non-commercial use',
+			'link'     => 'https://ipapi.com/',
+			'supports' => array( 'ipv4', 'ipv6' ),
+			'requests' => array( 'total' => 1000, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_REQUIRED,
+			'local'    => false,
+		),
+
+		'ipstack' => array(
+			'key'      => '',
+			'type'     => 'IPv4, IPv6 / free for non-commercial use',
+			'link'     => 'https://ipstack.com/',
+			'supports' => array( 'ipv4', 'ipv6' ),
+			'requests' => array( 'total' => 100, 'term' => 'month' ),
+			'api_auth' => self::API_AUTH_REQUIRED,
+			'local'    => false,
+		),
+
 	);
 
-	// Internal DB
+	/**
+	 * Internals
+	 * @var array[]
+	 */
 	protected static $internals = array(
 		'Cache' => array(
 			'key'      => null,
@@ -829,8 +908,8 @@ class IP_Location_Block_Provider {
 	/**
 	 * Return addon providers
 	 *
-	 * @param array $providers
-	 * @param false $force
+	 * @param  array  $providers
+	 * @param  false  $force
 	 *
 	 * @return array
 	 */
@@ -849,10 +928,10 @@ class IP_Location_Block_Provider {
 	/**
 	 * Returns the pairs of provider name and API key
 	 *
-	 * @param string $key
-	 * @param bool $rand
-	 * @param bool $cache
-	 * @param bool $all
+	 * @param  string  $key
+	 * @param  bool  $rand
+	 * @param  bool  $cache
+	 * @param  bool  $all
 	 *
 	 * @return array
 	 */
@@ -885,9 +964,9 @@ class IP_Location_Block_Provider {
 	 * Returns providers name list which are checked in settings
 	 *
 	 * @param $settings
-	 * @param bool $rand
-	 * @param bool $cache
-	 * @param bool $all
+	 * @param  bool  $rand
+	 * @param  bool  $cache
+	 * @param  bool  $all
 	 *
 	 * @return array
 	 */
@@ -923,14 +1002,18 @@ class IP_Location_Block_Provider {
 	 * Supports specific feature
 	 *
 	 * @param $name
-	 * @param $feature
+	 * @param  array|string  $feature
 	 *
 	 * @return bool
 	 */
 	public static function supports( $name, $feature ) {
 		$all = self::all();
 		if ( isset( $all[ $name ]['supports'] ) && is_array( $all[ $name ]['supports'] ) ) {
-			return in_array( $feature, $all[ $name ]['supports'] );
+			if ( is_array( $feature ) ) {
+				return count( array_intersect( $feature, $all[ $name ]['supports'] ) ) > 0;
+			} else {
+				return in_array( $feature, $all[ $name ]['supports'] );
+			}
 		}
 
 		return false;
@@ -955,7 +1038,70 @@ class IP_Location_Block_Provider {
 	 * Return all the providers including internal.
 	 */
 	public static function all() {
-		return array_merge( self::$providers, self::$internals );
+		static $providers = null;
+		if ( is_null( $providers ) ) {
+			$providers = array_merge( self::$providers, self::$internals );
+		}
+
+		return $providers;
+	}
+
+
+	/**
+	 * Format provider meta
+	 *
+	 * @param $provider
+	 * @param $meta_key
+	 *
+	 * @return mixed|string
+	 */
+	public static function format_provider_meta( $provider, $meta_key ) {
+
+		$providers = self::all();
+
+		$value = isset( $providers[ $provider ][ $meta_key ] ) ? $providers[ $provider ][ $meta_key ] : '';
+
+		switch ( $meta_key ) {
+			case 'requests':
+				$total = isset( $value['total'] ) ? $value['total'] : '';
+				$term  = isset( $value['term'] ) ? $value['term'] : '';
+				if ( is_numeric( $total ) ) {
+					if ( $total < 0 ) {
+						$total = __( 'Unlimited', 'ip-location-block' );
+						$term  = '';
+					} else {
+						$total = number_format( $total );
+					}
+				}
+				if ( ! empty( $total ) ) {
+					$value = empty( $term ) ? sprintf( '%s', $total ) : sprintf( '%s / %s', $total, $term );
+				}
+				break;
+			case 'limits':
+				if ( empty( $value ) ) {
+					$value = __( 'None known', 'ip-location-block' );
+				} elseif ( is_array( $value ) ) {
+					$value = implode( ', ', $value );
+				}
+				break;
+			case 'signup-button':
+				if ( ! empty( $providers[ $provider ]['link'] ) && ! is_null( $providers[ $provider ]['key'] ) ) {
+					$value = sprintf( '<a href="%s" target="_blank" class="button button-secondary button-small">%s</a>', $providers[ $provider ]['link'], __( 'Register', 'ip-location-block' ) );
+				}
+				break;
+			case 'name':
+
+				if ( 'IP LOCATION BLOCK' === strtoupper( $provider ) ) {
+					$value = sprintf( '%s <span class="ip-location-block-recommended">%s</span>', $provider, __('(Recommended)', 'ip-location-block') );
+				} else {
+					$value = $provider;
+				}
+
+				break;
+
+		}
+
+		return $value;
 	}
 
 }

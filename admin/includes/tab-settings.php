@@ -1665,6 +1665,7 @@ class IP_Location_Block_Admin_Tab {
 		'<ul class="ip-location-block-note">', "\n",
 		'<li>', __( 'While GeoLite2 / Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-location-block' ), '</li>', "\n",
 		'<li>', __( 'Please select the appropriate APIs to fit the privacy law / regulation in your country / region.', 'ip-location-block' ), '</li>', "\n",
+		'<li>', __( '<strong>Important:</strong> Use the <strong>IP Loation Block</strong> provider if you are leaning towards better precision, premium support, affordable price and new features. Also, some planned features like "Timezone Block" and "City Block" will require the <strong>IP Location Block</strong> provider in the future.', 'ip-location-block' ), '</li>', "\n",
 		'</ul>', "\n";
 	}
 

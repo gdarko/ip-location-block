@@ -877,7 +877,7 @@ table.ip-location-block-dataTable.display tbody tr.ip-location-block-blocked {
 /* Mark.js */
 mark {
     padding: 0;
-    background: #ffd700; // Gold
+    background: #ffd700;
 }
 
 /* Live update log */
@@ -1005,6 +1005,47 @@ mark {
 .ip-location-block-subitem-parent th,
 .ip-location-block-subitem-parent td {
   padding-top: 0;
+}
+
+/**
+Tables
+ */
+.ip-location-block-services tbody td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.ip-location-block-services thead th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+.ip-location-block-services thead tr th:first-child {
+    padding-left: 15px;
+}
+.ip-location-block-recommended {
+    color: #21c67b;
+    font-size: 13px;
+}
+.ip-location-block-providers-compact .meta-compare {
+    display: none;
+}
+.ip-location-block-providers-actions {
+    margin-top: 10px;
+}
+.ip-location-block-providers #ip-location-block-providers-compare-toggle:before {
+    font-family: 'dashicons';
+    margin-right: 2px;
+    position: relative;
+    top: 2px;
+    content: "\f460";
+}
+.ip-location-block-providers.ip-location-block-providers-compact #ip-location-block-providers-compare-toggle:before {
+    content: "\f132";
+}
+
+@media(min-width: 768px) {
+    .ip-location-block-providers-compact table {
+        max-width: 70%;
+    }
 }
 
 /* placeholder */
