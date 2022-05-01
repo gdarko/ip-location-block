@@ -1225,6 +1225,9 @@ class IP_Location_Block_Util {
 	 * @return string
 	 */
 	public static function unslashit( $string ) {
+		if(!is_string($string)) {
+			return $string;
+		}
 		return rtrim( $string, '/\\' );
 	}
 

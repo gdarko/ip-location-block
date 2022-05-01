@@ -192,7 +192,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$msg = __( 'Database file does not exist.', 'ip-location-block' );
 
 		// IPv4 & IPv6
-		if ( $dir !== dirname( $db['ip_path'] ) . '/' ) {
+		if ( !empty($db['ip_path']) && $dir !== dirname( $db['ip_path'] ) . '/' ) {
 			$db['ip_path'] = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_IP;
 		}
 

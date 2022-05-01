@@ -75,7 +75,7 @@ class IP_Location_Block {
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => IP_Location_Block_Util::unslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since  0.2.6.0
-		$len           = strlen( self::$wp_path['home'] );
+		$len           = is_string(self::$wp_path['home']) ? strlen( self::$wp_path['home'] ) : 0;
 		$list          = array(
 			'admin'   => 'admin_url',          // @since  0.2.6.0 /wp-admin/
 			'plugins' => 'plugins_url',        // @since  0.2.6.0 /wp-content/plugins/
