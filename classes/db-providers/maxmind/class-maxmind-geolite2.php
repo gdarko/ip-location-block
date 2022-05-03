@@ -132,21 +132,25 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$dir = $this->get_db_dir();
 		$db  = isset( $this->options[ $this->provider ] ) ? $this->options[ $this->provider ] : array();
 
+		$ip_path   = isset( $ip_path ) ? $ip_path : '';
+		$ip_path_d = ! empty( $ip_path ) ? dirname( $ip_path ) : '';
+		$ip_last   = isset( $db['ip_last'] ) ? $db['ip_last'] : '';
+
 		// IPv4 & IPv6
-		if ( $dir !== dirname( $db['ip_path'] ) . '/' ) {
-			$db['ip_path'] = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_IP;
+		if ( $dir !== $ip_path_d . '/' ) {
+			$ip_path = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_IP;
 		}
 
 		// Set API Key
 		$api_key = isset( $this->options['providers'][ $this->provider ] ) ? $this->options['providers'][ $this->provider ] : null;
 
 		// filter database file
-		$db['ip_path'] = apply_filters( 'ip-location-block-geolite2-path', $db['ip_path'] );
-		$res['ip']     = IP_Location_Block_Util::download_zip(
+		$ip_path   = apply_filters( 'ip-location-block-geolite2-path', $ip_path );
+		$res['ip'] = IP_Location_Block_Util::download_zip(
 			$this->get_api_url( 'country', $api_key ),
 			$args + array( 'method' => 'GET' ),
-			array( $db['ip_path'], 'COPYRIGHT.txt', 'LICENSE.txt' ), // 1st parameter should include absolute path
-			$db['ip_last']
+			array( $ip_path, 'COPYRIGHT.txt', 'LICENSE.txt' ), // 1st parameter should include absolute path
+			$ip_last
 		);
 
 		if ( ! empty( $res['ip']['filename'] ) ) {
@@ -193,6 +197,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 
 		$ip_path   = isset( $ip_path ) ? $ip_path : '';
 		$ip_path_d = ! empty( $ip_path ) ? dirname( $ip_path ) : '';
+		$ip_last   = isset( $db['ip_last'] ) ? $db['ip_last'] : '';
 
 		// IPv4 & IPv6
 		if ( $dir !== $ip_path_d . DIRECTORY_SEPARATOR ) {
@@ -203,10 +208,10 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$ip_path = apply_filters( 'ip-location-block-geolite2-path', $ip_path );
 
 		if ( $ip_path && $fs->exists( $ip_path ) ) {
-			if ( empty( $db['ip_last'] ) ) {
-				$db['ip_last'] = filemtime( $ip_path );
+			if ( empty( $ip_last ) ) {
+				$ip_last = filemtime( $ip_path );
 			}
-			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ip_last'] ) );
+			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $ip_last ) );
 		} else {
 			$date = $msg;
 		}
