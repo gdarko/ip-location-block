@@ -191,17 +191,20 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 		$dir = $this->get_db_dir();
 		$msg = __( 'Database file does not exist.', 'ip-location-block' );
 
+		$ip_path   = isset( $ip_path ) ? $ip_path : '';
+		$ip_path_d = ! empty( $ip_path ) ? dirname( $ip_path ) : '';
+
 		// IPv4 & IPv6
-		if ( !empty($db['ip_path']) && $dir !== dirname( $db['ip_path'] ) . '/' ) {
-			$db['ip_path'] = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_IP;
+		if ( $dir !== $ip_path_d . DIRECTORY_SEPARATOR ) {
+			$ip_path = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_IP;
 		}
 
 		// filter database file
-		$db['ip_path'] = apply_filters( 'ip-location-block-geolite2-path', $db['ip_path'] );
+		$ip_path = apply_filters( 'ip-location-block-geolite2-path', $ip_path );
 
-		if ( $fs->exists( $db['ip_path'] ) ) {
+		if ( $ip_path && $fs->exists( $ip_path ) ) {
 			if ( empty( $db['ip_last'] ) ) {
-				$db['ip_last'] = filemtime( $db['ip_path'] );
+				$db['ip_last'] = filemtime( $ip_path );
 			}
 			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ip_last'] ) );
 		} else {
@@ -219,7 +222,7 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 				'option'    => $option_name,
 				'field'     => $field,
 				'sub-field' => 'ip_path',
-				'value'     => $db['ip_path'],
+				'value'     => $ip_path,
 				'disabled'  => true,
 				'after'     => '<br /><p id="ip-location-block-' . $field . '-ip" style="margin-left: 0.2em">' . $date . '</p>',
 			)

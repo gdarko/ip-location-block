@@ -106,28 +106,35 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 
 		$db = isset( $this->options[ $this->provider ] ) ? $this->options[ $this->provider ] : array();
 
+		$ipv4_path   = isset( $db['ipv4_path'] ) ? $db['ipv4_path'] : '';
+		$ipv4_path_d = ! empty( $ipv4_path ) ? dirname( $ipv4_path ) : '';
+		$ipv4_last   = isset( $db['ipv4_last'] ) ? $db['ipv4_last'] : '';
+		$ipv6_path   = isset( $db['ipv6_path'] ) ? $db['ipv6_path'] : '';
+		$ipv6_path_d = ! empty( $ipv6_path ) ? dirname( $ipv6_path ) : '';
+		$ipv6_last   = isset( $db['ipv6_last'] ) ? $db['ipv6_last'] : '';
+
 		// IPv4
-		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' ) {
-			$db['ipv4_path'] = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT;
+		if ( $dir !== $ipv4_path_d . '/' ) {
+			$ipv4_path = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT;
 		}
 
 		$res['ipv4'] = IP_Location_Block_Util::download_zip(
 			apply_filters( 'ip-location-block-ip2location-zip-ipv4', IP_LOCATION_BLOCK_IP2LOC_IPV4_ZIP ),
 			$args,
-			$db['ipv4_path'],
-			$db['ipv4_last']
+			$ipv4_path,
+			$ipv4_last
 		);
 
 		// IPv6
-		if ( $dir !== dirname( $db['ipv6_path'] ) . '/' ) {
-			$db['ipv6_path'] = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV6_DAT;
+		if ( $dir !== $ipv6_path_d . '/' ) {
+			$ipv6_path = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV6_DAT;
 		}
 
 		$res['ipv6'] = IP_Location_Block_Util::download_zip(
 			apply_filters( 'ip-location-block-ip2location-zip-ipv6', IP_LOCATION_BLOCK_IP2LOC_IPV6_ZIP ),
 			$args,
-			$db['ipv6_path'],
-			$db['ipv6_last']
+			$ipv6_path,
+			$ipv6_last
 		);
 
 		if ( ! empty( $res['ipv4']['filename'] ) ) {
@@ -171,20 +178,26 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
 		$fs = IP_Location_Block_FS::init( __FILE__ . '(' . __FUNCTION__ . ')' );
 
-		$db  = $options[ $field ];
-		$dir = $this->get_db_dir();
-		$msg = __( 'Database file does not exist.', 'ip-location-block' );
+		$db          = $options[ $field ];
+		$dir         = $this->get_db_dir();
+		$msg         = __( 'Database file does not exist.', 'ip-location-block' );
+		$ipv4_path   = isset( $db['ipv4_path'] ) ? esc_html( $db['ipv4_path'] ) : '';
+		$ipv4_path_d = ! empty( $ipv4_path ) ? dirname( $ipv4_path ) : '';
+		$ipv4_last   = isset( $db['ipv4_last'] ) ? esc_html( $db['ipv4_last'] ) : '';
+		$ipv6_path   = isset( $db['ipv6_path'] ) ? esc_html( $db['ipv6_path'] ) : '';
+		$ipv6_path_d = ! empty( $ipv6_path ) ? dirname( $ipv6_path ) : '';
+		$ipv6_last   = isset( $db['ipv6_last'] ) ? esc_html( $db['ipv6_last'] ) : '';
 
 		// IPv4
-		if ( !empty($db['ipv4_path']) && $dir !== dirname( $db['ipv4_path'] ) . DIRECTORY_SEPARATOR ) {
-			$db['ipv4_path'] = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT;
+		if ( $dir !== $ipv4_path_d . DIRECTORY_SEPARATOR ) {
+			$ipv4_path = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV4_DAT;
 		}
 
 		// filter database file
-		$db['ipv4_path'] = apply_filters( 'ip-location-block-ip2location-path', !empty($db['ipv4_path']) ? $db['ipv4_path'] : '' );
+		$ipv4_path = apply_filters( 'ip-location-block-ip2location-path', $ipv4_path );
 
-		if ( $fs->exists( $db['ipv4_path'] ) ) {
-			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ipv4_last'] ) );
+		if ( $ipv4_path && $fs->exists( $ipv4_path ) ) {
+			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $ipv4_last ) );
 		} else {
 			$date = $msg;
 		}
@@ -200,22 +213,22 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 				'option'    => $option_name,
 				'field'     => $field,
 				'sub-field' => 'ipv4_path',
-				'value'     => $db['ipv4_path'],
+				'value'     => $ipv4_path,
 				'disabled'  => true,
 				'after'     => '<br /><p id="ip-location-block-' . $field . '-ipv4" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 
 		// IPv6
-		if ( !empty($db['ipv6_path']) && $dir !== dirname( $db['ipv6_path'] ) . DIRECTORY_SEPARATOR ) {
-			$db['ipv6_path'] = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV6_DAT;
+		if ( $dir !== $ipv6_path_d . DIRECTORY_SEPARATOR ) {
+			$ipv6_path = $dir . IP_LOCATION_BLOCK_IP2LOC_IPV6_DAT;
 		}
 
 		// filter database file
-		$db['ipv6_path'] = apply_filters( 'ip-location-block-ip2location-path-ipv6', !empty( $db['ipv6_path']) ?  $db['ipv6_path'] : '' );
+		$ipv6_path = apply_filters( 'ip-location-block-ip2location-path-ipv6', $ipv6_path );
 
-		if ( $fs->exists( $db['ipv6_path'] ) ) {
-			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $db['ipv6_last'] ) );
+		if ( $ipv6_path && $fs->exists( $ipv6_path ) ) {
+			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $ipv6_last ) );
 		} else {
 			$date = $msg;
 		}
@@ -231,7 +244,7 @@ class IP_Location_Block_API_IP2Location extends IP_Location_Block_API {
 				'option'    => $option_name,
 				'field'     => $field,
 				'sub-field' => 'ipv6_path',
-				'value'     => $db['ipv6_path'],
+				'value'     => $ipv6_path,
 				'disabled'  => true,
 				'after'     => '<br /><p id="ip-location-block-' . $field . '-ipv6" style="margin-left: 0.2em">' . $date . '</p>',
 			)

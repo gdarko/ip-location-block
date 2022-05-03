@@ -264,6 +264,11 @@ class IP_Location_Block_Opts {
 			}
 		}
 
+		// Upgrade the mu files
+		if ( version_compare( $version, '1.1.1' ) < 0 ) {
+			IP_Location_Block_Opts::upgrade_validation_timing_mu_plugin( $settings );
+		}
+
 		// Update Settings
 		$settings['version']    = IP_LOCATION_BLOCK_VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
@@ -504,7 +509,7 @@ class IP_Location_Block_Opts {
 	/**
 	 * Check if mu plugin exists
 	 *
-	 * @param string $prefix
+	 * @param  string  $prefix
 	 *
 	 * @return int
 	 */
@@ -518,7 +523,7 @@ class IP_Location_Block_Opts {
 	/**
 	 * Activate / Deactivate Must-use plugin / Advanced cache
 	 *
-	 * @param string $prefix
+	 * @param  string  $prefix
 	 *
 	 * @return bool|string
 	 */
@@ -536,8 +541,8 @@ class IP_Location_Block_Opts {
 	/**
 	 * Setup validation timing and replace mu plugin
 	 *
-	 * @param null $settings
-	 * @param string $prefix
+	 * @param  null  $settings
+	 * @param  string  $prefix
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -570,6 +575,20 @@ class IP_Location_Block_Opts {
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * Re-setup the validation timing mu-plugin
+	 *
+	 * @param $settings
+	 * @param $prefix
+	 *
+	 * @return void
+	 */
+	public static function upgrade_validation_timing_mu_plugin( $settings = null, $prefix = '' ) {
+		self::remove_mu_plugin( $prefix );
+		self::setup_validation_timing( $settings, $prefix );
 	}
 
 }

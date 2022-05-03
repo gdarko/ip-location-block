@@ -12,6 +12,8 @@
 
 class IP_Location_Block {
 
+	const VERSION = '1.1.2'; // Deprecated.
+
 	/**
 	 * Unique identifier for this plugin.
 	 */

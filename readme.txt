@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 5.9
-Stable tag: 1.1.0
+Stable tag: 1.1.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -234,8 +234,16 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Changelog ==
 
+= 1.1.2 =
+**Hot fix**: Fix issues with downloading local databases
+
+= 1.1.1 =
+**Hot fix**: Fix fatal error caused by removed constant still in use
+
 = 1.1.0 =
 **Feature**: Introducing premium <a href="https://iplocationblock.com/introducing-geolocation-api/">IP Location Block REST API</a>
+**Improvement**: Introduced new design for the provider table in Settings
+**Improvement**: Make action and filter names readable by IDEs
 **Bug fix**: Fix a bug that prevented uninstalling the plugin
 **Bug fix**: Fix various warnings triggered in PHP8+
 
