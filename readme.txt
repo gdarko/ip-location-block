@@ -2,8 +2,8 @@
 Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
-Tested up to: 5.9
-Stable tag: 1.1.2
+Tested up to: 6.0
+Stable tag: 1.1.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -233,6 +233,11 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.1.3 =
+**Bug fix**: Re-write the download_zip procedure to improve the external ip database download
+**Bug fix**: Improved logged-in user detection when validation timing is enabled, fixes blocking issues in admin, undefined constants, etc.
+**Improvement**: Disable restrict_api by default so the external APIs will be enabled by default
 
 = 1.1.2 =
 **Hot fix**: Fix issues with downloading local databases
