@@ -314,6 +314,7 @@ class IP_Location_Block_Util {
 				return new WP_Error( 403, sprintf( 'Temporary directory %s not writable.', $dir ) );
 			}
 		}
+
 		return trailingslashit( $dir );
 	}
 
@@ -1051,8 +1052,14 @@ class IP_Location_Block_Util {
 			if ( did_action( 'init' ) ) {
 				$logged_in = is_user_logged_in(); // @since  0.2.0.0
 			} else {
-				$user      = self::validate_auth_cookie();
-				$logged_in = $user ? $user->exists() : false; // @since 3.4.0
+				$settings   = IP_Location_block::get_option();
+				$timing_off = isset( $settings['validation']['timing'] ) ? ( 0 === ( (int) $settings['validation']['timing'] ) ) : 0;
+				if ( $timing_off ) {
+					$logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in(); // @since  0.2.0.0
+				} else {
+					$user      = self::validate_auth_cookie();
+					$logged_in = $user ? $user->exists() : false; // @since 3.4.0
+				}
 			}
 		}
 
@@ -1624,6 +1631,7 @@ class IP_Location_Block_Util {
 	 */
 	public static function parse_asn($asn) {
 		$asn = str_replace( 'AS', '', strtok( $asn, ' ' ) );
+
 		return sprintf( 'AS%s', $asn );
 	}
 
