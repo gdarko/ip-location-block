@@ -99,6 +99,14 @@ class IP_Location_Block_Util {
 	 */
 	public static function download_zip( $url, $args, $files, $modified ) {
 
+		$subdir = 'ilb-' . substr( base_convert( md5( $url ), 16, 32 ), 0, 12 );
+		$tmp    = self::get_temp_dir( $subdir );
+		if ( is_wp_error( $tmp ) ) {
+			throw new Exception(
+				sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
+			);
+		}
+
 		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
 		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
 
@@ -169,12 +177,6 @@ class IP_Location_Block_Util {
 							);
 						}
 					} else {
-						$tmp = self::get_temp_dir();
-						if ( is_wp_error( $tmp ) ) {
-							throw new Exception(
-								sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
-							);
-						}
 						$src = $tmp . basename( $url ); // $src should be removed
 						$fs->put_contents( $src, $data );
 						if ( true !== ( $ret = self::gzfile( $src, $filename ) ) ) {
@@ -186,15 +188,7 @@ class IP_Location_Block_Util {
 					$name = wp_remote_retrieve_header( $src, 'content-disposition' );
 					$name = explode( 'filename=', $name );
 					$name = array_pop( $name ); // e.g. GeoLite2-Country_20180102.tar.gz
-					$tmp  = self::get_temp_dir();
-
-					if ( is_wp_error( $tmp ) ) {
-						throw new Exception(
-							sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
-						);
-					}
-
-					$src = $tmp . $name; // $src should be removed
+					$src  = $tmp . $name; // $src should be removed
 
 					// CVE-2015-6833: A directory traversal when extracting ZIP files could be used to overwrite files
 					// outside of intended area via a `..` in a ZIP archive entry that is mishandled by extractTo().
@@ -209,15 +203,15 @@ class IP_Location_Block_Util {
 						}
 
 						// extract specific files from archives into temporary directory and copy it to the destination.
-						$tmp = trailingslashit( $tmp . $dst );
-						$data->extractTo( $tmp, $files /* NULL */, true ); // $tmp should be removed
+						$fpath = self::slashit( $tmp . $dst );
+						$data->extractTo( $fpath, $files /* NULL */, true );
 
 						// copy extracted files to Geolocation APIs directory
 						$dst = dirname( $filename );
 						foreach ( $files as $val ) {
 							// should the destination be exclusive with LOCK_EX ?
 							// $fs->put_contents( $dst.'/'.basename( $val ), $fs->get_contents( $tmp.'/'.$val ) );
-							$fs->copy( $tmp . $val, $dst . '/' . basename( $val ), true );
+							$fs->copy( $fpath . $val, $dst . '/' . basename( $val ), true );
 						}
 					}
 				}
@@ -240,13 +234,6 @@ class IP_Location_Block_Util {
 					}
 				} elseif ( 'zip' === $ext && class_exists( 'ZipArchive', false ) ) {
 
-					$tmp = self::get_temp_dir();
-					if ( is_wp_error( $tmp ) ) {
-						throw new Exception(
-							sprintf( __( 'Unable to extract archive. %s', 'ip-location-block' ), $tmp->get_error_message() )
-						);
-					}
-
 					$ret = $fs->unzip_file( $src, $tmp ); // @since  0.2.5
 
 					if ( is_wp_error( $ret ) ) {
@@ -255,9 +242,12 @@ class IP_Location_Block_Util {
 						);
 					}
 
-					if ( false === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) ) {
+					$f_path = $tmp . basename( $filename );
+					$data   = $fs->get_contents( $f_path );
+
+					if ( false === $data ) {
 						throw new Exception(
-							sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-location-block' ), $tmp )
+							sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-location-block' ), $f_path )
 						);
 					}
 
@@ -270,17 +260,20 @@ class IP_Location_Block_Util {
 					throw new Exception( __( 'gz or zip is not supported on your system.', 'ip-location-block' ) );
 				}
 			}
-		} // error handler
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			$err = array(
 				'code'    => $e->getCode(),
 				'message' => $e->getMessage(),
 			);
 		}
 
-		! empty  ( $gz ) and gzclose( $gz );
-		! empty  ( $tmp ) and $fs->delete( $tmp, true ); // should be removed recursively in case of directory
-		is_string( $src ) && $fs->is_file( $src ) and $fs->delete( $src );
+		if ( ! empty( $gz ) ) {
+			gzclose( $gz );
+		}
+
+		if ( ! empty( $tmp ) && $fs->exists( $tmp ) ) {
+			$fs->delete( $tmp, true );
+		}
 
 		return empty( $err ) ? array(
 			'code'     => $code,
@@ -293,29 +286,31 @@ class IP_Location_Block_Util {
 
 	/**
 	 * Return temporary directory
+	 *
+	 * @param null $subdir
+	 *
 	 * @return string|WP_Error|null
 	 */
-	public static function get_temp_dir() {
+	public static function get_temp_dir( $subdir = null ) {
+		$ds  = DIRECTORY_SEPARATOR;
 		$dir = \get_temp_dir();
-		$dir = apply_filters( 'ip-location-block-temp-dir', $dir );
+		$dir = apply_filters( 'ip-location-block-temp-dir', $dir, $subdir );
 		if ( ! file_exists( $dir ) || ! is_writable( $dir ) ) {
 			$uploads = wp_upload_dir();
-			$basedir = $uploads['basedir'];
-			$new_tmp = trailingslashit( $basedir ) . 'tmp_d';
-			if ( ! file_exists( $new_tmp ) ) {
-				if ( is_writable( $basedir ) ) {
-					wp_mkdir_p( $new_tmp );
-				}
-			}
-			$dir = $new_tmp;
-			if ( ! empty( $dir ) && is_writable( $dir ) ) {
-				return trailingslashit( $dir );
-			} else {
-				return new WP_Error( 403, sprintf( 'Temporary directory %s not writable.', $dir ) );
+			$tmpdir  = self::slashit( $uploads['basedir'] ) . 'ip-location-block' . $ds . 'tmp' . $ds;
+		} else {
+			$tmpdir = self::slashit( $dir );
+		}
+		if ( null !== $subdir ) {
+			$tmpdir .= ltrim( rtrim( str_replace( '/', $ds, $subdir ), $ds ), $ds ) . $ds;
+		}
+		if ( ! file_exists( $tmpdir ) ) {
+			if ( ! wp_mkdir_p( $tmpdir ) ) {
+				return new WP_Error( 403, sprintf( 'Temporary directory %s not writable.', $tmpdir ) );
 			}
 		}
 
-		return trailingslashit( $dir );
+		return $tmpdir;
 	}
 
 	/**
@@ -1232,9 +1227,10 @@ class IP_Location_Block_Util {
 	 * @return string
 	 */
 	public static function unslashit( $string ) {
-		if(!is_string($string)) {
+		if ( ! is_string( $string ) ) {
 			return $string;
 		}
+
 		return rtrim( $string, '/\\' );
 	}
 
@@ -1629,7 +1625,7 @@ class IP_Location_Block_Util {
 	 * 2. 9239 -> AS9239
 	 * 3. AS1111 -> AS1111
 	 */
-	public static function parse_asn($asn) {
+	public static function parse_asn( $asn ) {
 		$asn = str_replace( 'AS', '', strtok( $asn, ' ' ) );
 
 		return sprintf( 'AS%s', $asn );
