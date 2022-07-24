@@ -176,7 +176,7 @@ class IP_Location_Block_Opts {
 			'time' => 5,       // More than 7 page view in 5 seconds
 		),
 		// since version 3.0.13
-		'restrict_api'         => true,       // Do not send IP address to external APIs
+		'restrict_api'         => false,       // Do not send IP address to external APIs
 		// since version 3.0.14
 		'login_link'           => array(
 			'link' => null,    // key of login link
