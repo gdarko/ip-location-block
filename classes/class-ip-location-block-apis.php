@@ -352,56 +352,6 @@ class IP_Location_Block_API_iplocationblock extends IP_Location_Block_API {
 }
 
 /**
- * Class for IP-API.com
- *
- * URL         : http://ip-api.com/
- * Term of use : http://ip-api.com/docs/#usage_limits
- * Licence fee : free for non-commercial use
- * Rate limit  : 240 requests per minute
- * Sample URL  : http://ip-api.com/json/2a00:1210:fffe:200::1
- * Sample URL  : http://ip-api.com/xml/yahoo.co.jp
- * Input type  : IP address (IPv4, IPv6 with limited coverage) / domain name
- * Output type : json, xml
- */
-class IP_Location_Block_API_IPAPIcom extends IP_Location_Block_API {
-	protected $template = array(
-		'type'      => IP_LOCATION_BLOCK_API_TYPE_BOTH,
-		'url'       => 'http://ip-api.com/%API_FORMAT%/%API_IP%',
-		'api'       => array(
-			'%API_FORMAT%' => 'json',
-		),
-		'transform' => array(
-			'errorMessage' => 'error',
-			'countryCode'  => 'countryCode',
-			'countryName'  => 'country',
-			'regionName'   => 'regionName',
-			'cityName'     => 'city',
-			'latitude'     => 'lat',
-			'longitude'    => 'lon',
-			'asn'          => 'as',
-		)
-	);
-
-	/**
-	 * Returns the location
-	 *
-	 * @param $ip
-	 * @param  array  $args
-	 *
-	 * @return array|false|string[]
-	 */
-	public function get_location( $ip, $args = array() ) {
-		$res = parent::get_location( $ip, $args );
-
-		if ( ! empty( $res['asn'] ) ) {
-			$res['asn'] = IP_Location_Block_Util::parse_asn( $res['asn'] );
-		}
-
-		return $res;
-	}
-}
-
-/**
  * Class for GeoIPLookup.net
  *
  * URL         : http://geoiplookup.net/
@@ -815,18 +765,6 @@ class IP_Location_Block_Provider {
 			'requests' => array( 'total' => 15000, 'term' => 'month' ),
 			'api_auth' => self::API_AUTH_OPTIONAL,
 			'local'    => false,
-		),
-
-		'IP-API.com' => array(
-			'key'      => '',
-			'type'     => 'IPv4, IPv6 / free for non-commercial use',
-			'link'     => 'https://members.ip-api.com/#pricing',
-			'supports' => array( 'ipv4', 'ipv6', 'asn' ),
-			'limits'   => array( 'Up to 45 requests / minute' ),
-			'requests' => array( 'total' => - 1, 'term' => 'month' ),
-			'api_auth' => self::API_AUTH_OPTIONAL,
-			'local'    => false,
-
 		),
 
 		'GeoIPLookup' => array(
