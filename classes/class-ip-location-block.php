@@ -806,7 +806,7 @@ class IP_Location_Block {
 
 		if ( 2 === (int) $settings['validation']['xmlrpc'] ) // Completely close
 		{
-			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 3, 2 );
+			add_filter( 'ip-location-block-xmlrpc', array( $this, 'close_xmlrpc' ), 3, 2 );
 		} else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 		{
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'][0] );
@@ -962,7 +962,7 @@ class IP_Location_Block {
 			if ( ( 2 & $rule ) && $zep ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Location_Block_Util::trace_nonce( self::$auth_key );
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
+				add_filter( 'ip-location-block-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
 
@@ -971,7 +971,7 @@ class IP_Location_Block {
 				'comment.php',
 				'post.php'
 			), true ) ) {
-			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 5, 2 );
+			add_filter( 'ip-location-block-admin', array( $this, 'check_signature' ), 5, 2 );
 		}
 
 		// validate country by IP address (1: Block by country)
@@ -1004,13 +1004,13 @@ class IP_Location_Block {
 			if ( 2 & $rule ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Location_Block_Util::trace_nonce( self::$auth_key );
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
+				add_filter( 'ip-location-block-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
 
 		// register validation of malicious signature
 		if ( ! IP_Location_Block_Util::is_user_logged_in() ) {
-			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 5, 2 );
+			add_filter( 'ip-location-block-admin', array( $this, 'check_signature' ), 5, 2 );
 		}
 
 		// validate country by IP address (1: Block by country)
@@ -1345,17 +1345,17 @@ class IP_Location_Block {
 			}
 
 			// register filter hook to check pages and post types
-			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_page' ), 10, 2 );
+			add_filter( 'ip-location-block-public', array( $this, 'check_page' ), 10, 2 );
 		}
 
 		// validate undesired user agent
-		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 9, 2 );
+		add_filter( 'ip-location-block-public', array( $this, 'check_ua' ), 9, 2 );
 
 		// validate bad behavior by bots and crawlers
-		$public['behavior'] and add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_behavior' ), 9, 2 );
+		$public['behavior'] and add_filter( 'ip-location-block-public', array( $this, 'check_behavior' ), 9, 2 );
 
 		// retrieve IP address of visitor via proxy services
-		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Location_Block_Util', 'get_proxy_ip' ), 20, 1 );
+		add_filter( 'ip-location-block-ip-addr', array( 'IP_Location_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'] );
