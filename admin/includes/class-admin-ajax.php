@@ -32,41 +32,38 @@ class IP_Location_Block_Admin_Ajax {
 		$options = IP_Location_Block::get_option();
 
 		// check format
-		$ip = isset( $_POST['ip'] ) ? sanitize_text_Field( trim( $_POST['ip'] ) ) : '';
+		$ip  = isset( $_POST['ip'] ) ? sanitize_text_Field( trim( $_POST['ip'] ) ) : '';
+		$geo = null;
 		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
 			$tmp = IP_Location_Block::get_request_headers( $options );
 
 			// create object for provider and get location
 			if ( $geo = IP_Location_Block_API::get_instance( $which, $options ) ) {
-				$res = $geo->get_location( $ip, $tmp );
+				// gather geo details
+				$start          = microtime( true );
+				$res            = $geo->get_location( $ip, $tmp );
+				$res['geoTime'] = sprintf( '%.1f [msec]', ( microtime( true ) - $start ) * 1000.0 );
+				// gather asn details
+				if ( $geo->supports( 'asn' ) ) {
+					$start = microtime( true );
+					$inf   = $geo->get_location( $ip, array( 'asn' => true ) );
+					$tmp   = microtime( true ) - $start;
+					if ( ! empty( $inf['asn'] ) ) {
+						$res['asn']     = esc_html( $inf['asn'] );
+						$res['asnTime'] = sprintf( '%.1f [msec]', $tmp * 1000.0 );
+					}
+				}
+				// gather host dns
+				$tmp            = microtime( true );
+				$res['dns']     = esc_html( IP_Location_Block_Lkup::gethostbyaddr( $ip ) );
+				$res['dnsTime'] = sprintf( '%.1f [msec]', ( microtime( true ) - $tmp ) * 1000.0 );
+
 			} else {
 				$res = array( 'errorMessage' => 'Unknown service.' );
 			}
 		} else {
 			$res = array( 'errorMessage' => 'Invalid IP address.' );
-		}
-
-		if ( empty( $res['errorMessage'] ) ) {
-
-			$providers = IP_Location_Block_Provider::get_providers_by_feature( 'asn' );
-			foreach ( $providers as $key => $provider ) {
-				if ( $geo = IP_Location_Block_API::get_instance( $key, $options ) ) {
-					$tmp = microtime( true );
-					$inf = $geo->get_location( $ip, array( 'asn' => true ) );
-					$tmp = microtime( true ) - $tmp;
-					if ( empty( $inf['asn'] ) ) {
-						continue;
-					}
-					$res['AS number'] = esc_html( $inf['asn'] );
-					$res['AS number'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
-				}
-			}
-
-			$tmp               = microtime( true );
-			$res['host (DNS)'] = esc_html( IP_Location_Block_Lkup::gethostbyaddr( $ip ) );
-			$tmp               = microtime( true ) - $tmp;
-			$res['host (DNS)'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
 		}
 
 		return $res;
