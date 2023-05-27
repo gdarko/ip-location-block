@@ -592,17 +592,6 @@ class IP_Location_Block_API_IPInfoDB extends IP_Location_Block_API {
 	);
 
 	/**
-	 * IP_Location_Block_API_IPInfoDB constructor.
-	 *
-	 * @param $provider
-	 * @param  null  $api_key
-	 */
-	public function __construct( $provider, $api_key = null ) {
-		// sanitization
-		parent::__construct( $provider, preg_replace( '/\W/', '', $api_key ) );
-	}
-
-	/**
 	 * Returns the country
 	 *
 	 * @param $ip
