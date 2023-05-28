@@ -1590,7 +1590,7 @@ class IP_Location_Block_Util {
 			IP_Location_Block::update_option( $settings );
 		}
 
-		return add_query_arg( IP_Location_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
+		return add_query_arg( 'ip-location-block-key', $link, wp_login_url() );
 	}
 
 	// used at `admin_ajax_callback()` in class-ip-location-block-admin.php

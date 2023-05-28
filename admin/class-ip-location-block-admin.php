@@ -72,7 +72,7 @@ class IP_Location_Block_Admin {
 		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce' ), 10, 3 );
 
 		if ( IP_Location_Block_Util::is_user_logged_in() ) {
-			add_filter( IP_Location_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
+			add_filter( 'ip-location-block-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 		}
 
 		if ( is_multisite() && is_plugin_active_for_network( IP_LOCATION_BLOCK_BASE ) ) { // @since: 3.0.0
@@ -1400,7 +1400,7 @@ class IP_Location_Block_Admin {
 			}
 			if ( $supporting ) {
 				require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-cron.php';
-				add_action( IP_Location_Block::PLUGIN_NAME . '-settings-updated', array(
+				add_action( 'ip-location-block-settings-updated', array(
 					'IP_Location_Block_Cron',
 					'start_update_db'
 				), 10, 2 );
@@ -1505,7 +1505,7 @@ class IP_Location_Block_Admin {
 		if ( $ajax ) {
 			$nonce = IP_Location_Block_Util::verify_nonce( IP_Location_Block_Util::retrieve_nonce( 'nonce' ), $this->get_ajax_action() );
 		} else {
-			$nonce = check_admin_referer( IP_Location_Block::PLUGIN_NAME . '-options' );
+			$nonce = check_admin_referer( 'ip-location-block-options' );
 		} // a postfix '-options' is added at settings_fields().
 
 		$settings = IP_Location_Block::get_option();
@@ -1548,7 +1548,7 @@ class IP_Location_Block_Admin {
 		delete_transient( IP_Location_Block::CRON_NAME );
 
 		// start to update databases immediately
-		do_action( IP_Location_Block::PLUGIN_NAME . '-settings-updated', $options, true );
+		do_action( 'ip-location-block-settings-updated', $options, true );
 
 		return $options;
 	}
@@ -1779,7 +1779,7 @@ class IP_Location_Block_Admin {
 				break;
 
 			case 'restore-logs': // Get logs from MySQL DB
-				has_filter( $cmd = IP_Location_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array(
+				has_filter( $cmd = 'ip-location-block-logs' ) or add_filter( $cmd, array(
 					$this,
 					'filter_logs'
 				) );
@@ -1787,7 +1787,7 @@ class IP_Location_Block_Admin {
 				break;
 
 			case 'live-start': // Restore live log
-				has_filter( $cmd = IP_Location_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array(
+				has_filter( $cmd = 'ip-location-block-logs' ) or add_filter( $cmd, array(
 					$this,
 					'filter_logs'
 				) );

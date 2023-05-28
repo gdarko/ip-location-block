@@ -73,7 +73,7 @@ class IP_Location_Block_Cron {
 		// extract ip address from transient API to confirm the request source
 		if ( $immediate ) {
 			set_transient( IP_Location_Block::CRON_NAME, IP_Location_Block::get_ip_address( $settings ), MINUTE_IN_SECONDS );
-			add_filter( IP_Location_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+			add_filter( 'ip-location-block-ip-addr', array( __CLASS__, 'extract_ip' ) );
 		}
 
 		$context = IP_Location_Block::get_instance();
@@ -132,7 +132,7 @@ class IP_Location_Block_Cron {
 					set_transient( IP_Location_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 
 					// trigger update action
-					do_action( IP_Location_Block::PLUGIN_NAME . '-db-updated', $settings, $validate['code'] );
+					do_action( 'ip-location-block-db-updated', $settings, $validate['code'] );
 				}
 			}
 		}
