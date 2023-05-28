@@ -213,7 +213,11 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 			}
 			$date = sprintf( $str_last, IP_Location_Block_Util::localdate( $ip_last ) );
 		} else {
-			$date = $msg;
+			if ( empty( $options['providers']['GeoLite2'] ) ) {
+				$date = __( 'GeoLite2 not configured. Key is missing.', 'ip-location-block' );
+			} else {
+				$date = $msg;
+			}
 		}
 
 		add_settings_field(
