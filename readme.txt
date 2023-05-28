@@ -2,8 +2,8 @@
 Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
-Tested up to: 6.0
-Stable tag: 1.1.3
+Tested up to: 6.2
+Stable tag: 1.1.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -76,7 +76,6 @@ This package includes GeoLite2 library distributed by MaxMind, available from [M
 
 Also thanks for providing the following great services and REST APIs for free.
 
-* [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
 * [https://ipapi.com/](https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API") (IPv4, IPv6 / free, need API key)
@@ -233,6 +232,12 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.1.4 =
+**Improvement**: Codebase improvements
+**Improvement**: Drop the IP-API.com for now until we refactor the settings and make it possible to support apis that can be used with and without key.
+**Bug fix**: Fix array to string conversion when using the IPInfoDB provider
+**Improvement**: Refactor the search tab backend procedure
 
 = 1.1.3 =
 **Bug fix**: Re-write the download_zip procedure to improve the external ip database download
