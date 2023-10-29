@@ -1182,9 +1182,9 @@ class IP_Location_Block_Logs {
 		$cache = $hash = array();
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
 			if ( 2 === $mode ) {
-				$val[11] = $val[2]; // `hash`
+				$val[13] = $val[2]; // `hash`
 				$val[2]  = self::decrypt( $val[2] ); // `ip`
-				$val[10] = self::decrypt( $val[10] ); // `host`
+				$val[12] = self::decrypt( $val[12] ); // `host`
 			}
 
 			// make the encrypted `ip` hashed so that it can be specified as a key
