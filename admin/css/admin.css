@@ -1025,6 +1025,19 @@ Tables
     color: #21c67b;
     font-size: 13px;
 }
+.ip-location-block-providers:not(.ip-location-block-providers-compact) input.code {
+    max-width: 100px;
+}
+
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-requests,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-ipv4,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-ipv6,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-asn,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-city,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-state,
+.ip-location-block-providers tr.highlighted td.meta-compare.meta-limits {
+    color: #21c67b;
+}
 .ip-location-block-providers-compact .meta-compare {
     display: none;
 }

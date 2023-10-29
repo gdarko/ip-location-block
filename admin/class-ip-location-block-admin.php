@@ -624,6 +624,41 @@ class IP_Location_Block_Admin {
 			self::add_admin_notice( 'updated ', __( 'Local database and matching rule have been updated.', 'ip-location-block' ) );
 		}
 
+        // Check the rule contents
+		if ( (int) $settings['matching_rule'] >= 0 ) {
+			$key = '';
+			if ( 0 === (int) $settings['matching_rule'] ) {
+				$key = 'white_list';
+			} else if ( 1 === (int) $settings['matching_rule'] ) {
+				$key = 'black_list';
+			}
+			if ( isset( $settings[ $key ] ) ) {
+				$feature = '';
+				if ( strpos( $settings[ $key ], ':City:' ) !== false ) {
+					$feature = 'city';
+				} else if ( strpos( $settings[ $key ], ':State:' ) !== false ) {
+					$feature = 'state';
+				} else if ( strpos( $settings[ $key ], ':' ) !== false ) {
+					$feature = 'city';
+				}
+				if ( $feature ) {
+					$valid_providers = IP_Location_Block_Provider::get_valid_providers( $settings, false, false, true );
+					foreach ( $valid_providers as $valid_provider ) {
+						$provider = IP_Location_Block_API::get_instance( $valid_provider, $settings );
+						if ( $provider && ! $provider->supports( $feature ) ) {
+							self::add_admin_notice( 'error', sprintf(
+								__( 'Looks like you are trying to utilize <strong>%s</strong> level blocking, but the provider <strong>%s</strong> does not support that. In this case you may get invalid results. We strongly advise you to disable the provider <strong>%s</strong> from the settings below. For more details see <a target="_blank" href="%s">City/State Level Matching</a>.', 'ip-location-block' ),
+								$feature,
+                                $valid_provider,
+                                $valid_provider,
+                                'https://iplocationblock.com/codex/city-state-level-matching/'
+							) );
+						}
+					}
+				}
+			}
+		}
+
 		// Check self blocking (skip during updating)
 		if ( false === $updating && 1 === (int) $settings['validation']['login'] ) {
 			$instance = IP_Location_Block::get_instance();
@@ -963,6 +998,8 @@ class IP_Location_Block_Admin {
                             <th scope="col" class="manage-column meta-compare meta-ipv4"><?php _e( 'IPv4 Lookups', 'ip-location-block' ); ?></th>
                             <th scope="col" class="manage-column meta-compare meta-ipv6"><?php _e( 'IPv6 Lookups', 'ip-location-block' ); ?></th>
                             <th scope="col" class="manage-column meta-compare meta-asn"><?php _e( 'ASN Blocking', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-asn"><?php _e( 'City Blocking', 'ip-location-block' ); ?></th>
+                            <th scope="col" class="manage-column meta-compare meta-asn"><?php _e( 'State Blocking', 'ip-location-block' ); ?></th>
                             <th scope="col" class="manage-column meta-compare meta-limits"><?php _e( 'Limitations', 'ip-location-block' ); ?></th>
                             <th></th>
                         </tr>
@@ -977,7 +1014,7 @@ class IP_Location_Block_Admin {
 
 
 							?>
-                            <tr class="format-standard hentry">
+                            <tr class="format-standard hentry <?php echo 'IP Location Block' === $key ? 'highlighted' : ''; ?>">
                                 <td>
 									<?php
 									$checked  = $stat && - 1 !== (int) $val ? 'checked' : '';
@@ -1006,6 +1043,8 @@ class IP_Location_Block_Admin {
                                 <td class="meta-compare meta-ipv4"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, 'ipv4' ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
                                 <td class="meta-compare meta-ipv6"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, 'ipv6' ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
                                 <td class="meta-compare meta-asn"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, array( 'asn', 'asn_database' ) ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
+                                <td class="meta-compare meta-city"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, array( 'city' ) ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
+                                <td class="meta-compare meta-state"><?php echo sprintf( '<span class="dashicons %s"></span>', IP_Location_Block_Provider::supports( $key, array( 'state' ) ) ? 'dashicons-yes' : 'dashicons-no' ); ?></td>
                                 <td class="meta-compare meta-limits"><?php echo IP_Location_Block_Provider::format_provider_meta( $key, 'limits' ); ?></td>
                                 <td><?php echo IP_Location_Block_Provider::format_provider_meta( $key, 'signup-button' ); ?></td>
                             </tr>
