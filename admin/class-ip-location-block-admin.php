@@ -172,7 +172,7 @@ class IP_Location_Block_Admin {
 	 */
 	public function verify_request( $queries, $settings ) {
 		// the request that is intended to show the page without any action follows authentication of core.
-		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
+		if ( 'GET' === IP_Location_Block_Util::get_request_method() && isset( $_GET['page'] ) ) {
 			foreach ( array( 'action', 'task' ) as $key ) {
 				if ( ! empty( $_GET[ $key ] ) ) {
 					return $queries;
@@ -713,7 +713,7 @@ class IP_Location_Block_Admin {
 		$this->add_plugin_admin_menu( $settings );
 
 		// Avoid multiple validation.
-		if ( 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( 'GET' === IP_Location_Block_Util::get_request_method() ) {
 			$this->diagnose_admin_screen( $settings );
 		}
 

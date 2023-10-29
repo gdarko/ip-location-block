@@ -115,7 +115,7 @@ class IP_Location_Block {
 				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority[0] );
 			}
 		} // register target: alternative of trackback
-		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
+		elseif ( 'POST' === IP_Location_Block_Util::get_request_method() && 'trackback' === basename( $this->request_uri ) ) {
 			if ( $validate['comment'] || self::$live_log ) {
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority[0] );
 			}
@@ -572,7 +572,7 @@ class IP_Location_Block {
 		// @url https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag
 		'public' === $hook and header( 'X-Robots-Tag: noindex, nofollow', false );
 
-		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== IP_Location_Block_Util::get_request_method() ) {
 			status_header( 405 );
 			header( 'Content-Type: text/plain' );
 			die( 'XML-RPC server accepts POST requests only.' );
@@ -584,7 +584,8 @@ class IP_Location_Block {
 				exit;
 
 			case 3: // 3xx Redirection (HTTP header injection should be avoided)
-				if ( 'GET' === $_SERVER['REQUEST_METHOD'] || 'HEAD' === $_SERVER['REQUEST_METHOD'] ) {
+				$method = IP_Location_Block_Util::get_request_method();
+				if ( 'GET' === $method || 'HEAD' === $method ) {
 					IP_Location_Block_Util::safe_redirect( esc_url_raw( $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ), $code ); // @since  0.2.8
 					exit;
 				} else {
@@ -661,7 +662,7 @@ class IP_Location_Block {
 		add_filter( 'document_title_parts', array( $this, 'change_title' ) ); // @since 4.4.0
 
 		// avoid loading template for HEAD requests because of performance bump. See #14348.
-		if ( 'HEAD' !== $_SERVER['REQUEST_METHOD'] && isset( $this->theme_template['file'] ) ) {
+		if ( 'HEAD' !== IP_Location_Block_Util::get_request_method() && isset( $this->theme_template['file'] ) ) {
 			include $this->theme_template['file'];
 		}
 		exit;

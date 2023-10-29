@@ -372,7 +372,8 @@ class IP_Location_Block_Util {
 	 * @return bool
 	 */
 	public static function compare_url( $a, $b ) {
-		if ( 'GET' !== $_SERVER['REQUEST_METHOD'] && 'HEAD' !== $_SERVER['REQUEST_METHOD'] ) {
+		$method = IP_Location_Block_Util::get_request_method();
+		if ( 'GET' !== $method && 'HEAD' !== $method ) {
 			return false;
 		} // POST, PUT, DELETE
 
@@ -455,7 +456,7 @@ class IP_Location_Block_Util {
 	 */
 	public static function trace_nonce( $nonce ) {
 		if ( self::is_user_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
-		     self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+		     self::retrieve_nonce( $nonce ) && 'GET' === IP_Location_Block_Util::get_request_method() ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
 			self::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
@@ -732,7 +733,7 @@ class IP_Location_Block_Util {
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
-			if ( defined( 'DOING_AJAX' ) || 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			if ( defined( 'DOING_AJAX' ) || 'POST' === IP_Location_Block_Util::get_request_method() ) {
 				$expired += HOUR_IN_SECONDS;
 			}
 
@@ -1410,6 +1411,14 @@ class IP_Location_Block_Util {
 		}
 
 		return empty( $proxy ) ? $ip : $proxy;
+	}
+
+	/**
+	 * Returns the request method
+	 * @return mixed|string
+	 */
+	public static function get_request_method() {
+		return isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : '';
 	}
 
 	/**
