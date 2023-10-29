@@ -591,8 +591,9 @@ class IP_Location_Block_Admin {
 				), $network ) ) . '#' . IP_Location_Block::PLUGIN_NAME . '-section-4'
 			) );
 		} else {
-			$providers = IP_Location_Block_Provider::get_addons( $settings['providers'] );
-			if ( empty( $providers ) ) {
+			$providers   = IP_Location_Block_Provider::get_addons( $settings['providers'] );
+			$is_core_api = ! empty( $settings['providers']['IP Location Block'] );
+			if ( empty( $providers ) && ! $is_core_api ) {
 				$this->add_admin_notice( 'error', sprintf(
 					__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-location-block' ),
 					esc_url( add_query_arg( array(
