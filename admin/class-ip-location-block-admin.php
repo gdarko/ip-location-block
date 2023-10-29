@@ -938,15 +938,15 @@ class IP_Location_Block_Admin {
 		// field
 		$id = $name = '';
 		if ( ! empty( $args['field'] ) ) {
-			$id   = "${args['option']}_${args['field']}";
-			$name = "${args['option']}[${args['field']}]";
+            $id = sprintf('%s_%s', $args['option'], $args['field']);
+            $name = sprintf('%s[%s]', $args['option'], $args['field']);
 		}
 
 		// sub field
 		$sub_id = $sub_name = '';
 		if ( ! empty( $args['sub-field'] ) ) {
-			$sub_id   = "_${args['sub-field']}";
-			$sub_name = "[${args['sub-field']}]";
+            $sub_id   = sprintf('_%s', $args['sub-field']);
+            $sub_name = sprintf('[%s]', $args['sub-field']);
 		}
 
 		switch ( $args['type'] ) {
@@ -968,8 +968,8 @@ class IP_Location_Block_Admin {
                         </thead>
                         <tbody id="the-list">
 						<?php foreach ( $args['providers'] as $key => $val ):
-							$id = "${args['option']}_providers_{$key}";
-							$name = "${args['option']}[providers][$key]";
+                            $id = sprintf("%s_providers_%s", $args['option'], $key);
+                            $name = sprintf('%s[providers][%s]', $args['option'], $key);
 							$stat = ( null === $val && ! isset( $args['value'][ $key ] ) ) ||
 							        ( false === $val && ! empty( $args['value'][ $key ] ) ) ||
 							        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) );
@@ -1055,8 +1055,10 @@ class IP_Location_Block_Admin {
 
 			case 'select':
 			case 'select-text':
-				$desc = '';
-				echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\" ", ( isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : '' ), ">\n";
+                $desc       = '';
+                $field_id   = sprintf( '%s%s', $id, $sub_id );
+                $field_name = sprintf( '%s%s', $name, $sub_name );
+                echo sprintf( '<select id="%s" name="%s" %s>%s', esc_attr( $field_id ), esc_attr( $field_name ), isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : '', PHP_EOL );
 				foreach ( $args['list'] as $key => $val ) {
 					echo "\t<option value=\"$key\"", null === $val ? ' selected disabled' : ( is_array( $args['value'] ) ? selected( in_array( $key, $args['value'] ), true, false ) : selected( $args['value'], $key, false ) );
 					if ( isset( $args['desc'][ $key ] ) ) {
