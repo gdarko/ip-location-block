@@ -713,7 +713,6 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 */
 	public function get_location( $ip, $args = array() ) {
 		$cache = self::get_cache( $ip );
-		error_log(print_r($cache, true));
 		if ( $cache ) {
 			return array( 'countryCode' => $cache['code'], 'cityName' => $cache['city'], 'stateName' => $cache['state'] );
 		} else {

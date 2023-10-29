@@ -748,11 +748,6 @@ class IP_Location_Block {
 	 */
 	private function endof_validate( $hook, $validate, $settings, $block = true, $die = true, $countup = true ) {
 		// update cache and record logs
-
-		error_log('Calling endof_validate');
-		error_log($hook);
-		error_log(print_r($validate, true));
-
 		IP_Location_Block_API_Cache::update_cache( $hook, $validate, $settings, $countup );
 		IP_Location_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
 
