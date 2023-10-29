@@ -65,6 +65,21 @@ if ( ! class_exists( 'IP_Location_Block', false ) ):
 	register_activation_hook( __FILE__, 'ip_location_block_activate' );
 	register_deactivation_hook( __FILE__, 'ip_location_block_deactivate' );
 
+	function ip_location_block_update_completed( $upgrader_object, $options ) {
+		// If an update has taken place and the updated type is plugins and the plugins element exists
+		if ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+			foreach( $options['plugins'] as $plugin ) {
+				if( $plugin == plugin_basename( __FILE__ ) ) {
+					require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-util.php';
+					require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-opts.php';
+					require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-logs.php';
+					IP_Location_Block_Opts::upgrade();
+				}
+			}
+		}
+	}
+	add_action( 'upgrader_process_complete', 'ip_location_block_update_completed', 10, 2 );
+
 	/**
 	 * check version and update before instantiation
 	 *
