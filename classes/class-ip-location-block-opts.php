@@ -269,6 +269,17 @@ class IP_Location_Block_Opts {
 			IP_Location_Block_Opts::upgrade_validation_timing_mu_plugin( $settings );
 		}
 
+		// Upgrade cache table
+		if ( version_compare( $version, '1.2.0' ) < 0 ) {
+			global $wpdb;
+			$table = $wpdb->prefix . IP_Location_Block::CACHE_NAME;
+			$wpdb->query( "ALTER TABLE $table ADD `state` VARCHAR(100) DEFAULT NULL AFTER `code`" );
+			$wpdb->query( "ALTER TABLE $table ADD `city` VARCHAR(100) DEFAULT NULL AFTER `code`" );
+			$table = $wpdb->prefix . IP_Location_Block_Logs::TABLE_LOGS;
+			$wpdb->query( "ALTER TABLE $table ADD `state` VARCHAR(100) DEFAULT NULL AFTER `code`" );
+			$wpdb->query( "ALTER TABLE $table ADD `city` VARCHAR(100) DEFAULT NULL AFTER `code`" );
+		}
+
 		// Update Settings
 		$settings['version']    = IP_LOCATION_BLOCK_VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );

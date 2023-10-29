@@ -77,7 +77,7 @@ class IP_Location_Block {
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => IP_Location_Block_Util::unslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since  0.2.6.0
-		$len           = is_string(self::$wp_path['home']) ? strlen( self::$wp_path['home'] ) : 0;
+		$len           = is_string( self::$wp_path['home'] ) ? strlen( self::$wp_path['home'] ) : 0;
 		$list          = array(
 			'admin'   => 'admin_url',          // @since  0.2.6.0 /wp-admin/
 			'plugins' => 'plugins_url',        // @since  0.2.6.0 /wp-content/plugins/
@@ -388,7 +388,7 @@ class IP_Location_Block {
 		$settings or $settings = self::get_option();
 		self::$remote_addr or self::$remote_addr = IP_Location_Block_Util::get_client_ip( $settings['validation']['proxy'] );
 
-		return has_filter(  'ip-location-block-ip-addr' ) ? apply_filters(  'ip-location-block-ip-addr', self::$remote_addr ) : self::$remote_addr;
+		return has_filter( 'ip-location-block-ip-addr' ) ? apply_filters( 'ip-location-block-ip-addr', self::$remote_addr ) : self::$remote_addr;
 	}
 
 	/**
@@ -433,11 +433,17 @@ class IP_Location_Block {
 	 */
 	private static function make_validation( $ip, $result ) {
 		// later parameters take precedence over previous ones
-		return array_merge( array(
-			'ip'   => $ip,
-			'asn'  => null, // @since 3.0.4
-			'code' => 'ZZ', // should be overwritten with $result
-		), $result, array( 'auth' => IP_Location_Block_Util::get_current_user_id() ) );
+		$data = array_merge( array(
+			'ip'    => $ip,
+			'asn'   => null, // @since 3.0.4
+			'code'  => 'ZZ', // should be overwritten with $result
+			'city'  => null, // @since 1.2.0
+			'state' => null, // @since 1.2.0
+		), $result );
+
+		$data['auth'] = IP_Location_Block_Util::get_current_user_id();
+
+		return $data;
 	}
 
 	/**
@@ -445,11 +451,11 @@ class IP_Location_Block {
 	 *
 	 * @param string $ip IP address / default: $_SERVER['REMOTE_ADDR']
 	 * @param array $providers list of providers / ex: array( 'ipinfo.io' )
-	 * @param string $callback geolocation function / ex: 'get_location'
+	 * @param string $callback - Deprecated parameter
 	 *
 	 * @return array $result country code and so on
 	 */
-	public static function get_geolocation( $ip = null, $providers = array(), $callback = 'get_country' ) {
+	public static function get_geolocation( $ip = null, $providers = array(), $callback = '' ) {
 		$settings = self::get_option();
 
 		if ( empty( $providers ) ) // make valid providers list
@@ -457,7 +463,7 @@ class IP_Location_Block {
 			$providers = IP_Location_Block_Provider::get_valid_providers( $settings );
 		}
 
-		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array(), $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array() );
 
 		if ( ! empty( $result['countryCode'] ) ) {
 			$result['code'] = $result['countryCode'];
@@ -473,13 +479,13 @@ class IP_Location_Block {
 	 * @param $settings
 	 * @param $providers
 	 * @param array $args
-	 * @param string $callback
+	 * @param string $callback - Deprecated parameter
 	 *
 	 * @return array
 	 */
-	private static function _get_geolocation( $ip, $settings, $providers, $args = array(), $callback = 'get_country' ) {
+	private static function _get_geolocation( $ip, $settings, $providers, $args = array(), $callback = '' ) {
 		// check loop back / private address / empty provider
-		if ( IP_Location_Block_Util::is_private_ip( $ip ) || count( $providers ) <= 1 ) {
+		if ( IP_Location_Block_Util::is_private_ip( $ip ) || count( $providers ) < 1 ) {
 			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Private', 'code' => 'XX' ) );
 		}
 
@@ -487,32 +493,27 @@ class IP_Location_Block {
 		$args += self::get_request_headers( $settings );
 
 		foreach ( $providers as $provider ) {
-			$time = microtime( true );
-			$geo  = IP_Location_Block_API::get_instance( $provider, $settings );
+			$time        = microtime( true );
+			$instance    = IP_Location_Block_API::get_instance( $provider, $settings );
+			$geolocation = $instance ? $instance->get_location( $ip, $args ) : [];
 
-			if ( ! method_exists( $geo, $callback ) ) {
-				continue;
-			}
-
-			if ( $geo && ( $code = $geo->$callback( $ip, $args ) ) ) {
-
-				$asn = isset( $code['asn'] ) ? $code['asn'] : null;
-				if ( ! empty( $settings['use_asn'] ) && 0 !== strpos( $asn, 'AS' ) ) {
-					if ( $geo->supports( 'asn' ) ) {
-						$asn = $geo->get_location( $ip, array( 'asn' => true ) );
+			if ( ! empty( $geolocation['countryCode'] ) && empty( $geolocation['errorMessage'] ) ) {
+				$asn = ($instance->supports( 'asn' ) || $provider === 'Cache') && $settings['use_asn'] && isset( $geolocation['asn'] ) ? $geolocation['asn'] : null;
+				if ( ! empty( $settings['use_asn'] ) && empty( $asn ) ) {
+					if ( $instance->supports( 'asn' ) ) {
+						$asn = $instance->get_location( $ip, array( 'asn' => true ) );
 						$asn = isset( $asn['asn'] ) ? $asn['asn'] : null;
 					}
 				}
 
-				if ( ! is_array( $code ) ) {
-					$code = array( 'code' => $code );
-				}
-
-				$data = array_merge( array(
+				$data = array(
 					'time'     => microtime( true ) - $time,
 					'provider' => $provider,
 					'asn'      => $asn,
-				), $code );
+					'code'     => $geolocation['countryCode'],
+					'city'     => ($instance->supports( 'city' ) || $provider === 'Cache') && ! empty( $geolocation['cityName'] ) ? $geolocation['cityName'] : null,
+					'state'    => ($instance->supports( 'state' ) || $provider === 'Cache') && ! empty( $geolocation['stateName'] ) ? $geolocation['stateName'] : null,
+				);
 
 				return self::make_validation( $ip, $data );
 			}
@@ -531,22 +532,76 @@ class IP_Location_Block {
 	 *
 	 * @return string|string[]
 	 */
-	public static function validate_country( $hook, $validate, $settings, $block = true ) {
+	public static function validate_lookup_result( $hook, $validate, $settings, $block = true ) {
 		if ( 'XX' !== $validate['code'] ) { // 'XX' is for localhost or inside of load balancer etc
 			if ( $block && 0 === (int) $settings['matching_rule'] ) {
+				$list = $settings['white_list'];
 				// 'ZZ' will be blocked if it's not in the $list.
-				if ( ( $list = $settings['white_list'] ) && false === strpos( $list, $validate['code'] ) ) {
+				if ( $list && ! self::validate_list_match( $list, $validate ) ) {
 					return $hook ? $validate + array( 'result' => 'blocked' ) : 'blocked';
 				} // can't overwrite existing result
 			} elseif ( $block && 1 === (int) $settings['matching_rule'] ) {
 				// 'ZZ' will NOT be blocked if it's not in the $list.
-				if ( ( $list = $settings['black_list'] ) && false !== strpos( $list, $validate['code'] ) ) {
+				$list = $settings['black_list'];
+				if ( $list && self::validate_list_match( $list, $validate ) ) {
 					return $hook ? $validate + array( 'result' => 'blocked' ) : 'blocked';
 				} // can't overwrite existing result
 			}
 		}
 
 		return $hook ? $validate + array( 'result' => 'passed' ) : 'passed'; // can't overwrite existing result
+	}
+
+	/**
+	 * Validate rule
+	 *
+	 * @param string $list - Example lists can be: "MK", "MK,US,FR" or with city precision "FR:City:Paris~Montpellier,US:State:Washington,US:City:Seattle"
+	 * @param array $result - Example result coming from the geolocation API: [code => 'MK', city => Skopje, asn => AS9421]
+	 *
+	 * @return bool
+	 */
+	public static function validate_list_match( $list, $result ) {
+
+		$parts  = explode( ',', $list );
+		$parts  = ! empty( $parts ) ? array_map( 'trim', $parts ) : [];
+		$passes = false;
+
+		foreach ( $parts as $part ) {
+			$info  = explode( ':', $part );
+			$total = count( $info );
+			if ( 3 === $total || 2 === $total ) {
+				$key     = 2 === $total ? 'city' : strtolower( $info[1] );
+				$place   = 2 === $total ? $info[1] : $info[2];
+				$country = $info[0];
+				if ( strtolower( $country ) === strtolower( $result['code'] ) && ! empty( $result[ $key ] ) && strtolower( $place ) === strtolower( $result[ $key ] ) ) {
+					return true;
+				}
+			} else {
+				$country = $info[0];
+				if ( strtolower( $country ) === strtolower( $result['code'] ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Validate geolocation by country code.
+	 *
+	 * @param $hook
+	 * @param $validate
+	 * @param $settings
+	 * @param bool $block
+	 *
+	 * @return string|string[]
+	 * @deprecated 1.2.0
+	 *
+	 */
+	public static function validate_country( $hook, $validate, $settings, $block = true ) {
+		return self::validate_lookup_result( $hook, $validate, $settings, $block );
 	}
 
 	/**
@@ -693,6 +748,11 @@ class IP_Location_Block {
 	 */
 	private function endof_validate( $hook, $validate, $settings, $block = true, $die = true, $countup = true ) {
 		// update cache and record logs
+
+		error_log('Calling endof_validate');
+		error_log($hook);
+		error_log(print_r($validate, true));
+
 		IP_Location_Block_API_Cache::update_cache( $hook, $validate, $settings, $countup );
 		IP_Location_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
 
@@ -747,13 +807,16 @@ class IP_Location_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
 		$ips = IP_Location_Block_Util::retrieve_ips( array( self::get_ip_address( $settings ) ), $settings['validation']['proxy'] );
+
+		$validate = null;
+
 		foreach ( $ips as self::$remote_addr ) {
 			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers, array( 'cache' => true ) );
 			$validate = apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
 			if ( empty( $validate['result'] ) ) {
-				$validate = self::validate_country( $hook, $validate, $settings, $block );
+				$validate = self::validate_lookup_result( $hook, $validate, $settings, $block );
 			}
 
 			// if one of IPs is blocked then stop

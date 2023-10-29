@@ -88,6 +88,9 @@ class IP_Location_Block_Admin_Tab {
 		// Get the country code of client
 		$key = IP_Location_Block::get_geolocation( $val = IP_Location_Block::get_ip_address( $options ) );
 
+		#var_dump($key);
+		#die;
+
 		add_settings_field(
 			$option_name . '_ip_client',
 			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Your IP address / Country</dfn>', 'ip-location-block' ),
@@ -132,8 +135,8 @@ class IP_Location_Block_Admin_Tab {
 
 		$rule_desc = array(
 			__( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', 'ip-location-block' ),
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code</dfn>', 'ip-location-block' ) . '<br />(<a rel="noreferrer" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code</dfn>', 'ip-location-block' ) . '<br />(<a rel="noreferrer" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
+			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
+			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
 		);
 
 		// Matching rule

@@ -1194,8 +1194,17 @@ class IP_Location_Block_Admin {
 
 				case 'white_list':
 				case 'black_list':
-					$output[ $key ] = isset( $input[ $key ] ) ? preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) ) : '';
-					break;
+                    $input_value = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : '';
+                    $input_parts = explode( ',', $input_value );
+                    foreach ( $input_parts as $index => $input_part ) {
+                        $rule_parts = explode( ':', trim( $input_part ) );
+                        if ( ! empty( $rule_parts[0] ) ) {
+                            $rule_parts[0] = preg_replace( '/[^A-Z,]/', '', strtoupper( $rule_parts[0] ) );
+                        }
+                        $input_parts[ $index ] = implode( ':', $rule_parts );
+                    }
+                    $output[ $key ] = implode( ',', $input_parts );
+                    break;
 
 				case 'mimetype':
 					if ( isset( $input[ $key ]['white_list'] ) ) { // for json file before 3.0.3

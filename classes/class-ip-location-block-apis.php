@@ -214,9 +214,7 @@ abstract class IP_Location_Block_API {
 	 * @return array|false|string[]
 	 */
 	public function get_location( $ip, $args = array() ) {
-		$data = $this->fetch_provider( $ip, $args );
-
-		return $data;
+		return $this->fetch_provider( $ip, $args );
 	}
 
 	/**
@@ -345,8 +343,10 @@ class IP_Location_Block_API_iplocationblock extends IP_Location_Block_API {
 			'countryName' => 'country_name',
 			'regionName'  => 'region',
 			'cityName'    => 'city',
+			'stateName'   => 'region',
 			'latitude'    => 'latitude',
 			'longitude'   => 'longitude',
+			'asn'         => 'asn_number',
 		)
 	);
 }
@@ -621,7 +621,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	protected static $memcache = array();
 
 	/**
-	 * Update c ache
+	 * Update cache
 	 *
 	 * @param $hook
 	 * @param $validate
@@ -631,6 +631,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * @return array
 	 */
 	public static function update_cache( $hook, $validate, $settings, $countup = true ) {
+
 		$time  = $_SERVER['REQUEST_TIME'];
 		$cache = self::get_cache( $ip = $validate['ip'], $settings['cache_hold'] );
 
@@ -662,13 +663,14 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 			'asn'  => $validate['asn'], // @since 3.0.4
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
+			'city' => $validate['city'],
+			'state' => $validate['state'],
 			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
 			'reqs' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : '',
 		);
-
 		// do not update cache while installing geolocation databases
 		if ( $settings['cache_hold'] && ! ( $validate['auth'] && 'ZZ' === $validate['code'] ) ) {
 			IP_Location_Block_Logs::update_cache( $cache );
@@ -710,8 +712,10 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	 * @return array|string[]
 	 */
 	public function get_location( $ip, $args = array() ) {
-		if ( $cache = self::get_cache( $ip ) ) {
-			return array( 'countryCode' => $cache['code'] );
+		$cache = self::get_cache( $ip );
+		error_log(print_r($cache, true));
+		if ( $cache ) {
+			return array( 'countryCode' => $cache['code'], 'cityName' => $cache['city'], 'stateName' => $cache['state'] );
 		} else {
 			return array( 'errorMessage' => 'not in the cache' );
 		}
@@ -750,7 +754,7 @@ class IP_Location_Block_Provider {
 			'key'      => '',
 			'type'     => 'IPv4, IPv6 / free for non-commercial use',
 			'link'     => 'https://iplocationblock.com/pricing',
-			'supports' => array( 'ipv4', 'ipv6', 'asn' ),
+			'supports' => array( 'ipv4', 'ipv6', 'asn', 'city', 'state' ),
 			'requests' => array( 'total' => 15000, 'term' => 'month' ),
 			'api_auth' => self::API_AUTH_OPTIONAL,
 			'local'    => false,

@@ -63,6 +63,8 @@ class IP_Location_Block_Logs {
 			`hook` varchar(8) NOT NULL,
 			`auth` int(10) unsigned NOT NULL DEFAULT '0',
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+    		`city` varchar(100) NULL,
+    		`state` varchar(100) NULL,
 			`result` varchar(8) NULL,
 			`method` varchar(" . IP_LOCATION_BLOCK_MAX_STR_LEN . ") NOT NULL,
 			`user_agent` varchar(" . IP_LOCATION_BLOCK_MAX_STR_LEN . ") NULL,
@@ -98,6 +100,8 @@ class IP_Location_Block_Logs {
 			`ip` varbinary(96) UNIQUE NOT NULL,
 			`asn` varchar(8) NULL,
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+    		`city` varchar(100) NULL,
+    		`state` varchar(100) NULL,
 			`auth` int(10) unsigned NOT NULL DEFAULT '0',
 			`fail` int(10) unsigned NOT NULL DEFAULT '0',
 			`reqs` int(10) unsigned NOT NULL DEFAULT '0',
@@ -544,13 +548,15 @@ class IP_Location_Block_Logs {
 		if ( validate_file( $path ) === 0 ) {
 			file_put_contents(
 				IP_Location_Block_Util::slashit( $path ) . IP_Location_Block::PLUGIN_NAME . date( '-Y-m' ) . '.log',
-				sprintf( "%d,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+				sprintf( "%d,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s\n",
 					$_SERVER['REQUEST_TIME'],
 					$validate['ip'],
 					$validate['asn'],
 					$hook,
 					$validate['auth'],
 					$validate['code'],
+					$validate['city'],
+					$validate['state'],
 					$validate['result'],
 					$method,
 					str_replace( ',', '‚', $agent ), // &#044; --> &#130;
@@ -610,6 +616,8 @@ class IP_Location_Block_Logs {
 			hook varchar(8) NOT NULL,
 			auth integer DEFAULT 0 NOT NULL,
 			code varchar(2) DEFAULT 'ZZ' NOT NULL,
+			city varchar(100) NULL,
+			state varchar(100) NULL,
 			result varchar(8) NULL,
 			method varchar(" . IP_LOCATION_BLOCK_MAX_STR_LEN . ") NOT NULL,
 			user_agent varchar(" . IP_LOCATION_BLOCK_MAX_STR_LEN . ") NULL,
@@ -673,7 +681,7 @@ class IP_Location_Block_Logs {
 	public static function record_logs( $hook, $validate, $settings, $block = true ) {
 		$record = $settings['validation'][ $hook ] ? apply_filters( 'ip-location-block-record-logs', (int) $settings['validation']['reclogs'], $hook, $validate ) : 0;
 		$record = ( 1 === $record && $block ) || // blocked
-		          ( 6 === $record && ( $block || IP_Location_Block::is_blocked( IP_Location_Block::validate_country( null, $validate, $settings ) ) ) ) || // blocked or qualified
+		          ( 6 === $record && ( $block || IP_Location_Block::is_blocked( IP_Location_Block::validate_lookup_result( null, $validate, $settings ) ) ) ) || // blocked or qualified
 		          ( 2 === $record && ! $block ) || // passed
 		          ( 3 === $record && ! $validate['auth'] ) || // unauthenticated
 		          ( 4 === $record && $validate['auth'] ) || // authenticated
@@ -726,14 +734,16 @@ class IP_Location_Block_Logs {
 			if ( 2 === self::cipher_mode_key() ) {
 				$sql = $wpdb->prepare(
 					"INSERT INTO `$table`
-					(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
-					VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
+					(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `city`, `state`, `result`, `method`, `user_agent`, `headers`, `data`)
+					VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s, %s, %s)",
 					$_SERVER['REQUEST_TIME'],
 					self::encrypt_ip( $validate['ip'] ),
 					$validate['asn'],
 					$hook,
 					$validate['auth'],
 					$validate['code'],
+					$validate['city'],
+					$validate['state'],
 					$validate['result'],
 					$method,
 					$agent,
@@ -743,8 +753,8 @@ class IP_Location_Block_Logs {
 			} else {
 				$sql = $wpdb->prepare(
 					"INSERT INTO `$table`
-					(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
-					VALUES (%d, AES_ENCRYPT(%s, %s), %s, %s, %d, %s, %s, %s, %s, AES_ENCRYPT(%s, %s), %s)",
+					(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `city`, `state`, `result`, `method`, `user_agent`, `headers`, `data`)
+					VALUES (%d, AES_ENCRYPT(%s, %s), %s, %s, %d, %s, %s, %s, %s, %s, %s, AES_ENCRYPT(%s, %s), %s)",
 					$_SERVER['REQUEST_TIME'],
 					$validate['ip'],
 					self::$cipher['key'],
@@ -752,6 +762,8 @@ class IP_Location_Block_Logs {
 					$hook,
 					$validate['auth'],
 					$validate['code'],
+					$validate['city'],
+					$validate['state'],
 					$validate['result'],
 					$method,
 					$agent,
@@ -787,8 +799,8 @@ class IP_Location_Block_Logs {
 
 			try {
 				self::$stm = self::$pdo->prepare( // possibly throw an PDOException
-					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
-					'VALUES      ' . ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
+					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, city, state, result, method, user_agent, headers, data) ' .
+					'VALUES      ' . ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?      ?,      ?,      ?,          ?,       ?,    ?);'
 				); // example: https://php.net/manual/en/pdo.lobs.php
 				self::$stm->bindParam( 1, $id, PDO::PARAM_INT );
 				self::$stm->bindParam( 2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
@@ -797,11 +809,13 @@ class IP_Location_Block_Logs {
 				self::$stm->bindParam( 5, $hook, PDO::PARAM_STR );
 				self::$stm->bindParam( 6, $validate['auth'], PDO::PARAM_INT );
 				self::$stm->bindParam( 7, $validate['code'], PDO::PARAM_STR );
-				self::$stm->bindParam( 8, $validate['result'], PDO::PARAM_STR );
-				self::$stm->bindParam( 9, $method, PDO::PARAM_STR );
-				self::$stm->bindParam( 10, $agent, PDO::PARAM_STR );
-				self::$stm->bindParam( 11, $heads, PDO::PARAM_STR );
-				self::$stm->bindParam( 12, $posts, PDO::PARAM_STR );
+				self::$stm->bindParam( 8, $validate['city'], PDO::PARAM_STR );
+				self::$stm->bindParam( 9, $validate['state'], PDO::PARAM_STR );
+				self::$stm->bindParam( 10, $validate['result'], PDO::PARAM_STR );
+				self::$stm->bindParam( 11, $method, PDO::PARAM_STR );
+				self::$stm->bindParam( 12, $agent, PDO::PARAM_STR );
+				self::$stm->bindParam( 13, $heads, PDO::PARAM_STR );
+				self::$stm->bindParam( 14, $posts, PDO::PARAM_STR );
 				self::$pdo->beginTransaction(); // possibly throw an PDOException
 				self::$stm->execute();          // TRUE or FALSE
 				self::$pdo->commit();           // possibly throw an PDOException
@@ -833,7 +847,7 @@ class IP_Location_Block_Logs {
 
 		try {
 			self::$pdo->beginTransaction(); // possibly throw an PDOException
-			if ( self::$stm = self::$pdo->query( "SELECT No, hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = $id;" ) ) {
+			if ( self::$stm = self::$pdo->query( "SELECT No, hook, time, ip, code, city, state, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = $id;" ) ) {
 				$result = self::$stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
 				self::$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = $id;" ); // int or FALSE
 			}
@@ -865,10 +879,10 @@ class IP_Location_Block_Logs {
 		$mode = self::cipher_mode_key( $upgrade );
 
 		if ( 2 === $mode ) { // openssl
-			$sql = "SELECT `No`, `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
+			$sql = "SELECT `No`, `hook`, `time`, `ip`, `code`, `city`, `state`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 		} else { // mysql default
 			$sql = $wpdb->prepare(
-				"SELECT `No`, `hook`, `time`, `ip`, AES_DECRYPT(`ip`, %s), `code`, `result`, `asn`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table`",
+				"SELECT `No`, `hook`, `time`, `ip`, AES_DECRYPT(`ip`, %s), `code`, `city`, `state`, `result`, `asn`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table`",
 				self::$cipher['key'], self::$cipher['key']
 			);
 		}
@@ -917,12 +931,12 @@ class IP_Location_Block_Logs {
 
 		if ( 2 === $mode ) { // openssl
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data` FROM `$table` WHERE `ip` = %s",
+				"SELECT `time`, `ip`, `asn`, `hook`, `auth`, `code`, `city`, `state`, `result`, `method`, `user_agent`, `headers`, `data` FROM `$table` WHERE `ip` = %s",
 				self::encrypt_ip( $ip )
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else { // mysql default
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
+				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `city`, `state`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
 				self::$cipher['key'], self::$cipher['key'], $ip, self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
@@ -947,6 +961,8 @@ class IP_Location_Block_Logs {
 					'hook',
 					'auth',
 					'code',
+					'city',
+					'state',
 					'result',
 					'method',
 					'user_agent',
@@ -1003,12 +1019,12 @@ class IP_Location_Block_Logs {
 
 		if ( 2 === $mode ) {
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `ip`, `asn`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d",
+				"SELECT `time`, `ip`, `asn`, `hook`, `code`, `city`, `state`, `method`, `data` FROM `$table` WHERE `time` > %d",
 				$_SERVER['REQUEST_TIME'] - $duration
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d",
+				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `code`, `city`, `state`, `method`, `data` FROM `$table` WHERE `time` > %d",
 				self::$cipher['key'], $_SERVER['REQUEST_TIME'] - $duration
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
@@ -1024,7 +1040,7 @@ class IP_Location_Block_Logs {
 			}
 
 			$result[ $key ] = array_combine(
-				array( 'time', 'ip', 'asn', 'hook', 'code', 'method', 'data' ),
+				array( 'time', 'ip', 'asn', 'hook', 'code', 'city', 'state', 'method', 'data' ),
 				$result[ $key ]
 			);
 		}
@@ -1062,7 +1078,7 @@ class IP_Location_Block_Logs {
 			} // keep decrypted `ip`
 
 			$result[ $key ] = array_combine(
-				array( 'time', 'ip', 'asn', 'hook', 'code', 'method', 'data' ),
+				array( 'time', 'ip', 'asn', 'hook', 'code', 'city', 'state', 'method', 'data' ),
 				$result[ $key ]
 			);
 		}
@@ -1153,11 +1169,11 @@ class IP_Location_Block_Logs {
 		$mode = self::cipher_mode_key();
 
 		if ( 2 === $mode ) {
-			$sql = "SELECT `time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, `host` FROM `$table`";
+			$sql = "SELECT `time`, `hook`, `ip`, `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, `host` FROM `$table`";
 			$result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `hook`, AES_DECRYPT(`ip`, %s), `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, AES_DECRYPT(`host`, %s), `ip` FROM `$table`",
+				"SELECT `time`, `hook`, AES_DECRYPT(`ip`, %s), `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, AES_DECRYPT(`host`, %s), `ip` FROM `$table`",
 				self::$cipher['key'], self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
@@ -1178,6 +1194,8 @@ class IP_Location_Block_Logs {
 				'ip',
 				'asn',
 				'code',
+				'city',
+				'state',
 				'auth',
 				'fail',
 				'reqs',
@@ -1219,12 +1237,12 @@ class IP_Location_Block_Logs {
 
 		if ( 2 === $mode ) {
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `hook`, `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, `host` FROM `$table` " .
+				"SELECT `time`, `hook`, `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, `host` FROM `$table` " .
 				"WHERE `ip` = %s", self::encrypt_ip( $ip )
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
-				"SELECT `time`, `hook`, `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, AES_DECRYPT(`host`, %s) FROM `$table` " .
+				"SELECT `time`, `hook`, `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, AES_DECRYPT(`host`, %s) FROM `$table` " .
 				"WHERE `ip` = AES_ENCRYPT(%s, %s)", self::$cipher['key'], $ip, self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
@@ -1239,6 +1257,8 @@ class IP_Location_Block_Logs {
 				'hook',
 				'asn',
 				'code',
+				'city',
+				'state',
 				'auth',
 				'fail',
 				'reqs',
@@ -1266,13 +1286,15 @@ class IP_Location_Block_Logs {
 		if ( 2 === self::cipher_mode_key() ) {
 			$sql = $wpdb->prepare(
 				"INSERT INTO `$table`
-				(`time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, `host`)
-				VALUES (%d, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)
+				(`time`, `hook`, `ip`, `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, `host`)
+				VALUES (%d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)
 				ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
 				`hook` = VALUES(`hook`),
 				`auth` = VALUES(`auth`),
 				`code` = VALUES(`code`),
+				`city` = VALUES(`city`),
+				`state` = VALUES(`state`),
 				`fail` = VALUES(`fail`),
 				`reqs` = VALUES(`reqs`),
 				`last` = VALUES(`last`),
@@ -1282,23 +1304,28 @@ class IP_Location_Block_Logs {
 				self::encrypt_ip( $cache['ip'] ),
 				$cache['asn'],
 				$cache['code'],
+				$cache['city'],
+				$cache['state'],
 				$cache['auth'],
 				$cache['fail'],
 				$cache['reqs'],
 				$cache['last'],
 				$cache['view'],
 				self::encrypt( $cache['host'] )
-			) and $wpdb->query( $sql ) or self::error( __LINE__ );
+			);
+			$wpdb->query( $sql ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
 				"INSERT INTO `$table`
-				(`time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `reqs`, `last`, `view`, `host`)
-				VALUES (%d, %s, AES_ENCRYPT(%s, %s), %s, %s, %d, %d, %d, %d, %d, AES_ENCRYPT(%s, %s))
+				(`time`, `hook`, `ip`, `asn`, `code`, `city`, `state`, `auth`, `fail`, `reqs`, `last`, `view`, `host`)
+				VALUES (%d, %s, AES_ENCRYPT(%s, %s), %s, %s, %s, %s, %d, %d, %d, %d, %d, AES_ENCRYPT(%s, %s))
 				ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
 				`hook` = VALUES(`hook`),
 				`auth` = VALUES(`auth`),
 				`code` = VALUES(`code`),
+				`city` = VALUES(`city`),
+				`state` = VALUES(`state`),
 				`fail` = VALUES(`fail`),
 				`reqs` = VALUES(`reqs`),
 				`last` = VALUES(`last`),
@@ -1309,6 +1336,8 @@ class IP_Location_Block_Logs {
 				self::$cipher['key'],
 				$cache['asn'],
 				$cache['code'],
+				$cache['city'],
+				$cache['state'],
 				$cache['auth'],
 				$cache['fail'],
 				$cache['reqs'],

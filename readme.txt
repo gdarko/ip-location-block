@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 6.2
-Stable tag: 1.1.5
+Stable tag: 1.2.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -232,6 +232,9 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.2.0 =
+...
 
 = 1.1.5 =
 **Hot fix**: Deploy procedure hotfix
