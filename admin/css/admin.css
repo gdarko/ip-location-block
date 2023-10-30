@@ -1067,3 +1067,103 @@ Tables
 :-moz-placeholder           { color: #888; opacity: 1; } /* Firefox 18- */
 ::-moz-placeholder          { color: #888; opacity: 1; } /* Firefox 19+ */
 :-ms-input-placeholder      { color: #888; } /* IE 10+ */
+
+
+/* Instructions */
+.ilb-instructions {
+    width: 100%;
+    max-width: 98.5%;
+}
+.instructions .ilb-instructions-card {
+    background: #fff;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+.instructions .ilb-instructions-card .ilb-instructions-header {
+    border-bottom: 1px solid #e3e3e3;
+    padding-bottom: 10px;
+}
+.instructions .ilb-instructions-card .ilb-instructions-header p.lead {
+    font-size: 23px;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+
+}
+.instructions .ilb-instructions-card .ilb-instructions-header p.desc {
+    font-size: 15px;
+}
+.instructions .ilb-instructions-row {
+    float: left;
+    width: 96%;
+}
+.instructions .ilb-instructions-colf {
+    width: 100%;
+    float: left;
+    padding: 1%;
+}
+.instructions .ilb-instructions-col3 {
+    width: 31%;
+    float: left;
+    padding: 1%;
+}
+.instructions .ilb-instructions-col4 {
+    width: 23%;
+    float: left;
+    padding: 1%;
+}
+.instructions h4 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.ilb-notice-dismiss {
+    text-decoration: none;
+}
+@media (max-width: 767px) {
+    .instructions .ilb-instructions-col3 {
+        width: 100%;
+    }
+    .instructions .ilb-instructions-col4 {
+        width: 100%;
+    }
+}
+.instructions .green {
+    color: #1abc9c;
+}
+.instructions .navy {
+    color: #2f4154;
+    font-size: 17px;
+}
+.instructions .ilb-instructions-row.ilb-instructions-header .ilb-instructions-colf {
+    padding-bottom: 0;
+}
+.instructions .ilb-instructions-link {
+    background-color: #2f4154;
+    padding: 10px;
+    min-width: 80px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #1abc9c;
+    font-size: 1rem;
+}
+.instructions .ilb-instructions-link:hover, .instructions .ilb-instructions-link:active, .instructions .ilb-instructions-link:focus {
+    outline: none;
+    opacity: 0.8;
+}
+.instructions a.ilb-instructions-link {
+    text-transform: none;
+    text-decoration: none;
+}
+.instructions.is-dismissible {
+    padding-right: 0 !important;
+}
+.instructions .ilb-notice-badge {
+    color: #1abc9c;
+    font-size: 11px;
+    position: relative;
+    background-color: #125054;
+    padding: 2px 5px;
+    border-radius: 15px;
+    top: -2px;
+}
