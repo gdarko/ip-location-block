@@ -2118,4 +2118,20 @@
         })
     })
 
+    $(function(){
+        $(document).on('click', ID('.', 'notice-intro button.notice-dismiss'), function(e){
+            var notice_id = $(this).closest('.notice').data('notice');
+            ajax_post(null, {
+                cmd: 'dismiss-notice',
+                notice_id: notice_id,
+            }, function (data) {
+                if (data.hasOwnProperty('message')) {
+                    console.log(data.message);
+                } else {
+                    alert('Unable to dismiss nonce.');
+                }
+            });
+        })
+    })
+
 }(jQuery, window, document));

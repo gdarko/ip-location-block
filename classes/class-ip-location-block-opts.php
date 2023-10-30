@@ -21,6 +21,7 @@ class IP_Location_Block_Opts {
 	 */
 	private static $option_table = array(
 		'version'              => IP_LOCATION_BLOCK_VERSION,// Version of this table (not package)
+		'welcome'              => false, // @since 1.2.0
 		// since version 1.0
 		'providers'            => array(), // List of providers and API keys
 		'comment'              => array(   // Message on the comment form
