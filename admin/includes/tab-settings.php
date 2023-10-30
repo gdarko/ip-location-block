@@ -235,7 +235,7 @@ class IP_Location_Block_Admin_Tab {
 		// White list of extra IP addresses prior to country code (CIDR, ASN)
 		add_settings_field(
 			$option_name . '_extra_ips_white_list',
-			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-location-block' ) .
+			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code/pattern</dfn>', 'ip-location-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
 			'<a class="ip-location-block-icon ip-location-block-icon-cidr" title="' . $common[6] . '"><span class="ip-location-block-icon-calc"></span></a>',
@@ -256,7 +256,7 @@ class IP_Location_Block_Admin_Tab {
 		// Black list of extra IP addresses prior to country code (CIDR, ASN)
 		add_settings_field(
 			$option_name . '_extra_ips_black_list',
-			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-location-block' ) .
+			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code/pattern</dfn>', 'ip-location-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
 			'<a class="ip-location-block-icon ip-location-block-icon-cidr" title="' . $common[6] . '"><span class="ip-location-block-icon ip-location-block-icon-calc"></span></a>',
