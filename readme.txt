@@ -2,7 +2,7 @@
 Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
-Tested up to: 6.2
+Tested up to: 6.4
 Stable tag: 1.2.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -18,6 +18,9 @@ Combined with those methods and IP address geolocation, you'll be surprised to f
 **Note:** This plugin is based on the now abandoned "IP Geo Block" plugin by tokkonopapa. I fixed various issues and improved the overall codebase.
 
 = Features =
+
+* **Native Geo-Location Provider**
+  IP Location Block provides [Native Geo-Location Provider](https://iplocationblock.com/codex/native-geo-location-provider/?utm_source=plugin&utm_medium=wporgpage&utm_campaign=readme) that is faster, more secure and provides the needed **precision** for matching **CITY** and **STATE** besides the standard COUNTRY matching.
 
 * **Privacy by design:**
   IP address is always encrypted on recording in logs/cache. Moreover, it can be anonymized and restricted on sending to the 3rd parties such as geolocation APIs or whois service.
@@ -47,7 +50,7 @@ Combined with those methods and IP address geolocation, you'll be surprised to f
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**
-  [MaxMind GeoLite2 free databases](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.
+  Besides the [Native Geo-Location provider](https://iplocationblock.com/codex/native-geo-location-provider/?utm_source=plugin&utm_medium=wporgpage&utm_campaign=readme), this plugin supports [MaxMind GeoLite2 free databases](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"). Also free Geolocation REST APIs and whois information can be available for audit purposes.
   Father more, [dedicated API class libraries](https://iplocationblock.com/cloudflare-cloudfront-api-class-library/ "CloudFlare & CloudFront API class library | IP Location Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
 
 * **Customizing response:**
@@ -70,24 +73,28 @@ Combined with those methods and IP address geolocation, you'll be surprised to f
 * **Clean uninstallation:**
   Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality.
 
+
+= Documentation =
+
+Documentation and more information can always be found on our [plugin website](https://iplocationblock.com/ "IP Location Block").
+
 = Attribution =
 
-This package includes GeoLite2 library distributed by MaxMind, available from [MaxMind](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+), and also includes IP2Location open source libraries available from [IP2Location](https://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+This package includes GeoLite2 library distributed by MaxMind, available from [MaxMind](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"), and also includes IP2Location open source libraries available from [IP2Location](https://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
-Also thanks for providing the following great services and REST APIs for free.
+Also thanks for providing the following services and REST APIs for free.
 
 * [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
 * [https://ipapi.com/](https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API") (IPv4, IPv6 / free, need API key)
-* [https://ipdata.co/](https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API") (IPv4, IPv6 / free, need API key)
 * [https://ipstack.com/](https://ipstack.com/ "ipstack - Free IP Geolocation API") (IPv4, IPv6 / free, need API key)
 * [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free, need API key)
 
 = Development =
 
-Development of this plugin happens at [IP Location Block](https://github.com/gdarko/ip-location-block "gdarko/ip-location-block - GitHub")
+Development of this plugin happens at [IP Location Block - GitHub](https://github.com/gdarko/ip-location-block "gdarko/ip-location-block - GitHub")
 
-All contributions will always be welcome. Or visit my [development blog](https://iplocationblock.com/ "IP Location Block").
+All contributions will always be welcome.
 
 == Installation ==
 
@@ -117,6 +124,10 @@ Yes, if "IP Geo Block" settings are detected, you will see migrate option in the
 = Does this plugin support multisite? =
 
 Yes. You can synchronize the settings with all the sites on the network when you activate on network and enable "**Network wide settings**" in "**Plugin settings**" section.
+
+= Does this plugin allows blocking US States, Country Regions or Cities?
+
+Yes. Please view [City/State Level Matching](https://iplocationblock.com/codex/city-state-level-matching/) for more details.
 
 = Does this plugin works well with caching? =
 
@@ -233,76 +244,108 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Changelog ==
 
-= 1.2.0 =
-...
+= 1.5.3 =
+*Release Date - 30 Oct 2023*
+
+* Precision blocking by city/state support via the native IP Location Block provider
+* Fixes various PHP 8.2 warnings reported on Github & forums
+* Codebase improvements related to external API providers
+* Test with WordPress 6.4
 
 = 1.1.5 =
-**Hot fix**: Deploy procedure hotfix
+*Release Date - 28 May 2023*
+
+* Deploy procedure hotfix
 
 = 1.1.4 =
-**Improvement**: Codebase improvements
-**Improvement**: Drop the IP-API.com for now until we refactor the settings and make it possible to support apis that can be used with and without key.
-**Bug fix**: Fix array to string conversion when using the IPInfoDB provider
-**Improvement**: Refactor the search tab backend procedure
+*Release Date - 28 May 2023*
+
+* Codebase improvements
+* Drop the IP-API.com for now until we refactor the settings and make it possible to support apis that can be used with and without key.
+* Fix array to string conversion when using the IPInfoDB provider
+* Refactor the search tab backend procedure
 
 = 1.1.3 =
-**Bug fix**: Re-write the download_zip procedure to improve the external ip database download
-**Bug fix**: Improved logged-in user detection when validation timing is enabled, fixes blocking issues in admin, undefined constants, etc.
-**Improvement**: Disable restrict_api by default so the external APIs will be enabled by default
+*Release Date - 24 Jul 2022*
+
+* Re-write the download_zip procedure to improve the external ip database download
+* Improved logged-in user detection when validation timing is enabled, fixes blocking issues in admin, undefined constants, etc.
+* Disable restrict_api by default so the external APIs will be enabled by default
 
 = 1.1.2 =
-**Hot fix**: Fix issues with downloading local databases
+*Release Date - 03 May 2022*
+
+* Fix issues with downloading local databases
 
 = 1.1.1 =
-**Hot fix**: Fix fatal error caused by removed constant still in use
+*Release Date - 02 May 2022*
+
+* Fix fatal error caused by removed constant still in use
 
 = 1.1.0 =
-**Feature**: Introducing premium <a href="https://iplocationblock.com/introducing-geolocation-api/">IP Location Block REST API</a>
-**Improvement**: Introduced new design for the provider table in Settings
-**Improvement**: Make action and filter names readable by IDEs
-**Bug fix**: Fix a bug that prevented uninstalling the plugin
-**Bug fix**: Fix various warnings triggered in PHP8+
+*Release Date - 01 May 2022*
 
+* Introducing premium <a href="https://iplocationblock.com/introducing-geolocation-api/">IP Location Block REST API</a>
+* Introduced new design for the provider table in Settings
+* Make action and filter names readable by IDEs
+* Fix a bug that prevented uninstalling the plugin
+* Fix various warnings triggered in PHP8+
 
 = 1.0.7 =
-**Hot fix**: Fix IPv6.php - add compatibility with PHP7.4+
+*Release Date - 21 Dec 2021*
+
+* Fix IPv6.php - add compatibility with PHP7.4+
 
 = 1.0.6 =
-**Hot fix**: Fixes broken plugin admin settings / stats pages
+*Release Date - 21 Nov 2021*
+
+* Fixes broken plugin admin settings / stats pages
 
 = 1.0.5 =
-**Bug fix**: Fix 307 Response Redirect loop
-**Bug fix**: Fix wrong cron info in admin settings
-**Bug fix**: Fix Undefined array key warnings in PHP8
-**Bug fix**: FIx undefined IP_LOCATION_BLOCK_AUTH in some environments.
+*Release Date - 20 Nov 2021*
+
+* Fix 307 Response Redirect loop
+* Fix wrong cron info in admin settings
+* Fix Undefined array key warnings in PHP8
+* FIx undefined IP_LOCATION_BLOCK_AUTH in some environments.
 
 = 1.0.4 =
-**Bug fix**: Fix bugs related to the asn blocking feature
-**Bug fix**: Trigger re-download of the asn database once the ASN feature is enabled via settings
-**Improvement**: Improved migration from legacy process, unset unused settings
+*Release Date - 08 Jun 2021*
+
+* Fix bugs related to the asn blocking feature
+* Trigger re-download of the asn database once the ASN feature is enabled via settings
+* Improved migration from legacy process, unset unused settings
 
 = 1.0.3 =
-**Improvement**: Add "Migrate from IP Geo Block" option if IP Geo Block settings are detected. This will copy the IP Geo Block settings.
-**Improvement**: Replaced the deprecated jQuery.trim() calls with String.trim()
-**Bug Fix**: Fix error when deleting the Emergency link using the "Delete current link" button.
+*Release Date - 18 May 2021*
+
+* Add "Migrate from IP Geo Block" option if IP Geo Block settings are detected. This will copy the IP Geo Block settings.
+* Replaced the deprecated jQuery.trim() calls with String.trim()
+* Fix error when deleting the Emergency link using the "Delete current link" button.
 
 = 1.0.2 =
-**Bug fix**: Fix mu-plugins option
+*Release Date - 18 May 2021*
+
+* Fix mu-plugins option
 
 = 1.0.1 =
-**Improvement:** Drop ipdata.co API
-**Bug fix**: Fixed the search tool
+*Release Date - 17 May 2021*
+
+* Drop ipdata.co API
+* Fixed the search tool
 
 = 1.0.0 =
-**Improvement:** Added PHP8 compatibility
-**Improvement:** Added support for Maxmind GeoLite2 database with api key
-**Improvement:** Replaced Google Maps with OSM/Leaflet
-**Improvement:** Updated DNS2 Library to support PHP8
-**Bug fix:** Fixed IP2Location provider errors. Update to the latest version
-**Bug fix:** Fixed various errors caught in error logs triggered in the newer PHP versions
-**Bug fix:** Fixed the ipinfo.io API
-**Bug fix:** Fixed the ipdata.co API
+*Release Date - 17 May 2021*
+
+* Added PHP8 compatibility
+* Added support for Maxmind GeoLite2 database with api key
+* Replaced Google Maps with OSM/Leaflet
+* Updated DNS2 Library to support PHP8
+* Fixed IP2Location provider errors. Update to the latest version
+* Fixed various errors caught in error logs triggered in the newer PHP versions
+* Fixed the ipinfo.io API
+* Fixed the ipdata.co API
 
 == Upgrade Notice ==
 
-We are introducing our own IP Geolocation API, read more on <a href="https://iplocationblock.com/introducing-geolocation-api/">our blog</a>.
+As of version 1.2.0, the plugin supports <a href="https://iplocationblock.com/codex/city-state-level-matching/">City/State Level Matching</a>.
