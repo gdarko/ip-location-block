@@ -41,7 +41,15 @@ class IP_Location_Block_Logs {
 	private static $cipher = array();
 
 	// SQLite for Live update
+	/**
+	 * The PDO instance
+	 * @var PDO|null
+	 */
 	private static $pdo = null;
+	/**
+	 * The pdo statement instance
+	 * @var PDOStatement|null|false
+	 */
 	private static $stm = null;
 
 	/**
@@ -633,7 +641,13 @@ class IP_Location_Block_Logs {
 	 */
 	public static function close_sqlite_db() {
 		if ( self::$pdo && ! is_wp_error( self::$pdo ) ) {
-			@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
+			try {
+				if ( self::$pdo->inTransaction() ) {
+					@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
+				}
+			} catch ( \Exception $e ) {
+				error_log('IP Location Block: '.$e->getMessage());
+			}
 			self::$stm = null;
 			self::$pdo = null;
 		}
@@ -800,7 +814,7 @@ class IP_Location_Block_Logs {
 			try {
 				self::$stm = self::$pdo->prepare( // possibly throw an PDOException
 					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, city, state, result, method, user_agent, headers, data) ' .
-					'VALUES      ' . ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?      ?,      ?,      ?,          ?,       ?,    ?);'
+					'VALUES      ' . ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,      ?,      ?,          ?,       ?,    ?);'
 				); // example: https://php.net/manual/en/pdo.lobs.php
 				self::$stm->bindParam( 1, $id, PDO::PARAM_INT );
 				self::$stm->bindParam( 2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
@@ -821,7 +835,9 @@ class IP_Location_Block_Logs {
 				self::$pdo->commit();           // possibly throw an PDOException
 				self::$stm->closeCursor();      // TRUE or FALSE
 			} catch ( PDOException $e ) {
-				@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
+				if(self::$pdo->inTransaction()) {
+					@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
+				}
 				self::error( __LINE__, $e->getMessage() );
 			}
 

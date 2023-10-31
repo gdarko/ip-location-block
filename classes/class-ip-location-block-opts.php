@@ -281,6 +281,11 @@ class IP_Location_Block_Opts {
 			$wpdb->query( "ALTER TABLE $table ADD `city` VARCHAR(100) DEFAULT NULL AFTER `code`" );
 		}
 
+		// Upgrade SQLite
+		if ( version_compare( $version, '1.2.1' ) < 0 ) {
+			IP_Location_Block_Logs::reset_sqlite_db();
+		}
+
 		// Update Settings
 		$settings['version']    = IP_LOCATION_BLOCK_VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
