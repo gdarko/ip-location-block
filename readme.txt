@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 6.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -244,7 +244,12 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 
 == Changelog ==
 
-= 1.5.3 =
+= 1.2.1 =
+*Release Date - 31 Oct 2023*
+
+* Fix SQLite logging related errors
+
+= 1.2.0 =
 *Release Date - 30 Oct 2023*
 
 * Precision blocking by city/state support via the native IP Location Block provider
