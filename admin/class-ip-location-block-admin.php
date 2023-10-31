@@ -253,9 +253,18 @@ class IP_Location_Block_Admin {
 	 */
 	public function enqueue_admin_assets() {
 
+		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_network_options' ) ) {
+			return;
+		}
+
 		// Control tab number
+		if ( isset( $_GET['page'] ) && 'ip-location-block' === $_GET['page'] ) {
+			$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
+		} else {
+			$tab = - 1;
+		}
+
 		$settings = IP_Location_Block::get_option();
-		$tab = isset($_GET['tab']) ? intval($_GET['tab']) : 0;
 
 		$release = ( ! defined( 'IP_LOCATION_BLOCK_DEBUG' ) || ! IP_LOCATION_BLOCK_DEBUG );
 

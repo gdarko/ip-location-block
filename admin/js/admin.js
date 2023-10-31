@@ -978,10 +978,9 @@
 
     $(function () {
         // Get tab number
-        var tabNo = Number(ip_location_block.tab) || 0,
-
-            // Attach event handler and manage cookie
-            cookie = manageSection(tabNo);
+        var tabNo = ip_location_block && ip_location_block.hasOwnProperty('tab') ? Number(ip_location_block.tab) : -1;
+        // Attach event handler and manage cookie
+        var cookie = manageSection(tabNo);
 
         // Inhibit to submit by return key
         $(ID('.', 'inhibit')).on('submit', function () {
