@@ -162,6 +162,9 @@ class IP_Location_Block_API_GeoLite2 extends IP_Location_Block_API {
 
 		if ( ! empty( $this->options['use_asn'] ) || ! empty( $db['asn_path'] ) ) {
 			// ASN for IPv4 and IPv6
+			if ( ! isset( $db['asn_path'] ) ) {
+				$db['asn_path'] = '';
+			}
 			if ( $dir !== dirname( $db['asn_path'] ) . '/' ) {
 				$db['asn_path'] = $dir . IP_LOCATION_BLOCK_GEOLITE2_DB_ASN;
 			}
