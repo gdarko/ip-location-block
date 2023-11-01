@@ -916,6 +916,19 @@ class IP_Location_Block_Provider {
 	}
 
 	/**
+	 * Checks if IP Location Block API is the only provider enabled
+	 * @param $settings
+	 *
+	 * @since 1.2.2
+	 *
+	 * @return bool
+	 */
+	public static function is_native( $settings ) {
+		$providers = IP_Location_Block_Provider::get_valid_providers( $settings, true, false, false);
+		return !empty($providers) && is_array($providers) && count($providers) === 1 ? $providers[0] === 'IP Location Block' : false;
+	}
+
+	/**
 	 * Return provider
 	 *
 	 * @param $name

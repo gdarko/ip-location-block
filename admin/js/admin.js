@@ -1738,8 +1738,8 @@
                             {responsivePriority: 9, targets: 12}, // HTTP headers
                             {responsivePriority: 10, targets: 13}, // $_POST data
                             {visible: false, targets: 1}, // always hidden
-                            {className: "all", targets: [0, 2, 3, 4]}, // always visible
-                            {className: "none", targets: [5,6,10,11,12,13]}  // always hidden
+                            {className: "all", targets: parseInt(ip_location_block.native) ? [0, 2, 3, 4, 5, 6] : [0, 2, 3, 4]}, // always visible
+                            {className: "none", targets: parseInt(ip_location_block.native) ? [10, 11, 12, 13] : [5, 6, 10, 11, 12, 13]}  // always hidden
                         ]
                     },
 

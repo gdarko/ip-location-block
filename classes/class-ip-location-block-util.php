@@ -1703,7 +1703,6 @@ class IP_Location_Block_Util {
 		return false;
 	}
 
-
 	/**
 	 * Returns the allowed actions and pages
 	 * @param $settings

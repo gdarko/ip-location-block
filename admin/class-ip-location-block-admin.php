@@ -351,6 +351,7 @@ class IP_Location_Block_Admin {
 				'tab'      => isset($_GET['page']) && 'ip-location-block' === $_GET['page'] ? $this->admin_tab : -1,
 				'url'      => admin_url( 'admin-ajax.php' ),
 				'nonce'    => IP_Location_Block_Util::create_nonce( $this->get_ajax_action() ),
+				'native'    => (bool) IP_Location_Block_Provider::is_native( $settings ),
 				'msg'      => array(
 					/* [ 0] */
 					__( 'Are you sure ?', 'ip-location-block' ),
