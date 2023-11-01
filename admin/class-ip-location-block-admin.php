@@ -1953,7 +1953,7 @@ class IP_Location_Block_Admin {
 				break;
 
 			case 'get-actions': // Get all the ajax/post actions
-				$res = IP_Location_Block_Util::get_registered_actions( true );
+				$res = IP_Location_Block_Util::get_registered_actions( true, $settings );
 				break;
 
 			case 'export-cache': // Restore cache from database and format for DataTables

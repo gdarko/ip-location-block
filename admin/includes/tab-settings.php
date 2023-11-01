@@ -649,7 +649,7 @@ class IP_Location_Block_Admin_Tab {
 
 		// Get all the admin-post actions
 		$exception = '';
-		$installed = IP_Location_Block_Util::get_registered_actions( false );
+		$installed = IP_Location_Block_Util::get_registered_actions( false, $options );
 		foreach ( $installed as $key => $val ) {
 			$val       = '';
 			$val       .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="ip-location-block-admin-post dashicons dashicons-lock">*</span></dfn>' : '';

@@ -1459,10 +1459,10 @@ class IP_Location_Block_Util {
 	 *
 	 * @return array
 	 */
-	public static function get_registered_actions( $ajax = false ) {
+	public static function get_registered_actions( $ajax = false, $settings = [] ) {
 		$installed = array();
 
-		$default_actions = self::allowed_pages_actions();
+		$default_actions = self::allowed_pages_actions( $settings );
 
 		global $wp_filter;
 		foreach ( $wp_filter as $key => $val ) {
