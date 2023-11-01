@@ -1462,8 +1462,11 @@ class IP_Location_Block_Util {
 	public static function get_registered_actions( $ajax = false ) {
 		$installed = array();
 
+		$default_actions = self::allowed_pages_actions();
+
 		global $wp_filter;
 		foreach ( $wp_filter as $key => $val ) {
+			$mod = 0;
 			if ( $ajax && false !== strpos( $key, 'wp_ajax_' ) ) {
 				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
 					$key = substr( $key, 15 ); // 'wp_ajax_nopriv_'
@@ -1472,7 +1475,7 @@ class IP_Location_Block_Util {
 					$key = substr( $key, 8 );  // 'wp_ajax_'
 					$val = 1;                  // with privilege
 				}
-				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+				$mod = 1;
 			} elseif ( false !== strpos( $key, 'admin_post_' ) ) {
 				if ( 0 === strpos( $key, 'admin_post_nopriv_' ) ) {
 					$key = substr( $key, 18 ); // 'admin_post_nopriv_'
@@ -1481,11 +1484,25 @@ class IP_Location_Block_Util {
 					$key = substr( $key, 11 ); // 'admin_post_'
 					$val = 1;                  // with privilege
 				}
-				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+				$mod = 1;
+			}
+			if($mod) {
+				$include = 1;
+				foreach($default_actions as $default_action) {
+					if($default_action === $key || self::wildcard_match($default_action, $key)) {
+						$include = 0;
+						break;
+					}
+				}
+				if($include) {
+					$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+				}
 			}
 		}
 
-		unset( $installed['ip_location_block'] );
+		if ( isset( $installed['ip_location_block'] ) ) {
+			unset( $installed['ip_location_block'] );
+		}
 
 		return $installed;
 	}
@@ -1638,6 +1655,256 @@ class IP_Location_Block_Util {
 		$asn = str_replace( 'AS', '', strtok( $asn, ' ' ) );
 
 		return sprintf( 'AS%s', $asn );
+	}
+
+
+	/**
+	 * Wildcard match
+	 *
+	 * @param $needle - The string with wildcard
+	 * @param $haystack - The full string
+	 *
+	 * @since 1.2.2
+	 *
+	 * @return bool
+	 */
+	public static function wildcard_match( $needle, $haystack ) {
+		if(is_null($needle) || is_null($haystack)) {
+			return false;
+		}
+		$needle =  str_replace('/', '_', $needle);
+		$haystack = str_replace('/', '_', $haystack);
+		$regex = str_replace( array( "\*", "\?" ), array( '.*', '.' ), preg_quote( $needle ) );
+		return (bool) preg_match( '/^' . $regex . '$/is', $haystack );
+	}
+
+	/**
+	 * Match wildcard with in_array fashion
+	 *
+	 * @param $needle - The string with wildcard
+	 * @param $haystack - The list of elements
+	 *
+	 * @since 1.2.2
+	 *
+	 * @return bool
+	 */
+	public static function wildcard_in_array( $needle, $haystack ) {
+
+		if ( ! is_iterable( $haystack ) ) {
+			return false;
+		}
+
+		foreach ( $haystack as $item ) {
+			if ( self::wildcard_match( $needle, $item ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Returns the allowed actions and pages
+	 * @param $settings
+	 *
+	 * @return string[]|null
+	 */
+	public static function allowed_pages_actions( $settings = [] ) {
+		$allowed = apply_filters( 'ip-location-block-bypass-admins', array(), $settings );
+		return array_merge( $allowed, array(
+			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker, bbPress
+			// To find use: grep -h -o "'wp_ajax_[^']*'" -r .
+			// admin-ajax.php -> Core Actions POST
+			//'ip-location-block',
+			'oembed-cache',
+			'image-editor',
+			'delete-comment',
+			'delete-tag',
+			'delete-link',
+			'delete-meta',
+			'delete-post',
+			'trash-post',
+			'untrash-post',
+			'delete-page',
+			'dim-comment',
+			'add-link-category',
+			'add-tag',
+			'get-tagcloud',
+			'get-comments',
+			'replyto-comment',
+			'edit-comment',
+			'add-menu-item',
+			'add-meta',
+			'add-user',
+			'closed-postboxes',
+			'hidden-columns',
+			'update-welcome-panel',
+			'menu-get-metabox',
+			'wp-link-ajax',
+			'menu-locations-save',
+			'menu-quick-search',
+			'meta-box-order',
+			'get-permalink',
+			'sample-permalink',
+			'inline-save',
+			'inline-save-tax',
+			'find_posts',
+			'widgets-order',
+			'save-widget',
+			'delete-inactive-widgets',
+			'set-post-thumbnail',
+			'date_format',
+			'time_format',
+			'wp-remove-post-lock',
+			'dismiss-wp-pointer',
+			'upload-attachment',
+			'get-attachment',
+			'query-attachments',
+			'save-attachment',
+			'save-attachment-compat',
+			'send-link-to-editor',
+			'send-attachment-to-editor',
+			'save-attachment-order',
+			'media-create-image-subsizes',
+			'heartbeat',
+			'get-revision-diffs',
+			'save-user-color-scheme',
+			'update-widget',
+			'query-themes',
+			'parse-embed',
+			'set-attachment-thumbnail',
+			'parse-media-shortcode',
+			'destroy-sessions',
+			'install-plugin',
+			'update-plugin',
+			'crop-image',
+			'generate-password',
+			'save-wporg-username',
+			'delete-plugin',
+			'search-plugins',
+			'search-install-plugins',
+			'activate-plugin',
+			'update-theme',
+			'delete-theme',
+			'install-theme',
+			'get-post-thumbnail-html',
+			'get-community-events',
+			'edit-theme-plugin-file',
+			'wp-privacy-export-personal-data',
+			'wp-privacy-erase-personal-data',
+			'health-check-site-status-result',
+			'health-check-dotorg-communication',
+			'health-check-is-in-debug-mode',
+			'health-check-background-updates',
+			'health-check-loopback-requests',
+			'health-check-get-sizes',
+			'toggle-auto-updates',
+			'send-password-reset',
+			// admin-ajax.php -> Core Actions GET
+			'fetch-list',
+			'ajax-tag-search',
+			'wp-compression-test',
+			'imgedit-preview',
+			'oembed-cache',
+			'autocomplete-user',
+			'dashboard-widgets',
+			'logged-in',
+			'rest-nonce',
+			// wp actions
+			'activate',
+			'deactivate',
+			'bulk-activate',
+			'bulk-deactivate',
+			// acf
+			'acf*',
+			// Autoptimize
+			'fetch_critcss',
+			'save_critcss',
+			'rm_critcss',
+			'rm_critcss_all',
+			'ao_ccss*',
+			'autoptimize_delete_cache',
+			'ao_metabox_ccss_addjob',
+			'dismiss_admin_notice',
+			//bbpress
+			'bbp_suggest_*',
+			'bbp_converter_*',
+			//buddypress
+			'bp_get_*',
+			'bp_cover_*',
+			'bp_avatar_*',
+			'bp_dismiss_notice',
+			'bp-activity*',
+			'bp_group_*',
+			'widget_*',
+			'xprofile_*',
+			//jetpack
+			'jetpack',
+			'jetpack*',
+			// Litespeed Cache
+			'async_litespeed',
+			'litespeed',
+			// Bricks
+			'bircks*',
+			// Elementor
+			'elementor_*',
+			'elementor',
+			// Divi
+			'et_builder*',
+			'et_fb*',
+			'et_pb*',
+			'et_reset*',
+			'et_theme_options*',
+			'et_save*',
+			'et_code*',
+			'et_core*',
+			'et_safe*',
+			'et_library*',
+			'et_cloud*',
+			'et_ai*',
+			'et_divi_options',
+			'et_theme_builder',
+			'et_divi_role_editor',
+			// WooCommerce
+			'woocommerce_*',
+			'woocommerce',
+			// MegaOptim
+			'megaoptim_*',
+			'megaoptim_settings',
+			'megaoptim_bulk_optimizer',
+			// WPRocket
+			'rocket_*',
+			'*rocketcdn*',
+			'wp-rocket',
+			// WordFence
+			'wordfence_*',
+			'Wordfence',
+			// NinjaFirewall
+			'nfw_*',
+			'NinjaFirewall',
+			// Sucuri
+			'sucuriscan_ajax',
+			'sucuriscan',
+			// Advanced Cron Manager
+			'acm*',
+			// pages
+			// - Anti-Malware Security and Brute-Force Firewall
+			// - Jetpack page & action
+			// - Email Subscribers & Newsletters by Icegram
+			// - Swift Performance
+			'wpephpcompat_start_test',
+			'GOTMLS_logintime',
+			'jetpack',
+			'authorize',
+			'jetpack_modules',
+			'atd_settings',
+			'es_sendemail',
+			'swift_performance_setup',
+			// Advanced Access Manager
+			'aam',
+			'aamc',
+		) );
 	}
 
 }

@@ -88,9 +88,6 @@ class IP_Location_Block_Admin_Tab {
 		// Get the country code of client
 		$key = IP_Location_Block::get_geolocation( $val = IP_Location_Block::get_ip_address( $options ) );
 
-		#var_dump($key);
-		#die;
-
 		add_settings_field(
 			$option_name . '_ip_client',
 			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Your IP address / Country</dfn>', 'ip-location-block' ),

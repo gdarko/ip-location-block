@@ -133,6 +133,8 @@ class IP_Location_Block_Admin_Ajax {
 				__( 'Time', 'ip-location-block' ),
 				__( 'IP address', 'ip-location-block' ),
 				__( 'Code', 'ip-location-block' ),
+				__( 'City', 'ip-location-block' ),
+				__( 'State', 'ip-location-block' ),
 				__( 'ASN', 'ip-location-block' ),
 				__( 'Target', 'ip-location-block' ),
 				__( 'Result', 'ip-location-block' ),
@@ -147,9 +149,9 @@ class IP_Location_Block_Admin_Ajax {
 			$hook = array_shift( $data ); // extract `hook`
 			self::array_insert( $data, $hook, 3 );
 			$data[0] = IP_Location_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
-			$data[7] = str_replace( ',', '‚', $data[7] ); // &#044; --> &#130;
-			$data[8] = str_replace( ',', '‚', $data[8] ); // &#044; --> &#130;
 			$data[9] = str_replace( ',', '‚', $data[9] ); // &#044; --> &#130;
+			$data[10] = str_replace( ',', '‚', $data[10] ); // &#044; --> &#130;
+			$data[11] = str_replace( ',', '‚', $data[11] ); // &#044; --> &#130;
 			$csv     .= implode( ',', $data ) . PHP_EOL;
 		}
 
@@ -195,20 +197,24 @@ class IP_Location_Block_Admin_Ajax {
 				'<span><a href="#!">' . $row[2] . '</a></span>',
 				/*  4 Country code */
 				'<span>' . $row[3] . '</span>',
-				/*  5 AS number    */
-				'<span>' . $row[5] . '</span>',
-				/*  6 Target       */
-				'<span>' . $row[0] . '</span>',
-				/*  7 Status       */
+				/*  5 City    */
 				'<span>' . $row[4] . '</span>',
-				/*  8 Request      */
-				'<span>' . $row[6] . '</span>',
-				/*  9 User agent   */
+				/*  6 State    */
+				'<span>' . $row[5] . '</span>',
+				/*  7 AS number    */
 				'<span>' . $row[7] . '</span>',
-				/* 10 HTTP headers */
+				/*  8 Target       */
+				'<span>' . $row[0] . '</span>',
+				/*  9 Status       */
+				'<span>' . $row[6] . '</span>',
+				/*  10 Request      */
 				'<span>' . $row[8] . '</span>',
-				/* 11 $_POST data  */
+				/*  11 User agent   */
 				'<span>' . $row[9] . '</span>',
+				/* 12 HTTP headers */
+				'<span>' . $row[10] . '</span>',
+				/* 13 $_POST data  */
+				'<span>' . $row[11] . '</span>',
 			);
 		}
 
@@ -303,6 +309,8 @@ class IP_Location_Block_Admin_Ajax {
 		$csv .= implode( ',', array(
 				__( 'IP address', 'ip-location-block' ),
 				__( 'Code', 'ip-location-block' ),
+				__( 'City', 'ip-location-block' ),
+				__( 'State', 'ip-location-block' ),
 				__( 'ASN', 'ip-location-block' ),
 				__( 'Host name', 'ip-location-block' ),
 				__( 'Target', 'ip-location-block' ),
@@ -319,6 +327,8 @@ class IP_Location_Block_Admin_Ajax {
 			$csv .= implode( ',', array(
 					/* IP address      */ $key,
 					/* Country code    */ $val['code'],
+					/* City            */ $val['city'],
+					/* State           */ $val['state'],
 					/* AS number       */ $val['asn'],
 					/* Host name       */ $val['host'],
 					/* Target          */ $val['hook'],
@@ -362,6 +372,10 @@ class IP_Location_Block_Admin_Ajax {
 				'<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ) . '">' . esc_html( $key ) . '</a></span>',
 				/* Country code */
 				'<span>' . esc_html( $val['code'] ) . '</span>',
+				/* Country code */
+				'<span>' . esc_html( $val['city'] ) . '</span>',
+				/* Country code */
+				'<span>' . esc_html( $val['state'] ) . '</span>',
 				/* AS number    */
 				'<span>' . esc_html( $val['asn'] ) . '</span>',
 				/* Host name    */

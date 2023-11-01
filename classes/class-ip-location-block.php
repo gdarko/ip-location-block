@@ -408,15 +408,15 @@ class IP_Location_Block {
 	 * @return bool
 	 */
 	public static function is_passed( $result ) {
-		return 0 === strncmp( 'pass', $result, 4 );
+		return !empty($result) ? 0 === strncmp( 'pass', $result, 4 ) : false;
 	}
 
 	public static function is_failed( $result ) {
-		return 0 === strncmp( 'fail', $result, 4 );
+		return !empty($result) ? 0 === strncmp( 'fail', $result, 4 ) : false;
 	}
 
 	public static function is_blocked( $result ) {
-		return 0 !== strncmp( 'pass', $result, 4 );
+		return !empty($result) ? 0 !== strncmp( 'pass', $result, 4 ) : false;
 	}
 
 	public static function is_listed( $code, $list ) {
@@ -498,7 +498,7 @@ class IP_Location_Block {
 			$geolocation = $instance ? $instance->get_location( $ip, $args ) : [];
 
 			if ( ! empty( $geolocation['countryCode'] ) && empty( $geolocation['errorMessage'] ) ) {
-				$asn = ($instance->supports( 'asn' ) || $provider === 'Cache') && $settings['use_asn'] && isset( $geolocation['asn'] ) ? $geolocation['asn'] : null;
+				$asn = ($instance->supports( 'asn' ) || $instance->supports( 'asn_database' )  || $provider === 'Cache') && $settings['use_asn'] && isset( $geolocation['asn'] ) ? $geolocation['asn'] : null;
 				if ( ! empty( $settings['use_asn'] ) && empty( $asn ) ) {
 					if ( $instance->supports( 'asn' ) ) {
 						$asn = $instance->get_location( $ip, array( 'asn' => true ) );
@@ -948,8 +948,8 @@ class IP_Location_Block {
 	 * @return bool
 	 */
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
-		$in_action = in_array( $action, $exceptions, true );
-		$in_page   = in_array( $page, $exceptions, true );
+		$in_action = IP_Location_Block_Util::wildcard_in_array( $action, $exceptions );
+		$in_page   = IP_Location_Block_Util::wildcard_in_array( $page, $exceptions );
 
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or ! $in_page ) ) ? false : true;
@@ -964,7 +964,7 @@ class IP_Location_Block {
 		$settings = self::get_option();
 		$page     = isset( $_REQUEST['page'] ) ? sanitize_text_field( $_REQUEST['page'] ) : null;
 		$action   = isset( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : null;
-		$action   = is_null( $action ) && isset( $_REQUEST['task'] ) ? sanitize_text_field( $_REQUEST['task'] ) : null;
+		//$action   = is_null( $action ) && isset( $_REQUEST['task'] ) ? sanitize_text_field( $_REQUEST['task'] ) : null;
 
 		switch ( $this->pagenow ) {
 			case 'admin-ajax.php':
@@ -986,30 +986,7 @@ class IP_Location_Block {
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
-		$list = array_merge( apply_filters( 'ip-location-block-bypass-admins', array(), $settings ), array(
-			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker, bbPress
-			'heartbeat',
-			'save-widget',
-			'wp-compression-test',
-			'upload-attachment',
-			'deactivate',
-			'imgedit-preview',
-			'wpephpcompat_start_test',
-			'bp_avatar_upload',
-			// Anti-Malware Security and Brute-Force Firewall, Jetpack page & action, Email Subscribers & Newsletters by Icegram, Swift Performance
-			'GOTMLS_logintime',
-			'jetpack',
-			'authorize',
-			'jetpack_modules',
-			'atd_settings',
-			'bulk-activate',
-			'bulk-deactivate',
-			'es_sendemail',
-			'swift_performance_setup',
-			// Advanced Access Manager
-			'aam',
-			'aamc',
-		) );
+		$list = IP_Location_Block_Util::allowed_pages_actions( $settings );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
 		if ( ( $page || $action ) && $this->check_exceptions( $action, $page, $settings['exception']['admin'] ) ) {

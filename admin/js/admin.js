@@ -1152,7 +1152,8 @@
                     for (key in data) {
                         if (data.hasOwnProperty(key)) {
                             key = stripTag(key);
-                            if (!$this.find('#' + (id = ID('!', 'exception_admin_' + key))).size()) {
+                            id = ID('!', 'exception_admin_' + key.replaceAll('/', '_'));
+                            if (!$this.find('#' + id).size()) {
                                 i = input.cloneNode(false);
                                 i.setAttribute('id', id);
                                 i.setAttribute('value', key);
@@ -1699,24 +1700,27 @@
                 var control = {
                         tableID: 'validation-logs',
                         sectionID: 'section-0',
-                        targetColumn: 6,
+                        targetColumn: 8,
                         columnIP: 3,
-                        columnAS: 5
+                        columnAS: 7
                     },
+
                     options = {
                         columns: [
                             {title: '<input type=\"checkbox\">'}, //  0 checkbox
                             {title: ''}, //  1 Time (raw)
-                            {title: ip_location_block.i18n[10]}, //  2 Date
+                            {title: ip_location_block.i18n[12]}, //  2 Date
                             {title: ip_location_block.i18n[3]}, //  3 IP address
                             {title: ip_location_block.i18n[4]}, //  4 Country code
-                            {title: ip_location_block.i18n[5]}, //  5 AS number
-                            {title: ip_location_block.i18n[7]}, //  6 Target
-                            {title: ip_location_block.i18n[11]}, //  7 Result
-                            {title: ip_location_block.i18n[12]}, //  8 Request
-                            {title: ip_location_block.i18n[13]}, //  9 User agent
-                            {title: ip_location_block.i18n[14]}, // 10 HTTP headers
-                            {title: ip_location_block.i18n[15]}  // 11 $_POST data
+                            {title: ip_location_block.i18n[5]}, //  5 City
+                            {title: ip_location_block.i18n[6]}, //  6 State
+                            {title: ip_location_block.i18n[7]}, //  7 AS number
+                            {title: ip_location_block.i18n[9]}, //  8 Target
+                            {title: ip_location_block.i18n[13]}, //  9 Result
+                            {title: ip_location_block.i18n[14]}, //  10 Request
+                            {title: ip_location_block.i18n[15]}, //  11 User agent
+                            {title: ip_location_block.i18n[16]}, // 12 HTTP headers
+                            {title: ip_location_block.i18n[17]}  // 13 $_POST data
                         ],
                         columnDefs: [
                             {responsivePriority: 11, targets: 0}, // checkbox
@@ -1724,16 +1728,18 @@
                             {responsivePriority: 1, targets: 2}, // Date
                             {responsivePriority: 2, targets: 3}, // IP address
                             {responsivePriority: 3, targets: 4}, // Country code
-                            {responsivePriority: 6, targets: 5}, // AS number
-                            {responsivePriority: 4, targets: 6}, // Target
-                            {responsivePriority: 5, targets: 7}, // Result
-                            {responsivePriority: 7, targets: 8}, // Request
-                            {responsivePriority: 8, targets: 9}, // User agent
-                            {responsivePriority: 9, targets: 10}, // HTTP headers
-                            {responsivePriority: 10, targets: 11}, // $_POST data
+                            {responsivePriority: 4, targets: 5}, // City
+                            {responsivePriority: 5, targets: 6}, // State
+                            {responsivePriority: 6, targets: 7}, // AS number
+                            {responsivePriority: 4, targets: 8}, // Target
+                            {responsivePriority: 5, targets: 9}, // Result
+                            {responsivePriority: 7, targets: 10}, // Request
+                            {responsivePriority: 8, targets: 11}, // User agent
+                            {responsivePriority: 9, targets: 12}, // HTTP headers
+                            {responsivePriority: 10, targets: 13}, // $_POST data
                             {visible: false, targets: 1}, // always hidden
                             {className: "all", targets: [0, 2, 3, 4]}, // always visible
-                            {className: "none", targets: [8, 9, 10, 11]}  // always hidden
+                            {className: "none", targets: [5,6,10,11,12,13]}  // always hidden
                         ]
                     },
 
@@ -1795,7 +1801,7 @@
                     // animation on update
                     new_class = ID(''),
                     add_class = function (row, data, prefix) {
-                        if (is_blocked(data[7 /* result */])) {
+                        if (is_blocked(data[9 /* result */])) {
                             $(row).addClass(new_class + prefix + 'blocked');
                         } else {
                             $(row).addClass(new_class + prefix + 'passed');

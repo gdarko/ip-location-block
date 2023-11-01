@@ -714,7 +714,7 @@ class IP_Location_Block_API_Cache extends IP_Location_Block_API {
 	public function get_location( $ip, $args = array() ) {
 		$cache = self::get_cache( $ip );
 		if ( $cache ) {
-			return array( 'countryCode' => $cache['code'], 'cityName' => $cache['city'], 'stateName' => $cache['state'] );
+			return array( 'countryCode' => $cache['code'], 'cityName' => $cache['city'], 'stateName' => $cache['state'], 'asn' => $cache['asn'] );
 		} else {
 			return array( 'errorMessage' => 'not in the cache' );
 		}

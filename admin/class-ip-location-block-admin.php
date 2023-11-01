@@ -32,9 +32,12 @@ class IP_Location_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
-		// Setup the tab number.
-		$this->admin_tab = isset( $_GET['tab'] ) ? (int) $_GET['tab'] : 0;
-		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
+		// Control tab number
+		if ( isset( $_REQUEST['page'] ) && 'ip-location-block' === $_REQUEST['page'] ) {
+			$this->admin_tab = isset( $_REQUEST['tab'] ) ? intval( $_REQUEST['tab'] ) : 0;
+		} else {
+			$this->admin_tab = - 1;
+		}
 
 		// Load plugin text domain and add body class
 		add_action( 'init', array( $this, 'admin_init' ) );
@@ -257,13 +260,6 @@ class IP_Location_Block_Admin {
 			return;
 		}
 
-		// Control tab number
-		if ( isset( $_GET['page'] ) && 'ip-location-block' === $_GET['page'] ) {
-			$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
-		} else {
-			$tab = - 1;
-		}
-
 		$settings = IP_Location_Block::get_option();
 
 		$release = ( ! defined( 'IP_LOCATION_BLOCK_DEBUG' ) || ! IP_LOCATION_BLOCK_DEBUG );
@@ -275,7 +271,7 @@ class IP_Location_Block_Admin {
 			filemtime( IP_LOCATION_BLOCK_PATH . 'admin/js/admin.js' )
 		);
 
-		switch ( $tab ) {
+		switch ( $this->admin_tab ) {
 			case 1: /* Statistics */
 			case 4: /* Logs */
 				// css and js for DataTables
@@ -347,11 +343,12 @@ class IP_Location_Block_Admin {
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
 			$version, $footer
 		);
+
 		wp_localize_script( $handle,
 			'IP_LOCATION_BLOCK',
 			array(
 				'action'   => 'ip_location_block',
-				'tab'      => $this->admin_tab,
+				'tab'      => isset($_GET['page']) && 'ip-location-block' === $_GET['page'] ? $this->admin_tab : -1,
 				'url'      => admin_url( 'admin-ajax.php' ),
 				'nonce'    => IP_Location_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg'      => array(
@@ -386,17 +383,19 @@ class IP_Location_Block_Admin {
 					/* [ 2] */ __( 'No matching records found', 'ip-location-block' ),
 					/* [ 3] */ __( 'IP address', 'ip-location-block' ),
 					/* [ 4] */ __( 'Code', 'ip-location-block' ),
-					/* [ 5] */ __( 'ASN', 'ip-location-block' ),
-					/* [ 6] */ __( 'Host name', 'ip-location-block' ),
-					/* [ 7] */ __( 'Target', 'ip-location-block' ),
-					/* [ 8] */ __( 'Failure / Total', 'ip-location-block' ),
-					/* [ 9] */ __( 'Elapsed[sec]', 'ip-location-block' ),
-					/* [10] */ __( 'Time', 'ip-location-block' ),
-					/* [11] */ __( 'Result', 'ip-location-block' ),
-					/* [12] */ __( 'Request', 'ip-location-block' ),
-					/* [13] */ __( 'User agent', 'ip-location-block' ),
-					/* [14] */ __( 'HTTP headers', 'ip-location-block' ),
-					/* [15] */ __( '$_POST data', 'ip-location-block' ),
+					/* [ 5] */ __( 'City', 'ip-location-block' ),
+					/* [ 6] */ __( 'State', 'ip-location-block' ),
+					/* [ 7] */ __( 'ASN', 'ip-location-block' ),
+					/* [ 8] */ __( 'Host name', 'ip-location-block' ),
+					/* [ 9] */ __( 'Target', 'ip-location-block' ),
+					/* [ 10] */ __( 'Failure / Total', 'ip-location-block' ),
+					/* [ 11] */ __( 'Elapsed[sec]', 'ip-location-block' ),
+					/* [12] */ __( 'Time', 'ip-location-block' ),
+					/* [13] */ __( 'Result', 'ip-location-block' ),
+					/* [14] */ __( 'Request', 'ip-location-block' ),
+					/* [15] */ __( 'User agent', 'ip-location-block' ),
+					/* [16] */ __( 'HTTP headers', 'ip-location-block' ),
+					/* [17] */ __( '$_POST data', 'ip-location-block' ),
 				),
 				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
 				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
@@ -1506,7 +1505,7 @@ class IP_Location_Block_Admin {
 			$supporting = 0;
 			$providers  = IP_Location_Block_Provider::get_providers();
 			foreach ( $providers as $key => $provider ) {
-				if ( IP_Location_Block_Provider::supports( $key, 'asn_database' ) ) {
+				if ( IP_Location_Block_Provider::supports( $key, 'asn_database' ) || IP_Location_Block_Provider::supports( $key, 'asn' ) ) {
 					$supporting ++;
 				}
 			}

@@ -914,13 +914,13 @@ class IP_Location_Block_Logs {
 		foreach ( $result as $key => $val ) {
 			if ( 2 === $mode ) {
 				$result[ $key ][3] = self::decrypt( $val[3] );
-				$result[ $key ][9] = self::decrypt( $val[9] );
+				$result[ $key ][11] = self::decrypt( $val[11] );
 			} elseif ( ctype_print( $result[ $key ][3] ) ) {
 				array_splice( $result[ $key ], 4, 1 ); // remove encrypted `ip`
-				array_splice( $result[ $key ], 10, 1 ); // remove encrypted `headers`
+				array_splice( $result[ $key ], 12, 1 ); // remove encrypted `headers`
 			} else {
 				array_splice( $result[ $key ], 3, 1 ); // keep decrypted `ip`
-				array_splice( $result[ $key ], 9, 1 ); // keep decrypted `headers`
+				array_splice( $result[ $key ], 11, 1 ); // keep decrypted `headers`
 			}
 		}
 
@@ -960,13 +960,13 @@ class IP_Location_Block_Logs {
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
 			if ( 2 === $mode ) {
 				$result[ $key ][1] = self::decrypt( $val[1] );
-				$result[ $key ][9] = self::decrypt( $val[9] );
+				$result[ $key ][11] = self::decrypt( $val[11] );
 			} elseif ( ctype_print( $result[ $key ][2] ) ) {
 				array_splice( $result[ $key ], 3, 1 ); // remove encrypted `ip`
-				array_splice( $result[ $key ], 11, 1 ); // remove encrypted `headers`
+				array_splice( $result[ $key ], 12, 1 ); // remove encrypted `headers`
 			} else {
 				array_splice( $result[ $key ], 2, 1 ); // keep decrypted `ip`
-				array_splice( $result[ $key ], 10, 1 ); // keep decrypted `headers`
+				array_splice( $result[ $key ], 11, 1 ); // keep decrypted `headers`
 			}
 
 			$result[ $key ] = array_combine(
@@ -1265,7 +1265,7 @@ class IP_Location_Block_Logs {
 
 		if ( ! empty( $result[0] ) ) {
 			if ( 2 === $mode ) {
-				$result[0][9] = self::decrypt( $result[0][9] );
+				$result[0][11] = self::decrypt( $result[0][11] );
 			} // decrypt `host`
 
 			$result[0]       = array_combine( array(

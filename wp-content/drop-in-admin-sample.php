@@ -23,12 +23,14 @@ class_exists( 'IP_Location_Block', false ) or die;
  *     [2 Time         ] => 1534580897
  *     [3 IP address   ] => 102.177.147.***
  *     [4 Country code ] => ZA
- *     [5 Result       ] => blocked
- *     [6 AS number    ] => AS328239
- *     [7 Request      ] => POST[80]:/wp-comments-post.php
- *     [8 User agent   ] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) ...
- *     [9 HTTP headers ] => HTTP_ORIGIN=http://localhost,HTTP_X_FORWARDED_FOR=102.177.147.***
- *    [10 $_POST data  ] => comment=Hello.,author,email,url,comment_post_ID,comment_parent
+ *     [5 City         ] = SomeCity
+ *     [6 State        ] = SomeState
+ *     [7 Result       ] => blocked
+ *     [8 AS number    ] => AS328239
+ *     [9 Request      ] => POST[80]:/wp-comments-post.php
+ *     [10 User agent   ] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) ...
+ *     [11 HTTP headers ] => HTTP_ORIGIN=http://localhost,HTTP_X_FORWARDED_FOR=102.177.147.***
+ *    [12 $_POST data  ] => comment=Hello.,author,email,url,comment_post_ID,comment_parent
  * )
  *
  * And put a mark at "Target"
@@ -61,7 +63,7 @@ function ip_location_block_logs( array $logs ) {
 	}
 	foreach ( $logs as $key => $log ) {
 		// Passed or Blocked
-		$mark = IP_Location_Block::is_passed( $log[5] ) ? '&sup1;' : '&sup2;';
+		$mark = IP_Location_Block::is_passed( $log[7] ) ? '&sup1;' : '&sup2;';
 		// Whitelisted, Blacklisted or N/A
 		if ( 'public' === $log[1] ) {
 			$mark .= IP_Location_Block::is_listed( $log[4], $white_frontend ) ? '&sup1;' : (
