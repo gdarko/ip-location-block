@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 6.4
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -243,6 +243,16 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.2.2 =
+*Release Date - 01 Nov 2023*
+
+* Fix issue related to log and stats display
+* Fix issue that triggered alert on non-admin users (Editor and other)
+* Add additional two columns for CITY and STATE to Logs screen when using "IP Location Block" provider
+* Fix warnings when downloading Geolite2 DB
+* Other UI Improvements
+* Various Codebase improvements
 
 = 1.2.1 =
 *Release Date - 31 Oct 2023*
