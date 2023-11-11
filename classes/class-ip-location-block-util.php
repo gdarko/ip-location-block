@@ -1850,6 +1850,7 @@ class IP_Location_Block_Util {
 			'elementor_*',
 			'elementor',
 			// Divi
+			'save_epanel',
 			'et_builder*',
 			'et_fb*',
 			'et_pb*',
