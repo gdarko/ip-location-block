@@ -3,13 +3,14 @@
  * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-dfn {
+.ip-location-block-wrap dfn {
     cursor: help;
     border-bottom: 1px dotted #888;
 }
 
 /* style legend and fieldset as panel */
-fieldset, legend {
+.ip-location-block-wrap fieldset,
+.ip-location-block-wrap legend {
     padding: 0;
     margin: 0;
     border: 0;
@@ -17,19 +18,19 @@ fieldset, legend {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-fieldset {
+.ip-location-block-wrap fieldset {
     min-width: 0;
 }
-legend {
+.ip-location-block-wrap legend {
     display: block;
     line-height: inherit;
     width: 100%;
 }
-label {
+.ip-location-block-wrap label {
     display: inline-block;
     max-width: 100%;
 }
-.panel {
+.ip-location-block-wrap .panel {
     border-color: #888;
     border: 1px solid #e5e5e5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
@@ -37,14 +38,14 @@ label {
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
     background: #f5f5f5;
 }
-.panel-heading {
+.ip-location-block-wrap .panel-heading {
     float: left !important;
     background: #fff;
 }
-.panel-default > .panel-heading {
+.ip-location-block-wrap .panel-default > .panel-heading {
     border-color: inherit;
 }
-.panel-body {
+.ip-location-block-wrap .panel-body {
     width: 100%;
     padding: 0 1em;
     display: inline-block;
@@ -52,12 +53,12 @@ label {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-.panel-body:before,
-.panel-body:after {
+.ip-location-block-wrap .panel-body:before,
+.ip-location-block-wrap .panel-body:after {
     content: " ";
     display: table;
 }
-.panel-body:after {
+.ip-location-block-wrap .panel-body:after {
     clear: both;
 }
 .ip-location-block-navi-link {
@@ -73,89 +74,89 @@ label {
 }
 
 /* style legend and fieldset */
-fieldset label {
+.ip-location-block-wrap fieldset label {
     vertical-align: middle;
 }
-fieldset input[type="checkbox"] {
+.ip-location-block-wrap fieldset input[type="checkbox"] {
     margin: 1px 2px 0;
 }
-fieldset.ip-location-block-field {
+.ip-location-block-wrap fieldset.ip-location-block-field {
 /*  padding: 0 10px;*/
     margin: 1em 0;
 }
-fieldset.ip-location-block-field h2,
-fieldset.ip-location-block-field h3 {
+.ip-location-block-wrap fieldset.ip-location-block-field h2,
+.ip-location-block-wrap fieldset.ip-location-block-field h3 {
     padding: 0;
     margin: 0;
     font-size: 14px !important;
 }
-fieldset.ip-location-block-field h4 {
+.ip-location-block-wrap fieldset.ip-location-block-field h4 {
     margin: 0.75em 0 0.5em 0;
 }
-fieldset.ip-location-block-field legend.panel-heading {
+.ip-location-block-wrap fieldset.ip-location-block-field legend.panel-heading {
     padding: 10px;
 }
 
-fieldset.ip-location-block-field .ip-location-block-dropup,
-fieldset.ip-location-block-field .ip-location-block-dropdown {
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropup,
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropdown {
     cursor: pointer;
     position: relative;
     padding-left: 1em;
 }
-fieldset.ip-location-block-field .ip-location-block-dropup:before,
-fieldset.ip-location-block-field .ip-location-block-dropdown:before {
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropup:before,
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropdown:before {
     content: '';
     height: 0;
     width: 0;
     border: 0.4em solid transparent;
     position: absolute;
 }
-fieldset.ip-location-block-field .ip-location-block-dropup:before {
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropup:before {
     border-left: 0.4em solid #555;
     left: 2px;
     top: 18%;
 }
-fieldset.ip-location-block-field .ip-location-block-dropdown:before {
+.ip-location-block-wrap fieldset.ip-location-block-field .ip-location-block-dropdown:before {
     border-top: 0.4em solid #555;
     left: -2px;
     top: 38%;
 }
-fieldset.ip-location-block-field .form-table .ip-location-block-dropup,
-fieldset.ip-location-block-field .form-table .ip-location-block-dropdown {
+.ip-location-block-wrap fieldset.ip-location-block-field .form-table .ip-location-block-dropup,
+.ip-location-block-wrap fieldset.ip-location-block-field .form-table .ip-location-block-dropdown {
     margin-top: 0.75em;
 }
-fieldset.ip-location-block-field ul.ip-location-block-dropup:before {
+.ip-location-block-wrap fieldset.ip-location-block-field ul.ip-location-block-dropup:before {
     top: 0.25em;
 }
-fieldset.ip-location-block-field ul.ip-location-block-dropdown:before {
+.ip-location-block-wrap fieldset.ip-location-block-field ul.ip-location-block-dropdown:before {
     top: 0.5em;
 }
-fieldset.ip-location-block-field table.form-table {
+.ip-location-block-wrap fieldset.ip-location-block-field table.form-table {
     margin: 0 0 0.5em;
     width: 100%;
 }
 
 /* Text */
-textarea.regular-text {
+.ip-location-block-wrap textarea.regular-text {
     width: 25em;
 }
-fieldset.ip-location-block-field input.regular-text,
-fieldset.ip-location-block-field textarea.regular-text {
+.ip-location-block-wrap fieldset.ip-location-block-field input.regular-text,
+.ip-location-block-wrap fieldset.ip-location-block-field textarea.regular-text {
     font-size: 95%;
 }
 
 /* Checkbox / Radio */
-p.ip-location-block-navi-link input[type="checkbox"],
-fieldset.ip-location-block-field input[type="checkbox"],
-fieldset.ip-location-block-field input[type="radio"] {
+.ip-location-block-wrap p.ip-location-block-navi-link input[type="checkbox"],
+.ip-location-block-wrap fieldset.ip-location-block-field input[type="checkbox"],
+.ip-location-block-wrap fieldset.ip-location-block-field input[type="radio"] {
     margin-right: 0.4em;
 }
 
 /* Plugins/Themes area, Geolocation API settings */
-input[id*="ip_location_block_settings_rewrite_"] + label {
+.ip-location-block-wrap input[id*="ip_location_block_settings_rewrite_"] + label {
     margin-left: 0.25em;
 }
-input[id*="ip_location_block_settings_providers"] + label {
+.ip-location-block-wrap input[id*="ip_location_block_settings_providers"] + label {
     min-width: 7em;
 }
 
@@ -169,11 +170,11 @@ input[id*="ip_location_block_settings_providers"] + label {
 .ip-location-block-settings-folding li {
     margin: 0.5em 0;
 }
-.folding-disable {
+.ip-location-block-wrap .folding-disable {
     pointer-events: none;
     opacity: 0.5;
 }
-.folding-inactive {
+.ip-location-block-wrap .folding-inactive {
     opacity: 0.5;
     font-style:oblique !important;
 }
@@ -276,27 +277,27 @@ ul#ip-location-block-logs-preset li {
     margin-top: 0;
     margin-left: 1em;
 }
-.gm-style-iw {
+.ip-location-block-wrap .gm-style-iw {
     width: 18em;
     height: auto !important;
     height: 100%;
     min-height: 100%;
 }
-.gm-style-iw ul {
+.ip-location-block-wrap .gm-style-iw ul {
     margin: 0.1em;
 }
-.gm-style-iw li {
+.ip-location-block-wrap .gm-style-iw li {
     margin: 0.2em;
 }
 
 /* SVG in google chart */
-svg a {
+.ip-location-block-wrap svg a {
     cursor: pointer;
 }
-svg a:hover > text {
+.ip-location-block-wrap svg a:hover > text {
     fill: #0096dd;
 }
-svg a > text {
+.ip-location-block-wrap svg a > text {
     fill: #0073aa;
     text-decoration: underline;
 }
@@ -656,8 +657,8 @@ table.ip-location-block-dataTable.display tbody tr:hover > .sorting_1 {
 table.ip-location-block-dataTable.collapsed > tbody > tr > td:first-child {
     padding: 8px 4px 8px 8px !important;
 }
-table.collapsed > tbody > tr        > td:first-child::before,
-table.collapsed > tbody > tr.parent > td:first-child::before {
+.ip-location-block-wrap table.collapsed > tbody > tr        > td:first-child::before,
+.ip-location-block-wrap table.collapsed > tbody > tr.parent > td:first-child::before {
     content: '';
     height: 0;
     width: 0;
@@ -668,34 +669,34 @@ table.collapsed > tbody > tr.parent > td:first-child::before {
     position: relative;
     background-color: transparent;
 }
-table.collapsed > tbody > tr > td:first-child::before {
+.ip-location-block-wrap table.collapsed > tbody > tr > td:first-child::before {
     border-left: 5px solid #555;
     top: 1px;
     left: -2px;
 }
-table.collapsed > tbody > tr.parent > td:first-child::before {
+.ip-location-block-wrap table.collapsed > tbody > tr.parent > td:first-child::before {
     border-top: 5px solid #555;
     top: 4px;
     left: -4px;
 }
-table.collapsed > tbody > tr.child > td:first-child::before {
+.ip-location-block-wrap table.collapsed > tbody > tr.child > td:first-child::before {
     border: none;
 }
-table.collapsed > tbody > tr.child > td.child > ul li {
+.ip-location-block-wrap table.collapsed > tbody > tr.child > td.child > ul li {
     border: none;
     padding: 0;
     margin: 0;
     line-height: 1.8em;
 }
-table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title,
-table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
+.ip-location-block-wrap table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title,
+.ip-location-block-wrap table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     font-size: 13px !important;
     display: block;
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
 }
-table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
+.ip-location-block-wrap table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     margin-left: 1.25em;
     margin-right: 0.3em;
 }
@@ -1062,11 +1063,11 @@ Tables
 }
 
 /* placeholder */
-:placeholder-shown          { color: #888; }
-::-webkit-input-placeholder { color: #888; } /* Google Chrome, Safari, Opera 15+, Android, iOS */
-:-moz-placeholder           { color: #888; opacity: 1; } /* Firefox 18- */
-::-moz-placeholder          { color: #888; opacity: 1; } /* Firefox 19+ */
-:-ms-input-placeholder      { color: #888; } /* IE 10+ */
+.ip-location-block-wrap :placeholder-shown          { color: #888; }
+.ip-location-block-wrap ::-webkit-input-placeholder { color: #888; } /* Google Chrome, Safari, Opera 15+, Android, iOS */
+.ip-location-block-wrap :-moz-placeholder           { color: #888; opacity: 1; } /* Firefox 18- */
+.ip-location-block-wrap ::-moz-placeholder          { color: #888; opacity: 1; } /* Firefox 19+ */
+.ip-location-block-wrap :-ms-input-placeholder      { color: #888; } /* IE 10+ */
 
 
 /* Instructions */
