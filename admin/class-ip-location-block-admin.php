@@ -671,10 +671,12 @@ class IP_Location_Block_Admin {
 				$feature = '';
 				if ( strpos( $settings[ $key ], ':City:' ) !== false ) {
 					$feature = 'city';
-				} else if ( strpos( $settings[ $key ], ':State:' ) !== false ) {
+				} elseif ( strpos( $settings[ $key ], ':State:' ) !== false ) {
 					$feature = 'state';
-				} else if ( strpos( $settings[ $key ], ':' ) !== false ) {
+				} elseif ( strpos( $settings[ $key ], ':' ) !== false ) {
 					$feature = 'city';
+				} elseif ( strpos( $settings[ $key ], 'AS' ) !== false ) {
+					$feature = 'asn';
 				}
 				if ( $feature ) {
 					$valid_providers = IP_Location_Block_Provider::get_valid_providers( $settings, false, false, true );
@@ -682,14 +684,80 @@ class IP_Location_Block_Admin {
 						$provider = IP_Location_Block_API::get_instance( $valid_provider, $settings );
 						if ( $provider && ! $provider->supports( $feature ) ) {
 							self::add_admin_notice( 'error', sprintf(
-								__( 'Looks like you are trying to utilize <strong>%s</strong> level blocking, but the provider <strong>%s</strong> does not support that. In this case you may get invalid results. We strongly advise you to disable the provider <strong>%s</strong> from the settings below. For more details see <a target="_blank" href="%s">City/State Level Matching</a>.', 'ip-location-block' ),
+								__( 'Looks like you are trying to utilize <strong>%s</strong> level blocking, but the provider <strong>%s</strong> does not support that. In this case you may get invalid results. We strongly advise you to disable the provider <strong>%s</strong> from the settings below. For more details see <a target="_blank" href="%s">Supported Geo-Location Rule Formats</a>.', 'ip-location-block' ),
 								$feature,
 								$valid_provider,
 								$valid_provider,
-								'https://iplocationblock.com/codex/city-state-level-matching/'
+								'https://iplocationblock.com/codex/supported-geo-location-rule-formats/'
 							) );
 						}
 					}
+				}
+			}
+		}
+
+		// Check additional blacklist / whitelist rules
+		if ( ! empty( $settings['extra_ips'] ) && is_array( $settings['extra_ips'] ) ) {
+			$asn_use = [];
+			$invalid = [];
+			$lists   = [
+				'white_list' => __( 'Whitelist of extra IP addresses prior to country code/pattern (CIDR, ASN)', 'ip-location-block' ),
+				'black_list' => __( 'Blacklist of extra IP addresses prior to country code/pattern (CIDR, ASN)', 'ip-location-block' ),
+			];
+			foreach ( $lists as $list_key => $list ) {
+				$invalid[ $list_key ] = [];
+				$asn_use[ $list_key ] = [];
+				if ( ! empty( $settings['extra_ips'][ $list_key ] ) ) {
+					$values = IP_Location_Block_Util::multiexplode( array( ",", "\n" ), $settings['extra_ips'][ $list_key ] );
+					foreach ( $values as $i ) {
+						$j      = explode( '/', $i, 2 );
+						$j[1]   = isset( $j[1] ) ? min( 32, max( 0, (int) $j[1] ) ) : 32;
+						$is_asn = ( ! empty( $settings['use_asn'] ) && strpos( $j[0], 'AS' ) !== false );
+						$is_ip4 = filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ); // Is valid ip4 subnet or ip4.
+						$is_ip6 = filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ); // Is valid ip6 subnet or ip6
+						if ( ! ( $is_asn || $is_ip4 || $is_ip6 ) ) {
+							$invalid[ $list_key ][] = $i;
+						}
+						if ( $is_asn ) {
+							$asn_use[ $list_key ][] = $i;
+						}
+					}
+				}
+			}
+
+			// Display issues related to format & collect information abount asn usage.
+			$lists_with_asn = [];
+			foreach ( $lists as $list_key => $list_name ) {
+				if ( ! empty( $invalid[ $list_key ] ) ) {
+					self::add_admin_notice( 'error', sprintf(
+						__( 'The option <strong>"%s"</strong> is not properly configured, it contains invalid rules: <strong>%s</strong>. For more details please check <a target="_blank" href="%s">Validation rules and behavior</a>', 'ip-location-block' ),
+						$list_name,
+						implode( ', ', $invalid[ $list_key ] ),
+						esc_url( 'https://iplocationblock.com/codex/validation-rules-and-behavior/#whitelistblacklist-of-extra-ip-addresses-prior-to-country-code' )
+					) );
+				}
+				if ( ! empty( $asn_use[ $list_key ] ) ) {
+					$lists_with_asn[] = $list_name;
+				}
+			}
+
+			if ( ! empty( $lists_with_asn ) ) {
+				// FInd providers that doesn't support ASN and are active
+				$_unsupported_pr = [];
+				$valid_providers = IP_Location_Block_Provider::get_valid_providers( $settings, false, false, true );
+				foreach ( $valid_providers as $valid_provider ) {
+					$provider = IP_Location_Block_API::get_instance( $valid_provider, $settings );
+					if ( $provider && ! $provider->supports( 'asn' ) ) {
+						$_unsupported_pr[] = $valid_provider;
+					}
+				}
+				if ( ! empty( $_unsupported_pr ) ) {
+					$message = __( 'Looks like you want to block ASN by using the <strong>%s</strong> option(s) but your current geolocation provider(s) "<strong>%s</strong>" do not support it. For more details about the supported providers please scroll down to <strong>Geolocation API settings</strong> and check with the <strong>Compare</strong> button.', 'ip-location-block' );
+					self::add_admin_notice( 'error', sprintf(
+						$message,
+						implode( ', ', $lists_with_asn ),
+						implode( ', ', $_unsupported_pr ),
+					) );
 				}
 			}
 		}
