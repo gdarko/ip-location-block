@@ -38,7 +38,7 @@ class IP_Location_Block_Cron {
 						$next            = max( (int) $db['ipv4_last'], (int) $db['ipv6_last'] ) +
 						                   $cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
 					}
-				} else {
+				} elseif ( isset( $db['ip_last'] ) ) {
 					// in case of Maxmind GeoLite2
 					if ( $now - (int) $db['ip_last'] < $cycle ) {
 						$update['retry'] = 0;
