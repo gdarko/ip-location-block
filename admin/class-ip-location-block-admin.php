@@ -1361,14 +1361,7 @@ class IP_Location_Block_Admin {
 				case 'white_list':
 				case 'black_list':
 					$input_value = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : '';
-					$input_parts = explode( ',', $input_value );
-					foreach ( $input_parts as $index => $input_part ) {
-						$rule_parts = explode( ':', trim( $input_part ) );
-						if ( ! empty( $rule_parts[0] ) ) {
-							$rule_parts[0] = preg_replace( '/[^A-Z,]/', '', strtoupper( $rule_parts[0] ) );
-						}
-						$input_parts[ $index ] = implode( ':', $rule_parts );
-					}
+                    $input_parts = self::sanitize_rules($input_value);
 					$output[ $key ] = implode( ',', $input_parts );
 					break;
 
@@ -1396,6 +1389,7 @@ class IP_Location_Block_Admin {
 						}
 					}
 					break;
+
 
 				default: // checkbox, select, text
 					// single field
@@ -1442,12 +1436,45 @@ class IP_Location_Block_Admin {
 							}
 						}
 					}
+
+                    if($key === 'public') {
+                        foreach(['white_list', 'black_list'] as $prop) {
+	                        $input_value             = isset( $input[ $key ][ $prop ] ) ? sanitize_text_field( $input[ $key ][ $prop ] ) : '';
+	                        $input_parts             = self::sanitize_rules( $input_value );
+	                        $output[ $key ][ $prop ] = implode( ',', $input_parts );
+                        }
+                    }
 			}
 		}
 
 		// Check and format each setting data
 		return $this->postprocess_options( $output, $default );
 	}
+
+	/**
+     * Sanitizes the matching rule strings
+	 * @param $input_value
+	 *
+	 * @return string[]
+	 */
+    public function sanitize_rules($input_value) {
+	    $input_parts = explode( ',', $input_value );
+	    foreach ( $input_parts as $index => $input_part ) {
+		    $rule_parts = explode( ':', trim( $input_part ) );
+		    if ( ! empty( $rule_parts[0] ) ) {
+			    $rule_parts[0] = preg_replace( '/[^A-Z,]/', '', strtoupper( $rule_parts[0] ) );
+		    }
+		    if ( ! empty( $rule_parts[1] ) ) {
+			    $rule_parts[1] = ucwords( strtolower( $rule_parts[1] ) );
+		    }
+		    if ( ! empty( $rule_parts[2] ) ) {
+			    $rule_parts[2] = ucwords( strtolower( $rule_parts[2] ) );
+		    }
+		    $input_parts[ $index ] = implode( ':', $rule_parts );
+	    }
+
+        return $input_parts;
+    }
 
 	// Initialize not on the form (mainly unchecked checkbox)
 	public function preprocess_options( $output, $default ) {
@@ -1547,7 +1574,9 @@ class IP_Location_Block_Admin {
 
 		// 3.0.0 public : convert country code to upper case
 		foreach ( array( 'white_list', 'black_list' ) as $key ) {
-			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
+            if( strpos($output['public'][ $key ], ':') === false ) {
+	            $output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
+            }
 			// 3.0.4 extra_ips : convert AS number to upper case
 			$output['extra_ips'][ $key ] = strtoupper( $output['extra_ips'][ $key ] );
 		}
