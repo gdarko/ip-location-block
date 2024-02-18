@@ -1663,9 +1663,9 @@ class IP_Location_Block_Admin_Tab {
 	public static function note_services() {
 		echo
 		'<ul class="ip-location-block-note">', "\n",
-		'<li>', __( 'While GeoLite2 / Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-location-block' ), '</li>', "\n",
+		'<li>', __( 'GeoLite2 / Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-location-block' ), '</li>', "\n",
 		'<li>', __( 'Please select the appropriate APIs to fit the privacy law / regulation in your country / region.', 'ip-location-block' ), '</li>', "\n",
-		'<li>', __( '<strong>Important:</strong> Use the <strong>IP Loation Block</strong> provider if you are leaning towards better precision, premium support, affordable price and new features. Also, features like "State Block" and "City Block" require the <strong>IP Location Block</strong> provider and are NOT compatible with other providers.', 'ip-location-block' ), '</li>', "\n",
+		'<li>', __( '<strong>Important:</strong> Use the <strong>IP Loation Block</strong> provider want better precision (City Level & State Level blocking), premium support, affordable price and more features. <br/> &nbsp;Features like "State Level" and "City Level" blocking require the <strong>IP Location Block</strong> provider and are NOT compatible with other providers.', 'ip-location-block' ), '</li>', "\n",
 		'</ul>', "\n";
 	}
 
