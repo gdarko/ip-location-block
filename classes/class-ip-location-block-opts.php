@@ -288,7 +288,7 @@ class IP_Location_Block_Opts {
 
 		// Update Settings
 		$settings['version']    = IP_LOCATION_BLOCK_VERSION;
-		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
+		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' ) );
 
 		IP_Location_Block::update_option( $settings );
 

@@ -373,7 +373,7 @@ class IP_Location_Block {
 	public static function get_request_headers( $settings ) {
 		return apply_filters( 'ip-location-block-headers', array(
 			'timeout'    => (int) $settings['timeout'],
-			'user-agent' => ! empty( $settings['request_ua'] ) ? $settings['request_ua'] : @$_SERVER['HTTP_USER_AGENT']
+			'user-agent' => ! empty( $settings['request_ua'] ) ? $settings['request_ua'] : (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')
 		) );
 	}
 
