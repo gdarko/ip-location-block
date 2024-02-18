@@ -293,11 +293,11 @@ class IP_Location_Block_Opts {
 			if ( empty( $settings['public']['redirect_uri'] ) && ( $settings['public']['response_code'] >= 300 && $settings['public']['response_code'] <= 399 ) ) {
 				$settings['public']['redirect_uri'] = self::DEFAULT_REDIRECT_URL;
 			}
-			if ( strpos( $settings['redirect_url'], 'hmpg.net' ) !== false ) {
-				$settings['redirect_url'] = self::DEFAULT_REDIRECT_URL;
+			if ( strpos( $settings['redirect_uri'], 'hmpg.net' ) !== false ) {
+				$settings['redirect_uri'] = self::DEFAULT_REDIRECT_URL;
 			}
-			if ( strpos( $settings['public']['redirect_url'], 'hmpg.net' ) !== false ) {
-				$settings['public']['redirect_url'] = self::DEFAULT_REDIRECT_URL;
+			if ( strpos( $settings['public']['redirect_uri'], 'hmpg.net' ) !== false ) {
+				$settings['public']['redirect_uri'] = self::DEFAULT_REDIRECT_URL;
 			}
 		}
 
