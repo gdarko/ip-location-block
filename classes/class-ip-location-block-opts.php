@@ -15,6 +15,8 @@
  */
 class IP_Location_Block_Opts {
 
+	const DEFAULT_REDIRECT_URL = 'https://blocked.iplocationblock.com/';
+
 	/**
 	 * Default values of option table to be cached into options database table.
 	 * @var array
@@ -138,7 +140,7 @@ class IP_Location_Block_Opts {
 		),
 		// since version 3.0.0
 		'response_msg'         => 'Sorry, your request cannot be accepted.', // message on blocking
-		'redirect_uri'         => 'http://hmpg.net/',   // redirection on blocking
+		'redirect_uri'         => self::DEFAULT_REDIRECT_URL,   // redirection on blocking
 		'network_wide'         => false,      // settings page on network dashboard
 		'public'               => array(
 			'matching_rule' => - 1,      // -1:follow, 0:white list, 1:black list
@@ -153,7 +155,7 @@ class IP_Location_Block_Opts {
 			// since version 3.0.3
 			'dnslkup'       => false,   // use DNS reverse lookup
 			'response_code' => 307,     // better for AdSense
-			'redirect_uri'  => null,    // home
+			'redirect_uri'  => self::DEFAULT_REDIRECT_URL,    // home
 			'response_msg'  => 'Sorry, your request cannot be accepted.', // message on blocking
 			// since version 3.0.10
 			'behavior'      => false    // Bad behavior
@@ -284,6 +286,19 @@ class IP_Location_Block_Opts {
 		// Upgrade SQLite
 		if ( version_compare( $version, '1.2.1' ) < 0 ) {
 			IP_Location_Block_Logs::reset_sqlite_db();
+		}
+
+		// Upgrade settings
+		if ( version_compare( $version, '1.2.4' ) < 0 ) {
+			if ( empty( $settings['public']['redirect_uri'] ) && ( $settings['public']['response_code'] >= 300 && $settings['public']['response_code'] <= 399 ) ) {
+				$settings['public']['redirect_uri'] = self::DEFAULT_REDIRECT_URL;
+			}
+			if ( strpos( $settings['redirect_url'], 'hmpg.net' ) !== false ) {
+				$settings['redirect_url'] = self::DEFAULT_REDIRECT_URL;
+			}
+			if ( strpos( $settings['public']['redirect_url'], 'hmpg.net' ) !== false ) {
+				$settings['public']['redirect_url'] = self::DEFAULT_REDIRECT_URL;
+			}
 		}
 
 		// Update Settings
