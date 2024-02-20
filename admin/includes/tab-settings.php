@@ -132,8 +132,8 @@ class IP_Location_Block_Admin_Tab {
 
 		$rule_desc = array(
 			__( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', 'ip-location-block' ),
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
+			__( '<dfn title="&#8220;Block by location&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
+			__( '<dfn title="&#8220;Block by location&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code or pattern</dfn>', 'ip-location-block' ) . '<br />(<a target="_blank" rel="noreferrer" href="https://iplocationblock.com/codex/supported-geo-location-rule-formats/" title="Supported Geo-Location Rule Formats">Supported formats</a>)',
 		);
 
 		// Matching rule
@@ -274,7 +274,7 @@ class IP_Location_Block_Admin_Tab {
 		// Bad signatures
 		add_settings_field(
 			$option_name . '_signature',
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-location-block-icon ip-location-block-icon-cycle" id="ip-location-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-location-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by location&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-location-block-icon ip-location-block-icon-cycle" id="ip-location-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-location-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -398,7 +398,7 @@ class IP_Location_Block_Admin_Tab {
 		// Redirect URI
 		add_settings_field(
 			$option_name . '_redirect_uri',
-			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-location-block' ),
+			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by location] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-location-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -506,7 +506,7 @@ class IP_Location_Block_Admin_Tab {
 				'field'     => 'validation',
 				'sub-field' => 'comment',
 				'value'     => $options['validation']['comment'],
-				'text'      => __( 'Block by country', 'ip-location-block' ),
+				'text'      => __( 'Block by location', 'ip-location-block' ),
 			)
 		);
 
@@ -552,7 +552,7 @@ class IP_Location_Block_Admin_Tab {
 				'value'     => $options['validation']['xmlrpc'],
 				'list'      => array(
 					0 => __( 'Disable', 'ip-location-block' ),
-					1 => __( 'Block by country', 'ip-location-block' ),
+					1 => __( 'Block by location', 'ip-location-block' ),
 					2 => __( 'Completely close', 'ip-location-block' ),
 				),
 			)
@@ -584,13 +584,13 @@ class IP_Location_Block_Admin_Tab {
 				'field'     => 'validation',
 				'sub-field' => 'login',
 				'value'     => $options['validation']['login'],
-				'text'      => __( 'Block by country', 'ip-location-block' ),
+				'text'      => __( 'Block by location', 'ip-location-block' ),
 				'after'     => '<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-location-block' ) . '<a class="ip-location-block-icon ip-location-block-icon-cycle ip-location-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-location-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
 		);
 
 		$list = array(
-			1 => __( 'Block by country', 'ip-location-block' ),
+			1 => __( 'Block by location', 'ip-location-block' ),
 			2 => __( 'Prevent Zero-day Exploit', 'ip-location-block' ),
 		);
 
@@ -680,7 +680,7 @@ class IP_Location_Block_Admin_Tab {
 				'desc'      => $desc,
 				'after'     =>
 					'<ul class="ip-location-block-settings-folding ip-location-block-dropup">' . "\n" .
-					'	<dfn title="' . __( 'Specify the action name (&#8220;action=&hellip;&#8221;) or the page name (&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by &#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent Zero-day Exploit&#8221; (for logged-in user).', 'ip-location-block' ) . '">' . __( 'Exceptions', 'ip-location-block' ) . "</dfn>\n" .
+					'	<dfn title="' . __( 'Specify the action name (&#8220;action=&hellip;&#8221;) or the page name (&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by &#8220;Block by location&#8221; (for non logged-in user) and &#8220;Prevent Zero-day Exploit&#8221; (for logged-in user).', 'ip-location-block' ) . '">' . __( 'Exceptions', 'ip-location-block' ) . "</dfn>\n" .
 					'	<a class="ip-location-block-hide ip-location-block-icon ip-location-block-icon-unlock"><span title="' . __( 'Toggle with non logged-in user', 'ip-location-block' ) . '"></span></a><a class="ip-location-block-icon ip-location-block-icon-cycle ip-location-block-hide" data-target="admin">' . $common[2] . '</a><a class="ip-location-block-icon ip-location-block-icon-find ip-location-block-hide" data-target="admin">' . $common[3] . "</a>\n" .
 					'	<li class="ip-location-block-hide">' . "\n" .
 					'		<input class="regular-text code" id="ip_location_block_settings_exception_admin" name="ip_location_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . $common[0] . "\n" .
@@ -836,7 +836,7 @@ class IP_Location_Block_Admin_Tab {
 				'field'     => 'validation',
 				'sub-field' => 'public',
 				'value'     => $options['validation']['public'],
-				'text'      => __( 'Block by country', 'ip-location-block' ),
+				'text'      => __( 'Block by location', 'ip-location-block' ),
 			)
 		);
 
@@ -926,7 +926,7 @@ class IP_Location_Block_Admin_Tab {
 		// Redirect URI
 		add_settings_field(
 			$option_name . '_public_redirect_uri',
-			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-location-block' ),
+			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by location] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-location-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
