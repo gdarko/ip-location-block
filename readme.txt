@@ -245,11 +245,12 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 == Changelog ==
 
 = 1.3.0 =
-*Release Date - 02 Feb 2024*
+*Release Date - 20 Feb 2024*
 
 * Fix issue when "Front-end rules & behavior" matching rule is blacklist, response status is 30X and redirect URL is empty. It does not redirect.
-* Set the default blacklist redirect URL to blocked.iplocationblock.com
+* Set the default blacklist redirect URL to blocked.iplocationblock.com.
 * Add status box in the settings screens that tells account quota, current running mode, etc.
+* Improve wording at few places that caused confusion.
 
 = 1.2.3 =
 *Release Date - 12 Nov 2023*
