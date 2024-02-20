@@ -996,7 +996,7 @@ class IP_Location_Block_Admin {
         <div class="wrap ip-location-block-wrap">
             <h2><?php echo $title; ?></h2>
             <?php
-            include(IP_LOCATION_BLOCK_PATH.'admin/includes/account.php');
+            include(IP_LOCATION_BLOCK_PATH.'admin/includes/status.php');
             ?>
             <h2 class="nav-tab-wrapper">
 				<?php foreach ( $tabs as $key => $val ) {
