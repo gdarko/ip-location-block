@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation, ip
 Requires at least: 3.7
 Tested up to: 6.4
-Stable tag: 1.2.3
+Stable tag: 1.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -243,6 +243,13 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.3.0 =
+*Release Date - 02 Feb 2024*
+
+* Fix issue when "Front-end rules & behavior" matching rule is blacklist, response status is 30X and redirect URL is empty. It does not redirect.
+* Set the default blacklist redirect URL to blocked.iplocationblock.com
+* Add status box in the settings screens that tells account quota, current running mode, etc.
 
 = 1.2.3 =
 *Release Date - 12 Nov 2023*

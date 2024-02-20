@@ -289,7 +289,7 @@ class IP_Location_Block_Opts {
 		}
 
 		// Upgrade settings
-		if ( version_compare( $version, '1.2.4' ) < 0 ) {
+		if ( version_compare( $version, '1.3.0' ) < 0 ) {
 			if ( empty( $settings['public']['redirect_uri'] ) && ( $settings['public']['response_code'] >= 300 && $settings['public']['response_code'] <= 399 ) ) {
 				$settings['public']['redirect_uri'] = self::DEFAULT_REDIRECT_URL;
 			}

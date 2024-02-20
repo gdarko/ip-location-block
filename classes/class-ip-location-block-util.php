@@ -1650,7 +1650,7 @@ class IP_Location_Block_Util {
 	 * @param $string
 	 *
 	 * @return bool
-	 * @since 1.2.4
+	 * @since 1.3.0
 	 */
 	public static function json_validate( $string ) {
 
@@ -1668,6 +1668,7 @@ class IP_Location_Block_Util {
 	 *
 	 * @param $array
 	 * @param $except
+	 * @since 1.3.0
 	 *
 	 * @return array
 	 */

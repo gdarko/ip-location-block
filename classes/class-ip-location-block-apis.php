@@ -932,7 +932,7 @@ class IP_Location_Block_Provider {
 	/**
 	 * Returns the current key quota
 	 *
-	 * @since 1.2.4
+	 * @since 1.3.0
 	 *
 	 * @param $key
 	 * @param string $subkey
