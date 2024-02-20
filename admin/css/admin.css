@@ -1,6 +1,7 @@
 /*!
  * Project: WordPress IP Location Block
  * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2021-2024 IP Location Block
  * This software is released under the MIT License.
  */
 .ip-location-block-wrap dfn {
@@ -1167,4 +1168,122 @@ Tables
     padding: 2px 5px;
     border-radius: 15px;
     top: -2px;
+}
+
+
+/* Native/Standard mode box*/
+.ip-location-block-provider-meta > .ip-location-block-sign {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    top: 1px;
+}
+.ip-location-block-provider-meta.native-mode-ok > .ip-location-block-sign {
+    background-color: #56ce56;
+}
+.ip-location-block-provider-meta.native-mode-error > .ip-location-block-sign {
+    background-color: #d53232;
+}
+.ip-location-block-provider-meta.standard-mode > .ip-location-block-sign {
+    background-color: #eebe72;
+}
+.ip-location-block-provider-meta {
+    position: relative;
+    top: 16px;
+}
+.ip-location-block-provider-meta > span:last-child {
+    margin-right: 0;
+}
+.ip-location-block-provider-meta > span {
+    margin-right: 5px;
+}
+.ip-location-block-provider-meta {
+    position: relative;
+    top: 6px;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 2px;
+    border: 1px solid #ccc;
+    line-height: 1;
+    cursor:pointer;
+    min-width: 180px;
+}
+.ip-location-block-provider-meta .dashicons,
+.ip-location-block-provider-meta .dashicons-before:before {
+    position: relative;
+    top: -5px;
+    right: 4px;
+    width: 10px;
+    height: 10px;
+    font-size: 20px;
+    float:right;
+}
+.ip-location-block-meta-wrapper {
+    position: relative;
+    display: inline-block;
+    float: right;
+}
+.ip-location-block-provider-meta-details {
+    display:none;
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    top: 36px;
+    border-radius: 2px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border: 1px solid #cccc;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    z-index: 1;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+.ip-location-block-provider-meta-details ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+.ip-location-block-meta-wrapper-expanded .ip-location-block-provider-meta-details {
+    display: block !important;
+}
+.ip-location-block-provider-meta-row {
+    margin-bottom: 14px;
+    text-align:center;
+}
+.ip-location-block-provider-meta-plan {
+    font-weight: bold;
+    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+.ip-location-block-provider-meta-col1 {
+    font-weight: bold;
+    color: #616161;
+}
+.ip-location-block-provider-meta-account {
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+}
+.ip-location-block-provider-meta-details p {
+    margin-top: 0;
+}
+.ilb-text-center {
+    text-align:center;
+}
+
+.ip-location-block-provider-meta-attention {
+    background: rgb(238 190 114 / 20%);
+    padding: 10px;
+    border-radius: 2px;
+    border: 1px solid #eebe72;
+}
+@media(max-width:700px) {
+    .ip-location-block-meta-wrapper {
+        width: 100%;
+        float: left !important;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
 }

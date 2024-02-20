@@ -1645,6 +1645,45 @@ class IP_Location_Block_Util {
 
 
 	/**
+	 * Validates JSON string
+	 *
+	 * @param $string
+	 *
+	 * @return bool
+	 * @since 1.2.4
+	 */
+	public static function json_validate( $string ) {
+
+		if ( function_exists( 'json_validate' ) ) {
+			return \json_validate( $string );
+		}
+
+		json_decode( $string );
+
+		return json_last_error() === JSON_ERROR_NONE;
+	}
+
+	/**
+	 * Removes specific keys from array
+	 *
+	 * @param $array
+	 * @param $except
+	 *
+	 * @return array
+	 */
+	public static function array_except($array = [], $except = [])
+	{
+		$newArr = [];
+		foreach($array as $value) {
+			if(in_array($value, $except)) {
+				continue;
+			}
+			$newArr[] = $value;
+		}
+		return $newArr;
+	}
+
+	/**
 	 * Parses asn in default format.
 	 * e.g:
 	 * 1. AS81281 Provider Name -> AS81281

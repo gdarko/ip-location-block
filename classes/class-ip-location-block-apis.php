@@ -928,6 +928,40 @@ class IP_Location_Block_Provider {
 		return !empty($providers) && is_array($providers) && count($providers) === 1 ? $providers[0] === 'IP Location Block' : false;
 	}
 
+
+	/**
+	 * Returns the current key quota
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param $key
+	 * @param string $subkey
+	 *
+	 * @return WP_Error|array|string|int
+	 */
+	public static function get_native_quota($key, $subkey = '') {
+
+		static $quota = [];
+
+		if ( ! empty( $quota[ $subkey ] ) ) {
+			return $quota[ $subkey ];
+		}
+
+		$response = wp_remote_get( esc_url( 'https://api.iplocationblock.com/quota/' . $key ) );
+		if ( ! is_wp_error( $response ) ) {
+			$contents = wp_remote_retrieve_body( $response );
+			if ( ! empty( $contents ) && IP_Location_Block_Util::json_validate( $contents ) ) {
+				$contents = json_decode( $contents, true );
+			}
+
+			$quota[ $subkey ] = isset( $contents[ $subkey ] ) ? $contents[ $subkey ] : $contents;
+
+			return $quota[ $subkey ];
+		}
+
+		return $response;
+	}
+
 	/**
 	 * Return provider
 	 *

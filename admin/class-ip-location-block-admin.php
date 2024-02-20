@@ -992,15 +992,19 @@ class IP_Location_Block_Admin {
 			}
 		}
 
-		?>
+        ?>
         <div class="wrap ip-location-block-wrap">
             <h2><?php echo $title; ?></h2>
+            <?php
+            include(IP_LOCATION_BLOCK_PATH.'admin/includes/account.php');
+            ?>
             <h2 class="nav-tab-wrapper">
 				<?php foreach ( $tabs as $key => $val ) {
 					echo '<a href="?page=', IP_Location_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ( $tab === $key ? ' nav-tab-active' : '' ), '">', $val, '</a>';
 				} ?>
             </h2>
-            <p class="ip-location-block-navi-link">[ <a id="ip-location-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-location-block' ); ?></a> ]
+            <p class="ip-location-block-navi-link">
+               <span class="ip-location-block-toggle-sections-wrap">[ <a id="ip-location-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-location-block' ); ?></a> ]</span>
 				<?php if ( 4 === $tab ) { /* Logs tab */ ?>
                     <input id="ip-location-block-live-update"
                            type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );

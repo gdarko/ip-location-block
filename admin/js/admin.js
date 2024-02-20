@@ -2140,3 +2140,19 @@
     })
 
 }(jQuery, window, document));
+
+document.addEventListener("DOMContentLoaded", function(){
+    let button = document.querySelector('.ip-location-block-provider-meta');
+    if(button) {
+        button.addEventListener('click', function(e){
+            e.preventDefault();
+            console.log('here we go');
+            let wrapper = button.closest('.ip-location-block-meta-wrapper');
+            if(wrapper.classList.contains('ip-location-block-meta-wrapper-expanded')) {
+                wrapper.classList.remove('ip-location-block-meta-wrapper-expanded');
+            } else {
+                wrapper.classList.add('ip-location-block-meta-wrapper-expanded');
+            }
+        });
+    }
+});
