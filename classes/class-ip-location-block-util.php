@@ -1357,6 +1357,11 @@ class IP_Location_Block_Util {
 	 * @return array  $ips  array of candidate IP addresses
 	 */
 	public static function retrieve_ips( $ips = array(), $vars = null ) {
+
+		if ( is_null( $vars ) ) {
+			return [];
+		}
+
 		foreach ( explode( ',', $vars ) as $var ) {
 			if ( isset( $_SERVER[ $var ] ) ) {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
