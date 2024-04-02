@@ -361,6 +361,7 @@ class IP_Location_Block_API_iplocationblock extends IP_Location_Block_API {
  * Sample URL  : http://api.geoiplookup.net/?query=2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6)
  * Output type : xml
+ * @deprecated
  */
 class IP_Location_Block_API_GeoIPLookup extends IP_Location_Block_API {
 	protected $template = array(
@@ -756,17 +757,6 @@ class IP_Location_Block_Provider {
 			'supports' => array( 'ipv4', 'ipv6', 'asn', 'city', 'state' ),
 			'requests' => array( 'total' => 15000, 'term' => 'month' ),
 			'api_auth' => self::API_AUTH_OPTIONAL,
-			'local'    => false,
-		),
-
-		'GeoIPLookup' => array(
-			'key'      => null,
-			'type'     => 'IPv4, IPv6 / free',
-			'link'     => 'http://geoiplookup.net/',
-			'supports' => array( 'ipv4', 'ipv6' ),
-			'limits'   => array( 'Up to 1000 requests / hour' ),
-			'requests' => array( 'total' => - 1, 'term' => 'month' ),
-			'api_auth' => self::API_AUTH_NOT_REQUIRED,
 			'local'    => false,
 		),
 
