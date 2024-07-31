@@ -573,7 +573,7 @@ class IP_Location_Block_Admin_Ajax {
 
 		try {
 			foreach ( $input as $key => $val ) {
-				if ( preg_match( "/${prfx}\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
+				if ( preg_match( "/{$prfx}\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
 					switch ( count( $m ) ) {
 						case 2:
 							$settings[ $m[1] ] = $val;
