@@ -1085,6 +1085,9 @@ class IP_Location_Block_Logs {
 
 		$result = empty( $result ) ? array() : $result;
 
+
+		$params = array( 'time', 'ip', 'asn', 'hook', 'code', 'city', 'state', 'method', 'data' );
+
 		foreach ( $result as $key => $val ) {
 			if ( ctype_print( $result[ $key ][1] ) ) {
 				array_splice( $result[ $key ], 2, 1 );
@@ -1092,6 +1095,10 @@ class IP_Location_Block_Logs {
 			else {
 				array_splice( $result[ $key ], 1, 1 );
 			} // keep decrypted `ip`
+
+			if ( is_array( $result[ $key ] ) && ( count( $result[ $key ] ) !== count( $params ) ) ) {
+				continue;
+			}
 
 			$result[ $key ] = array_combine(
 				array( 'time', 'ip', 'asn', 'hook', 'code', 'city', 'state', 'method', 'data' ),

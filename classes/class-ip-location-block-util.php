@@ -1492,10 +1492,10 @@ class IP_Location_Block_Util {
 				$mod = 1;
 			}
 			if($mod) {
-				$include = 1;
+				$include = 0;
 				foreach($default_actions as $default_action) {
 					if($default_action === $key || self::wildcard_match($default_action, $key)) {
-						$include = 0;
+						$include = 1;
 						break;
 					}
 				}
@@ -1724,12 +1724,10 @@ class IP_Location_Block_Util {
 	}
 
 	/**
-	 * Match wildcard with in_array fashion
+	 * Match in array with wildcard support, similar to in_array($needle, $haystack)
 	 *
-	 * @param $needle - The string with wildcard
-	 * @param $haystack - The list of elements
-	 *
-	 * @since 1.2.2
+	 * @param $needle - Single string
+	 * @param $haystack - List of allowed strings
 	 *
 	 * @return bool
 	 */
@@ -1739,8 +1737,8 @@ class IP_Location_Block_Util {
 			return false;
 		}
 
-		foreach ( $haystack as $item ) {
-			if ( self::wildcard_match( $needle, $item ) ) {
+		foreach ( $haystack as $wildcard_item ) {
+			if ( self::wildcard_match( $wildcard_item, $needle  ) ) {
 				return true;
 			}
 		}
@@ -1845,6 +1843,10 @@ class IP_Location_Block_Util {
 			'health-check-get-sizes',
 			'toggle-auto-updates',
 			'send-password-reset',
+			// Gutenberg
+			'gutenberg',
+			'gutenberg*',
+			'wp_block*',
 			// admin-ajax.php -> Core Actions GET
 			'fetch-list',
 			'ajax-tag-search',
@@ -1886,38 +1888,44 @@ class IP_Location_Block_Util {
 			//jetpack
 			'jetpack',
 			'jetpack*',
+			// yoast
+			'yoast*',
+			'wpseo*',
+			'duplicate_post*',
+			// updraft
+			'updraft*',
+			'updraft',
+			'plupload*',
 			// Litespeed Cache
 			'async_litespeed',
 			'litespeed',
+			// WP Fastest Cache
+			'wpfc',
+			'wpfc*',
 			// Bricks
+			'bricks',
 			'bircks*',
 			// Elementor
 			'elementor_*',
 			'elementor',
+			// Beaver
+			'dismiss_fl_notice',
+			'export_global_settings',
+			'import_global_settings',
+			'reset_global_settings',
+			'fl_*',
 			// Divi
 			'save_epanel',
-			'et_builder*',
-			'et_fb*',
-			'et_pb*',
-			'et_reset*',
-			'et_theme_options*',
-			'et_save*',
-			'et_code*',
-			'et_core*',
-			'et_safe*',
-			'et_library*',
-			'et_cloud*',
-			'et_ai*',
-			'et_divi_options',
-			'et_theme_builder',
-			'et_divi_role_editor',
+			'et_*',
 			// WooCommerce
 			'woocommerce_*',
 			'woocommerce',
 			// MegaOptim
 			'megaoptim_*',
-			'megaoptim_settings',
-			'megaoptim_bulk_optimizer',
+			// Vimeify
+			'vimeify_*',
+			// Digital License Manager
+			'dlm_*',
 			// WPRocket
 			'rocket_*',
 			'*rocketcdn*',
@@ -1925,11 +1933,19 @@ class IP_Location_Block_Util {
 			// WordFence
 			'wordfence_*',
 			'Wordfence',
+			// WPForms
+			'wpforms',
+			'wpforms*',
+			// GravityForms
+			'rb',
+			'rb*',
+			'gf',
+			'gf*',
 			// NinjaFirewall
 			'nfw_*',
 			'NinjaFirewall',
 			// Sucuri
-			'sucuriscan_ajax',
+			'sucuriscan*',
 			'sucuriscan',
 			// Advanced Cron Manager
 			'acm*',

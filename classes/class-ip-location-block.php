@@ -987,7 +987,6 @@ class IP_Location_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = IP_Location_Block_Util::allowed_pages_actions( $settings );
-
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
 		if ( ( $page || $action ) && $this->check_exceptions( $action, $page, $settings['exception']['admin'] ) ) {
 			$rule &= ~( $zep ? 2 : 3 );
