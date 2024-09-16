@@ -66,6 +66,7 @@ abstract class IP_Location_Block_API {
 			'asn'          => null,
 		)
 	);*/
+	protected $template = [];
 
 	/**
 	 * IP_Location_Block_API constructor.
@@ -120,7 +121,7 @@ abstract class IP_Location_Block_API {
 			unset( $args['asn'] ); // Make sure we don't pass 'asn' to apis, it should be only used with local providers.
 		}
 
-		$template   = isset( $this->template ) ? $this->template : array();
+		$template   = !empty( $this->template ) ? $this->template : array();
 		$cacheKey   = md5( $ip . ( isset( $template['url'] ) ? $template['url'] : '' ) );
 		$cacheGroup = 'ip-location-block';
 
