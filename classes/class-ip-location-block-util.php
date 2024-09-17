@@ -1835,14 +1835,17 @@ class IP_Location_Block_Util {
 			'edit-theme-plugin-file',
 			'wp-privacy-export-personal-data',
 			'wp-privacy-erase-personal-data',
-			'health-check-site-status-result',
-			'health-check-dotorg-communication',
-			'health-check-is-in-debug-mode',
-			'health-check-background-updates',
-			'health-check-loopback-requests',
-			'health-check-get-sizes',
+			'health-check*',
+			'health_check*',
 			'toggle-auto-updates',
 			'send-password-reset',
+			'set-background-image',
+			'custom-background-add',
+			'cropped_attachment_id',
+			'copped_attachment_metadata',
+			'check_plugin_dependencies',
+			'generate-password',
+			'custom-header*',
 			// Gutenberg
 			'gutenberg',
 			'gutenberg*',
@@ -1917,6 +1920,7 @@ class IP_Location_Block_Util {
 			// Divi
 			'save_epanel',
 			'et_*',
+
 			// WooCommerce
 			'woocommerce_*',
 			'woocommerce',
