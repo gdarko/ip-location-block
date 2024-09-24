@@ -1,9 +1,9 @@
 === IP Location Block ===
 Contributors: darkog
-Tags: country, block, ip address, ip geo block, geolocation, ip
+Tags: country, block, ip address, ip geo block, geolocation
 Requires at least: 3.7
 Tested up to: 6.6
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -213,6 +213,10 @@ If you encounter this message, please refer to [this document](https://iplocatio
 
 If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-location-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
 
+= How to resolve issues related to ajax-requests being blocked in admin? =
+
+Check the "Admin ajax/post" option in "Back-end target settings", either disable it or whitelist the required Ajax actions.
+
 = How can I fix "Unable to write" error? =
 
 When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicious attacks to the [OMG plugins and themes](https://iplocationblock.com/prevent-exposure-of-wp-config-php/ "Prevent exposure of wp-config.php | IP Location Block").
@@ -243,6 +247,16 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.3.3 =
+*Release Date - 24 Sep 2024*
+
+* Fix admin post/ajax whitelisting
+* Fix PHP deprecation warnings
+* Fix PHP array access warnings
+* Fix support for Divi
+* Whitelist additional WordPress ajax actions by default
+* Remove unnecessary/unused files within the maxmind php extension
 
 = 1.3.2 =
 *Release Date - 01 Aug 2024*
