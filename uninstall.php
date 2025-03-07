@@ -40,7 +40,7 @@ class IP_Location_Block_Uninstall {
 
 		if ( $settings['clean_uninstall'] ) {
 			if ( ! is_multisite() ) {
-				self::delete_blog_options( $settings );
+				self::delete_blog_options();
 			}
 
 			else {
