@@ -284,7 +284,7 @@ IP_Location_Block_Provider::register_addon( array(
 		'type'     => 'IPv4, IPv6 / Apache License, Version 2.0',
 		'link'     => 'https://dev.maxmind.com/geoip/geolite2-free-geolocation-data',
 		'supports' => array( 'ipv4', 'ipv6', 'asn', 'asn_database' ),
-		'limits'   => array( __( 'System memory', 'ip-location-block' ) ),
+		'limits'   => array( 'System memory' ),
 		'requests' => array( 'total' => - 1, 'term' => '' ),
 		'api_auth' => IP_Location_Block_Provider::API_AUTH_REQUIRED,
 		'local'    => true,
