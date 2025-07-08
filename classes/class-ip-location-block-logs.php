@@ -133,6 +133,130 @@ class IP_Location_Block_Logs {
 	}
 
 	/**
+	 * Get cipher secrets file path
+	 *
+	 * @return string
+	 */
+	private static function get_cipher_secrets_path() {
+		$secrets_dir = IP_Location_Block_Util::get_storage_dir( 'secrets' );
+		return $secrets_dir . 'cipher-keys.php';
+	}
+
+	/**
+	 * Generate and save cipher keys
+	 *
+	 * @return array
+	 */
+	private static function generate_cipher_keys() {
+		$keys = array(
+			'nonce_key' => self::generate_random_key(),
+			'nonce_salt' => self::generate_random_key(),
+			'auth_key' => self::generate_random_key(),
+			'auth_salt' => self::generate_random_key(),
+		);
+
+		$secrets_file = self::get_cipher_secrets_path();
+		$content = "<?php\n// Auto-generated cipher keys for IP Location Block\n// Do not modify this file manually\nreturn " . var_export($keys, true) . ";\n";
+
+		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
+		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
+		$fs->put_contents( $secrets_file, $content );
+
+		return $keys;
+	}
+
+	/**
+	 * Generate a random key
+	 *
+	 * @return string
+	 */
+	private static function generate_random_key() {
+		$length = 64;
+
+		// Try to use WordPress salts generator if available
+		if (function_exists('wp_generate_password')) {
+			return wp_generate_password($length, true, true);
+		}
+
+		// Fallback to secure random generation
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+		$key = '';
+		$chars_length = strlen($chars);
+
+		for ($i = 0; $i < $length; $i++) {
+			if (function_exists('random_int')) {
+				$key .= $chars[random_int(0, $chars_length - 1)];
+			} else {
+				$key .= $chars[mt_rand(0, $chars_length - 1)];
+			}
+		}
+
+		return $key;
+	}
+
+	/**
+	 * Load cipher keys from secrets file
+	 *
+	 * @return array|null
+	 */
+	private static function load_cipher_keys() {
+		$secrets_file = self::get_cipher_secrets_path();
+
+		require_once IP_LOCATION_BLOCK_PATH . 'classes/class-ip-location-block-file.php';
+		$fs = IP_Location_Block_FS::init( __FUNCTION__ );
+
+		if ($fs->exists($secrets_file)) {
+			$keys = include $secrets_file;
+			if (is_array($keys) && isset($keys['nonce_key'], $keys['nonce_salt'], $keys['auth_key'], $keys['auth_salt'])) {
+				return $keys;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Ensure cipher keys exist, generate them if they don't
+	 *
+	 * @return void
+	 */
+	public static function ensure_cipher_keys() {
+		$stored_keys = self::load_cipher_keys();
+
+		// If no stored keys exist, generate them
+		if ($stored_keys === null) {
+			self::generate_cipher_keys();
+		}
+	}
+
+	/**
+	 * Get cipher constants with fallback to stored keys
+	 *
+	 * @param string $constant_name
+	 * @param string $fallback_key
+	 * @return string
+	 */
+	private static function get_cipher_constant($constant_name, $fallback_key) {
+		// Try to use WordPress constant first
+		if (defined($constant_name)) {
+			return constant($constant_name);
+		}
+
+		// Load stored keys as fallback
+		static $stored_keys = null;
+		if ($stored_keys === null) {
+			$stored_keys = self::load_cipher_keys();
+
+			// If no stored keys exist, generate them
+			if ($stored_keys === null) {
+				$stored_keys = self::generate_cipher_keys();
+			}
+		}
+
+		return isset($stored_keys[$fallback_key]) ? $stored_keys[$fallback_key] : '';
+	}
+
+	/**
 	 * Encrypts / Decrypts a string.
 	 *
 	 * @link https://php.net/manual/en/function.openssl-encrypt.php#119346
@@ -149,17 +273,26 @@ class IP_Location_Block_Logs {
 			// openssl
 			if ( 2 === $mode ) {
 				// `openssl_random_pseudo_bytes()` can not be used as an IV because of search function
-				self::$cipher['iv']  = md5( NONCE_KEY . NONCE_SALT, true ); // 16 bytes (128 bits)
+				$nonce_key = self::get_cipher_constant('NONCE_KEY', 'nonce_key');
+				$nonce_salt = self::get_cipher_constant('NONCE_SALT', 'nonce_salt');
+				$auth_key = self::get_cipher_constant('AUTH_KEY', 'auth_key');
+				$auth_salt = self::get_cipher_constant('AUTH_SALT', 'auth_salt');
+
+				self::$cipher['iv']  = md5( $nonce_key . $nonce_salt, true ); // 16 bytes (128 bits)
 				self::$cipher['key'] = IP_Location_Block_Util::hash_hmac(
 					function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
-					AUTH_KEY, AUTH_SALT, true
+					$auth_key, $auth_salt, true
 				);
 			} // mysql default
 			elseif ( 1 === $mode ) {
-				self::$cipher['key'] = md5( NONCE_KEY . NONCE_SALT, true ); // 16 bytes (128 bits)
+				$nonce_key = self::get_cipher_constant('NONCE_KEY', 'nonce_key');
+				$nonce_salt = self::get_cipher_constant('NONCE_SALT', 'nonce_salt');
+
+				self::$cipher['key'] = md5( $nonce_key . $nonce_salt, true ); // 16 bytes (128 bits)
 			} // before 3.0.12
 			else {
-				self::$cipher['key'] = NONCE_KEY;
+				$nonce_key = self::get_cipher_constant('NONCE_KEY', 'nonce_key');
+				self::$cipher['key'] = $nonce_key;
 			}
 		}
 

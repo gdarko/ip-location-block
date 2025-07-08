@@ -35,6 +35,7 @@ class IP_Location_Block_Activate {
 		IP_Location_Block_Logs::create_tables();
 		IP_Location_Block_Logs::delete_cache_entry();
 		IP_Location_Block_Cron::start_cache_gc();
+		IP_Location_Block_Logs::ensure_cipher_keys();
 	}
 
 	private static function deactivate_blog() {
