@@ -3,7 +3,7 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation
 Requires at least: 3.7
 Tested up to: 6.8
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -247,6 +247,12 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.3.5 =
+*Release Date - 20 Jul 2025*
+
+* Fix PHP warnings related to string translation
+* Fix PHP Fatal error related to undefined constants (eg. NONCE_KEY)
 
 = 1.3.4 =
 *Release Date - 07 Mar 2025*
