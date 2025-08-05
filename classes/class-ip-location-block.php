@@ -1349,6 +1349,10 @@ class IP_Location_Block {
 	 * Validate on public facing pages.
 	 */
 	public function validate_public() {
+
+		if ( IP_Location_Block_Util::is_user_logged_in() ) {
+			return; // skip validation for logged in users
+		}
 		$settings = self::get_option();
 		$public   = $settings['public'];
 
