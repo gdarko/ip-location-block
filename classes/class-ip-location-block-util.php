@@ -626,58 +626,44 @@ class IP_Location_Block_Util {
 	 * @return array|false|null
 	 */
 	private static function parse_auth_cookie( $scheme = 'logged_in' ) {
-		static $cache_cookie = null;
 
-		if ( null === $cache_cookie ) {
-			$cache_cookie = false;
-
-			// @since 3.0.0 wp_cookie_constants() in wp-includes/default-constants.php
-			if ( ! defined( 'COOKIEHASH' ) ) {
-				wp_cookie_constants();
-			}
-
-			switch ( $scheme ) {
-				case 'auth':
-					$cookie_name = AUTH_COOKIE;
-					break;
-
-				case 'secure_auth':
-					$cookie_name = SECURE_AUTH_COOKIE;
-					break;
-
-				case "logged_in":
-					$cookie_name = LOGGED_IN_COOKIE;
-					break;
-
-				default:
-					if ( is_ssl() ) {
-						$cookie_name = SECURE_AUTH_COOKIE;
-						$scheme      = 'secure_auth';
-					} else {
-						$cookie_name = AUTH_COOKIE;
-						$scheme      = 'auth';
-					}
-			}
-
-			if ( empty( $_COOKIE[ $cookie_name ] ) ) {
-				return false;
-			}
-
-			$cookie = $_COOKIE[ $cookie_name ];
-			$n      = count( $cookie_elements = explode( '|', $cookie ) );
-
-			if ( 4 === $n ) { // @since 4.0.0
-				list( $username, $expiration, $token, $hmac ) = $cookie_elements;
-				$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
-			} elseif ( 3 === $n ) { // @before 4.0.0
-				list( $username, $expiration, $hmac ) = $cookie_elements;
-				$cache_cookie = compact( 'username', 'expiration', 'hmac', 'scheme' );
-			} else {
-				return false;
-			}
+		if(!defined('COOKIEHASH')) {
+			wp_cookie_constants();
 		}
 
-		return $cache_cookie;
+		switch ( $scheme ) {
+			case 'auth':
+				$cookie_name = AUTH_COOKIE;
+				break;
+			case 'secure_auth':
+				$cookie_name = SECURE_AUTH_COOKIE;
+				break;
+			case 'logged_in':
+				$cookie_name = LOGGED_IN_COOKIE;
+				break;
+			default:
+				if ( is_ssl() ) {
+					$cookie_name = SECURE_AUTH_COOKIE;
+					$scheme      = 'secure_auth';
+				} else {
+					$cookie_name = AUTH_COOKIE;
+					$scheme      = 'auth';
+				}
+		}
+
+		if ( empty( $_COOKIE[ $cookie_name ] ) ) {
+			return false;
+		}
+		$cookie = $_COOKIE[ $cookie_name ];
+
+		$cookie_elements = explode( '|', $cookie );
+		if ( count( $cookie_elements ) !== 4 ) {
+			return false;
+		}
+
+		list( $username, $expiration, $token, $hmac ) = $cookie_elements;
+
+		return compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
 	}
 
 	/**
@@ -716,62 +702,66 @@ class IP_Location_Block_Util {
 	 *
 	 * @param string $scheme
 	 *
-	 * @return false|WP_User|null
+	 * @return false|WP_User
 	 */
-	private static function validate_auth_cookie( $scheme = 'logged_in' ) {
-		static $cache_user = null;
+	public static function validate_auth_cookie(  $scheme = '' ) {
+		$cookie_elements = self::parse_auth_cookie( $scheme );
+		if ( ! $cookie_elements ) {
+			return false;
+		}
 
-		if ( null === $cache_user ) {
-			if ( ! ( $cookie = self::parse_auth_cookie( $scheme ) ) ) {
-				return $cache_user = false;
-			}
+		$scheme     = $cookie_elements['scheme'];
+		$username   = $cookie_elements['username'];
+		$hmac       = $cookie_elements['hmac'];
+		$token      = $cookie_elements['token'];
+		$expiration = $cookie_elements['expiration'];
 
-			$scheme   = $cookie['scheme'];
-			$username = $cookie['username'];
-			$hmac     = $cookie['hmac'];
-			$token    = isset( $cookie['token'] ) ? $cookie['token'] : null;
-			$expired  = $expiration = $cookie['expiration'];
+		$expired = (int) $expiration;
 
-			// Allow a grace period for POST and Ajax requests
-			if ( defined( 'DOING_AJAX' ) || 'POST' === IP_Location_Block_Util::get_request_method() ) {
-				$expired += HOUR_IN_SECONDS;
-			}
+		// Allow a grace period for POST and Ajax requests.
+		if ( wp_doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			$expired += HOUR_IN_SECONDS;
+		}
 
-			// Quick check to see if an honest cookie has expired
-			if ( $expired < time() ) {
-				return $cache_user = false;
-			}
+		// Quick check to see if an honest cookie has expired.
+		if ( $expired < time() ) {
+			return false;
+		}
 
-			if ( ! ( $cache_user = self::get_user_by( 'login', $username ) ) ) // wp-includes/pluggable.php @since  0.2.8.0
-			{
-				return $cache_user = false;
-			}
+		$user = self::get_user_by( 'login', $username );
+		if ( ! $user ) {
+			return false;
+		}
 
-			$pass_frag = substr( $cache_user->user_pass, 8, 4 );
+		if ( str_starts_with( $user->user_pass, '$P$' ) || str_starts_with( $user->user_pass, '$2y$' ) ) {
+			// Retain previous behaviour of phpass or vanilla bcrypt hashed passwords.
+			$pass_frag = substr( $user->user_pass, 8, 4 );
+		} else {
+			// Otherwise, use a substring from the end of the hash to avoid dealing with potentially long hash prefixes.
+			$pass_frag = substr( $user->user_pass, -4 );
+		}
 
-			if ( is_null( $token ) ) { // @before 4.0.0
-				$key  = self::hash_nonce( $username . $pass_frag . '|' . $expiration, $scheme );
-				$hash = hash_hmac( 'md5', $username . '|' . $expiration, $key );
-			} else { // @since 4.0.0
-				// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
-				$key  = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
-				$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
-				$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
-			}
+		$key  = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
 
-			if ( ! self::hash_equals( $hash, $hmac ) ) {
-				return $cache_user = false;
-			}
+		$hash = self::hash_hmac( 'sha256', $username . '|' . $expiration . '|' . $token, $key );
 
-			if ( class_exists( 'WP_Session_Tokens', false ) ) { // @since 4.0.0
-				$manager = WP_Session_Tokens::get_instance( $cache_user->ID );
-				if ( ! $manager->verify( $token ) ) {
-					return $cache_user = false;
-				}
+		if ( ! self::hash_equals( $hash, $hmac ) ) {
+			return false;
+		}
+
+		if ( class_exists( '\WP_Session_Tokens' ) ) {
+			$manager = WP_Session_Tokens::get_instance( $user->ID );
+			if ( ! $manager->verify( $token ) ) {
+				return false;
 			}
 		}
 
-		return $cache_user;
+		// Ajax/POST grace period set above.
+		if ( $expiration < time() ) {
+			$GLOBALS['login_grace_period'] = 1;
+		}
+
+		return $user;
 	}
 
 	/**
@@ -1042,20 +1032,17 @@ class IP_Location_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function is_user_logged_in() {
-		static $logged_in = null;
 
-		if ( null === $logged_in ) {
-			if ( did_action( 'init' ) ) {
-				$logged_in = is_user_logged_in(); // @since  0.2.0.0
+		if ( did_action( 'plugins_loaded' ) ) {
+			$logged_in = is_user_logged_in(); // @since  0.2.0.0
+		} else {
+			$settings   = IP_Location_block::get_option();
+			$timing_off = isset( $settings['validation']['timing'] ) ? ( 0 === ( (int) $settings['validation']['timing'] ) ) : 0;
+			if ( $timing_off ) {
+				$logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in(); // @since  0.2.0.0
 			} else {
-				$settings   = IP_Location_block::get_option();
-				$timing_off = isset( $settings['validation']['timing'] ) ? ( 0 === ( (int) $settings['validation']['timing'] ) ) : 0;
-				if ( $timing_off ) {
-					$logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in(); // @since  0.2.0.0
-				} else {
-					$user      = self::validate_auth_cookie();
-					$logged_in = $user ? $user->exists() : false; // @since 3.4.0
-				}
+				$user      = self::validate_auth_cookie();
+				$logged_in = $user ? $user->exists() : false; // @since 3.4.0
 			}
 		}
 
@@ -1072,13 +1059,11 @@ class IP_Location_Block_Util {
 	public static function get_current_user_id() {
 		static $user_id = null;
 
-		if ( null === $user_id ) {
-			if ( did_action( 'init' ) ) {
-				$user_id = get_current_user_id(); // @since MU 3.0.0
-			} else {
-				$user    = self::validate_auth_cookie();
-				$user_id = $user ? $user->ID : 0; // @since  0.2.0.0
-			}
+		if ( did_action( 'init' ) ) {
+			$user_id = get_current_user_id(); // @since MU 3.0.0
+		} else {
+			$user    = self::validate_auth_cookie();
+			$user_id = $user ? $user->ID : 0; // @since  0.2.0.0
 		}
 
 		return $user_id;
@@ -1870,11 +1855,11 @@ class IP_Location_Block_Util {
 			// Autoptimize
 			'fetch_critcss',
 			'save_critcss',
-			'rm_critcss',
+					'rm_critcss',
 			'rm_critcss_all',
 			'ao_ccss*',
 			'autoptimize_delete_cache',
-			'ao_metabox_ccss_addjob',
+			'rm_critcss',
 			'dismiss_admin_notice',
 			//bbpress
 			'bbp_suggest_*',
