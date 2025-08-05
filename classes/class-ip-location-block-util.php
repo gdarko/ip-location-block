@@ -592,14 +592,6 @@ class IP_Location_Block_Util {
 	 * @return false|mixed|string
 	 */
 	private static function hash_nonce( $data, $scheme = 'nonce' ) {
-
-		if(!defined('AUTH_KEY') || !defined('AUTH_SALT') ||
-		   !defined('SECURE_AUTH_KEY') || !defined('SECURE_AUTH_SALT') ||
-		   !defined('LOGGED_IN_KEY') || !defined('LOGGED_IN_SALT') ||
-		   !defined('NONCE_KEY') || !defined('NONCE_SALT')) {
-			return false; // Ensure that the keys are defined
-		}
-
 		$salt = array(
 			'auth'        => AUTH_KEY . AUTH_SALT,
 			'secure_auth' => SECURE_AUTH_KEY . SECURE_AUTH_SALT,
