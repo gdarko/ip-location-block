@@ -301,6 +301,11 @@ class IP_Location_Block_Opts {
 			}
 		}
 
+		// Upgrade the mu files
+		if ( version_compare( $version, '1.3.6' ) < 0 ) {
+			IP_Location_Block_Opts::upgrade_validation_timing_mu_plugin( $settings );
+		}
+
 		// Update Settings
 		$settings['version']    = IP_LOCATION_BLOCK_VERSION;
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' ) );

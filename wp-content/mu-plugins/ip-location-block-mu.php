@@ -26,6 +26,27 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+if(!defined("AUTH_KEY") || !defined("SECURE_AUTH_KEY") || !defined("LOGGED_IN_KEY") || !defined("NONCE_KEY") ||
+   !defined("AUTH_SALT") || !defined("SECURE_AUTH_SALT") || !defined("LOGGED_IN_SALT") || !defined("NONCE_SALT")) {
+    if(isset($GLOBALS['ip_location_block_hash_keys_notice']) && $GLOBALS['ip_location_block_hash_keys_notice']) {
+        return;
+    }
+	add_action('admin_notices', function (){
+		?>
+		<div class="notice notice-error">
+			<p><strong><?php _e( 'IP Location Block Error:', 'ip-location-block' ); ?></strong></p>
+			<p><?php _e( 'WordPress security keys and salts are not properly configured in wp-config.php. This plugin requires all authentication constants (AUTH_KEY, SECURE_AUTH_KEY, LOGGED_IN_KEY, NONCE_KEY, AUTH_SALT, SECURE_AUTH_SALT, LOGGED_IN_SALT, NONCE_SALT) to be defined for security reasons.', 'ip-location-block' ); ?></p>
+			<p><?php printf(
+					__( 'Please generate new security keys at %s and add them to your wp-config.php file.', 'ip-location-block' ),
+					'<a href="https://api.wordpress.org/secret-key/1.1/salt/" target="_blank">https://api.wordpress.org/secret-key/1.1/salt/</a>'
+				); ?></p>
+		</div>
+		<?php
+	});
+	$GLOBALS['ip_location_block_hash_keys_notice'] = true;
+	return;
+}
+
 
 if ( ! class_exists( 'IP_Location_Block', false ) ) {
 
