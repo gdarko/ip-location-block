@@ -3,11 +3,11 @@ Contributors: darkog
 Tags: country, block, ip address, ip geo block, geolocation
 Requires at least: 3.7
 Tested up to: 6.8
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
-Easily setup location block based on the visitor country by using ip and asn details. Protects your site from spam, login attempts, zero-day exploits, malicious access & more.
+Easily block visitors by country, state or ISP provider. Also, protects your site from spam, login attempts, zero-day exploits, malicious access & more.
 
 == Description ==
 
@@ -247,6 +247,13 @@ Please refer to "[How can I fix permission troubles?](https://iplocationblock.co
 11. **IP Location Plugin** - Multisite list on network
 
 == Changelog ==
+
+= 1.3.6 =
+*Release Date - 06 Aug 2025*
+
+* Fix: Uncaught ReferenceError: IP_LOCATION_BLOCK_AUTH is not defined
+* Fix: IP_Location_Block::is_user_logged_in() in certain cases
+* Fix: Plugins run if HASH constants are not defined
 
 = 1.3.5 =
 *Release Date - 20 Jul 2025*

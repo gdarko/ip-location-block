@@ -14,7 +14,7 @@
  * Plugin Name:       IP Location Block
  * Plugin URI:        https://wordpress.org/plugins/ip-location-block/
  * Description:       Easily setup location block based on the visitor country, city, state or provider. Also protects your site from spam, login attempts, zero-day exploits, malicious access & more.
- * Version:           1.3.5
+ * Version:           1.3.6
  * Author:            IP Location Block
  * Author URI:        https://iplocationblock.com/
  * Text Domain:       ip-location-block
@@ -25,12 +25,34 @@
 
 defined( 'WPINC' ) or die; // If this file is called directly, abort.
 
+if(!defined("AUTH_KEY") || !defined("SECURE_AUTH_KEY") || !defined("LOGGED_IN_KEY") || !defined("NONCE_KEY") ||
+   !defined("AUTH_SALT") || !defined("SECURE_AUTH_SALT") || !defined("LOGGED_IN_SALT") || !defined("NONCE_SALT")) {
+	if(isset($GLOBALS['ip_location_block_hash_keys_notice']) && $GLOBALS['ip_location_block_hash_keys_notice']) {
+		return;
+	}
+	add_action('admin_notices', function (){
+		?>
+		<div class="notice notice-error">
+			<p><strong><?php _e( 'IP Location Block Error:', 'ip-location-block' ); ?></strong></p>
+			<p><?php _e( 'WordPress security keys and salts are not properly configured in wp-config.php. This plugin requires all authentication constants (AUTH_KEY, SECURE_AUTH_KEY, LOGGED_IN_KEY, NONCE_KEY, AUTH_SALT, SECURE_AUTH_SALT, LOGGED_IN_SALT, NONCE_SALT) to be defined for security reasons.', 'ip-location-block' ); ?></p>
+			<p><?php printf(
+					__( 'Please generate new security keys at %s and add them to your wp-config.php file.', 'ip-location-block' ),
+					'<a href="https://api.wordpress.org/secret-key/1.1/salt/" target="_blank">https://api.wordpress.org/secret-key/1.1/salt/</a>'
+				); ?></p>
+		</div>
+		<?php
+	});
+	$GLOBALS['ip_location_block_hash_keys_notice'] = true;
+	return;
+}
+
+
 if ( ! class_exists( 'IP_Location_Block', false ) ):
 
 	/*----------------------------------------------------------------------------*
 	 * Global definition
 	 *----------------------------------------------------------------------------*/
-	define( 'IP_LOCATION_BLOCK_VERSION', '1.3.5' );
+	define( 'IP_LOCATION_BLOCK_VERSION', '1.3.6' );
 	define( 'IP_LOCATION_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since  0.2.8
 	define( 'IP_LOCATION_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
 
@@ -134,6 +156,3 @@ if ( ! class_exists( 'IP_Location_Block', false ) ):
 	// */
 
 endif; // ! class_exists( 'IP_Location_Block', FALSE )
-
-
-
